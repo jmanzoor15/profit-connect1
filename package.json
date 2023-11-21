@@ -18,6 +18,8 @@
   "devDependencies": {
     "@pinia/nuxt": "^0.4.11",
     "@types/bootstrap": "^5.2.6",
+    "@vueuse/core": "^10.6.1",
+    "@vueuse/nuxt": "^10.6.1",
     "nuxt": "^3.6.2",
     "pinia": "^2.1.4",
     "sass": "^1.63.6",

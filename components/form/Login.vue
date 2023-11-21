@@ -17,6 +17,7 @@ const submitHandler = async () => {
     @submit="submitHandler"
     :actions="false"
     #default="{ value }"
+    style="background-color: #ffff"
   >
     <h1>Register!</h1>
     <p>
@@ -31,6 +32,7 @@ const submitHandler = async () => {
       placeholder="Jane Doe"
       help="What do people call you?"
       validation="required"
+      disabled
     />
     <FormKit
       type="text"
@@ -69,47 +71,3 @@ const submitHandler = async () => {
     <h2>Submission successful!</h2>
   </div>
 </template>
-
-<style>
-p {
-  font-size: 0.9em;
-  color: #646464;
-  line-height: 1.5;
-}
-h1 {
-  margin-top: 0;
-}
-h2 {
-  color: green;
-}
-hr {
-  display: block;
-  height: 1px;
-  margin: 1.5em 0;
-  border: 0;
-  background-color: #e4e4e4;
-}
-.formkit-form {
-  width: 420px;
-  padding: 1.5em;
-  border: 1px solid #e4e4e4;
-  border-radius: 1em;
-  margin: 0 auto 1em auto;
-}
-.hide {
-  display: none;
-}
-#registration-example pre {
-  margin-bottom: 10px;
-}
-@media (min-width: 400px) {
-  .double {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .double > .formkit-outer {
-    width: calc(50% - 0.5em);
-  }
-}
-</style>

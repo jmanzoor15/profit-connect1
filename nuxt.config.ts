@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
   css: [
+    "assets/scss/formkit.scss",
     "assets/scss/app.scss",
   ],
 
@@ -9,7 +10,8 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     '@nuxt/image',
-    '@formkit/nuxt'
+    '@formkit/nuxt',
+    '@vueuse/nuxt',
   ],
   formkit: {
     autoImport: true
