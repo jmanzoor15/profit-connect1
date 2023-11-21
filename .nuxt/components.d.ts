@@ -2,6 +2,8 @@
 declare module 'vue' {
   export interface GlobalComponents {
     'FormLogin': typeof import("../components/form/Login.vue")['default']
+    'Modal': typeof import("../components/modal/Index.vue")['default']
+    'NavigationBreadcrumb': typeof import("../components/navigation/Breadcrumb.vue")['default']
     'NavigationHeader': typeof import("../components/navigation/Header.vue")['default']
     'NavigationMenu': typeof import("../components/navigation/Menu.vue")['default']
     'NavigationUserDropdown': typeof import("../components/navigation/UserDropdown.vue")['default']
@@ -30,6 +32,8 @@ declare module 'vue' {
     'Html': typeof import("../node_modules/nuxt/dist/head/runtime/components")['Html']
     'Body': typeof import("../node_modules/nuxt/dist/head/runtime/components")['Body']
     'LazyFormLogin': typeof import("../components/form/Login.vue")['default']
+    'LazyModal': typeof import("../components/modal/Index.vue")['default']
+    'LazyNavigationBreadcrumb': typeof import("../components/navigation/Breadcrumb.vue")['default']
     'LazyNavigationHeader': typeof import("../components/navigation/Header.vue")['default']
     'LazyNavigationMenu': typeof import("../components/navigation/Menu.vue")['default']
     'LazyNavigationUserDropdown': typeof import("../components/navigation/UserDropdown.vue")['default']
@@ -61,6 +65,8 @@ declare module 'vue' {
 }
 
 export const FormLogin: typeof import("../components/form/Login.vue")['default']
+export const Modal: typeof import("../components/modal/Index.vue")['default']
+export const NavigationBreadcrumb: typeof import("../components/navigation/Breadcrumb.vue")['default']
 export const NavigationHeader: typeof import("../components/navigation/Header.vue")['default']
 export const NavigationMenu: typeof import("../components/navigation/Menu.vue")['default']
 export const NavigationUserDropdown: typeof import("../components/navigation/UserDropdown.vue")['default']
@@ -89,6 +95,8 @@ export const Head: typeof import("../node_modules/nuxt/dist/head/runtime/compone
 export const Html: typeof import("../node_modules/nuxt/dist/head/runtime/components")['Html']
 export const Body: typeof import("../node_modules/nuxt/dist/head/runtime/components")['Body']
 export const LazyFormLogin: typeof import("../components/form/Login.vue")['default']
+export const LazyModal: typeof import("../components/modal/Index.vue")['default']
+export const LazyNavigationBreadcrumb: typeof import("../components/navigation/Breadcrumb.vue")['default']
 export const LazyNavigationHeader: typeof import("../components/navigation/Header.vue")['default']
 export const LazyNavigationMenu: typeof import("../components/navigation/Menu.vue")['default']
 export const LazyNavigationUserDropdown: typeof import("../components/navigation/UserDropdown.vue")['default']

@@ -37,7 +37,7 @@ export const useMenuStore = defineStore("menu", () => {
           label: "Classes",
           description:
             "Manage various class types, including descriptions, and prerequisites.",
-          link: "/",
+          link: "/classes",
         },
         {
           id: 4,

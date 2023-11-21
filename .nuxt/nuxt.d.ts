@@ -2,6 +2,7 @@
 /// <reference types="@pinia/nuxt" />
 /// <reference types="@nuxt/image" />
 /// <reference types="@formkit/nuxt" />
+/// <reference types="@vueuse/nuxt" />
 /// <reference types="@nuxt/devtools" />
 /// <reference types="@nuxt/telemetry" />
 /// <reference types="nuxt" />

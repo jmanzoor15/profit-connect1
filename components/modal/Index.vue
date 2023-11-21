@@ -1,20 +1,23 @@
 <template>
   <Teleport to="body">
-      <div
-        class="offcanvas offcanvas-end"
-        tabindex="-1"
-        id="offcanvasModal"
-        aria-labelledby="offcanvasModalLabel"
-      >
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasModalLabel">
-            <slot name="title"></slot>
-          </h5>
-        </div>
-        <div class="offcanvas-body">
-          <slot />
-        </div>
+    <div
+      class="offcanvas offcanvas-end"
+      tabindex="-1"
+      id="offcanvasModal"
+      aria-labelledby="offcanvasModalLabel"
+    >
+      <div class="offcanvas-header"  v-if="$slots.title">
+        <h4
+          class="offcanvas-title flex-fill text-center"
+          id="offcanvasModalLabel"
+        >
+          <slot name="title"></slot>
+        </h4>
       </div>
+      <div class="offcanvas-body">
+        <slot />
+      </div>
+    </div>
   </Teleport>
 </template>
 
@@ -42,3 +45,17 @@ onMounted(() => {
   showModal.value = bsOffcanvas;
 });
 </script>
+
+<style lang="scss" scoped>
+.offcanvas {
+  width: 954px !important;
+  background: #ffffff;
+  border-radius: 25px 0px 0px 25px;
+  @media (max-width: 1200px) {
+    width: 90% !important;
+  }
+}
+.offcanvas-header {
+  padding: 34px var(--bs-offcanvas-padding-x);
+}
+</style>

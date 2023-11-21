@@ -1,6 +1,9 @@
 <template>
   <div>
     <NavigationHeader />
-    <NuxtPage />
+    <NavigationBreadcrumb/>
+    <main>
+      <NuxtPage />
+    </main>
   </div>
 </template>
