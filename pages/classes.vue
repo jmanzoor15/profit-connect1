@@ -6,8 +6,8 @@
 const { setBreadcrumb } = useBreadcrumb();
 setBreadcrumb({
   items: [
-    { label: "Manage", link: "/" },
-    { label: "Members", link: "/" },
+    { label: "Control Panel", link: "/" },
+    { label: "Classes", link: "/" },
   ],
 });
 </script>

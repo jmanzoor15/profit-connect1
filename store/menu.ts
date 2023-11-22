@@ -23,7 +23,7 @@ export const useMenuStore = defineStore("menu", () => {
           label: "Profiles",
           description:
             "Manage Clients, Leads & Staff Profiles including schedule and availability.",
-          link: "/",
+          link: "/members",
         },
         {
           id: 2,

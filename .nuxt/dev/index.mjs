@@ -1,32 +1,31 @@
-globalThis._importMeta_={url:import.meta.url,env:process.env};import 'file:///Users/ali/Desktop/Profit-Connect/node_modules/node-fetch-native/dist/polyfill.mjs';
-import { Server } from 'node:http';
+globalThis._importMeta_={url:import.meta.url,env:process.env};import { Server } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { mkdirSync } from 'node:fs';
 import { parentPort, threadId } from 'node:worker_threads';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, isEvent, createEvent, getRequestHeader, eventHandler, setHeaders, sendRedirect, proxyRequest, setResponseHeader, send, getResponseStatus, setResponseStatus, setResponseHeaders, getRequestHeaders, lazyEventHandler, useBase, createApp, createRouter as createRouter$1, toNodeListener, fetchWithEvent, getQuery as getQuery$1, createError, getResponseStatusText } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/h3/dist/index.mjs';
-import { getRequestDependencies, getPreloadLinks, getPrefetchLinks, createRenderer } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/vue-bundle-renderer/dist/runtime.mjs';
-import { stringify, uneval } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/devalue/index.js';
-import { renderToString } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/vue/server-renderer/index.mjs';
-import { renderSSRHead } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/@unhead/ssr/dist/index.mjs';
-import { createFetch as createFetch$1, Headers as Headers$1 } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/ofetch/dist/node.mjs';
-import destr from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/destr/dist/index.mjs';
-import { createCall, createFetch } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/unenv/runtime/fetch/index.mjs';
-import { createHooks } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/hookable/dist/index.mjs';
-import { snakeCase } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/scule/dist/index.mjs';
-import { klona } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/klona/dist/index.mjs';
-import defu, { defuFn } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/defu/dist/defu.mjs';
-import { hash } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/ohash/dist/index.mjs';
-import { parseURL, withoutBase, joinURL, getQuery, withQuery } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/ufo/dist/index.mjs';
-import { createStorage, prefixStorage } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/unstorage/dist/index.mjs';
-import unstorage_47drivers_47fs from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/unstorage/drivers/fs.mjs';
-import { toRouteMatcher, createRouter } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/radix3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, isEvent, createEvent, getRequestHeader, eventHandler, setHeaders, sendRedirect, proxyRequest, setResponseHeader, send, getResponseStatus, setResponseStatus, setResponseHeaders, getRequestHeaders, lazyEventHandler, useBase, createApp, createRouter as createRouter$1, toNodeListener, fetchWithEvent, getQuery as getQuery$1, createError, getResponseStatusText } from 'file://D:/Profit-Connect/node_modules/h3/dist/index.mjs';
+import { getRequestDependencies, getPreloadLinks, getPrefetchLinks, createRenderer } from 'file://D:/Profit-Connect/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import { stringify, uneval } from 'file://D:/Profit-Connect/node_modules/devalue/index.js';
+import { renderToString } from 'file://D:/Profit-Connect/node_modules/vue/server-renderer/index.mjs';
+import { renderSSRHead } from 'file://D:/Profit-Connect/node_modules/@unhead/ssr/dist/index.mjs';
+import { createFetch as createFetch$1, Headers as Headers$1 } from 'file://D:/Profit-Connect/node_modules/ofetch/dist/node.mjs';
+import destr from 'file://D:/Profit-Connect/node_modules/destr/dist/index.mjs';
+import { createCall, createFetch } from 'file://D:/Profit-Connect/node_modules/unenv/runtime/fetch/index.mjs';
+import { createHooks } from 'file://D:/Profit-Connect/node_modules/hookable/dist/index.mjs';
+import { snakeCase } from 'file://D:/Profit-Connect/node_modules/scule/dist/index.mjs';
+import { klona } from 'file://D:/Profit-Connect/node_modules/klona/dist/index.mjs';
+import defu, { defuFn } from 'file://D:/Profit-Connect/node_modules/defu/dist/defu.mjs';
+import { hash } from 'file://D:/Profit-Connect/node_modules/ohash/dist/index.mjs';
+import { parseURL, withoutBase, joinURL, getQuery, withQuery } from 'file://D:/Profit-Connect/node_modules/ufo/dist/index.mjs';
+import { createStorage, prefixStorage } from 'file://D:/Profit-Connect/node_modules/unstorage/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file://D:/Profit-Connect/node_modules/unstorage/drivers/fs.mjs';
+import { toRouteMatcher, createRouter } from 'file://D:/Profit-Connect/node_modules/radix3/dist/index.mjs';
 import { fileURLToPath } from 'node:url';
-import { ipxFSStorage, ipxHttpStorage, createIPX, createIPXH3Handler } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/ipx/dist/index.mjs';
-import { isAbsolute } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/pathe/dist/index.mjs';
-import { version, unref } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/vue/index.mjs';
-import { createServerHead as createServerHead$1 } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/unhead/dist/index.mjs';
-import { defineHeadPlugin } from 'file:///Users/ali/Desktop/Profit-Connect/node_modules/@unhead/shared/dist/index.mjs';
+import { ipxFSStorage, ipxHttpStorage, createIPX, createIPXH3Handler } from 'file://D:/Profit-Connect/node_modules/ipx/dist/index.mjs';
+import { isAbsolute } from 'file://D:/Profit-Connect/node_modules/pathe/dist/index.mjs';
+import { version, unref } from 'file://D:/Profit-Connect/node_modules/vue/index.mjs';
+import { createServerHead as createServerHead$1 } from 'file://D:/Profit-Connect/node_modules/unhead/dist/index.mjs';
+import { defineHeadPlugin } from 'file://D:/Profit-Connect/node_modules/@unhead/shared/dist/index.mjs';
 
 const r=Object.create(null),t=e=>globalThis.process?.env||globalThis._importMeta_.env||globalThis.Deno?.env.toObject()||globalThis.__env__||(e?r:globalThis),s=new Proxy(r,{get(e,o){return t()[o]??r[o]},has(e,o){const i=t();return o in i||o in r},set(e,o,i){const p=t(!0);return p[o]=i,!0},deleteProperty(e,o){if(!o)return !1;const i=t(!0);return delete i[o],!0},ownKeys(){const e=t(!0);return Object.keys(e)}}),E=typeof process<"u"&&process.env&&"development"||"",d=[["APPVEYOR"],["AWS_AMPLIFY","AWS_APP_ID",{ci:!0}],["AZURE_PIPELINES","SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"],["AZURE_STATIC","INPUT_AZURE_STATIC_WEB_APPS_API_TOKEN"],["APPCIRCLE","AC_APPCIRCLE"],["BAMBOO","bamboo_planKey"],["BITBUCKET","BITBUCKET_COMMIT"],["BITRISE","BITRISE_IO"],["BUDDY","BUDDY_WORKSPACE_ID"],["BUILDKITE"],["CIRCLE","CIRCLECI"],["CIRRUS","CIRRUS_CI"],["CLOUDFLARE_PAGES","CF_PAGES",{ci:!0}],["CODEBUILD","CODEBUILD_BUILD_ARN"],["CODEFRESH","CF_BUILD_ID"],["DRONE"],["DRONE","DRONE_BUILD_EVENT"],["DSARI"],["GITHUB_ACTIONS"],["GITLAB","GITLAB_CI"],["GITLAB","CI_MERGE_REQUEST_ID"],["GOCD","GO_PIPELINE_LABEL"],["LAYERCI"],["HUDSON","HUDSON_URL"],["JENKINS","JENKINS_URL"],["MAGNUM"],["NETLIFY"],["NETLIFY","NETLIFY_LOCAL",{ci:!1}],["NEVERCODE"],["RENDER"],["SAIL","SAILCI"],["SEMAPHORE"],["SCREWDRIVER"],["SHIPPABLE"],["SOLANO","TDDIUM"],["STRIDER"],["TEAMCITY","TEAMCITY_VERSION"],["TRAVIS"],["VERCEL","NOW_BUILDER"],["VERCEL","VERCEL",{ci:!1}],["VERCEL","VERCEL_ENV",{ci:!1}],["APPCENTER","APPCENTER_BUILD_ID"],["CODESANDBOX","CODESANDBOX_SSE",{ci:!1}],["STACKBLITZ"],["STORMKIT"],["CLEAVR"]];function B(){if(globalThis.process?.env)for(const e of d){const o=e[1]||e[0];if(globalThis.process?.env[o])return {name:e[0].toLowerCase(),...e[2]}}return globalThis.process?.env?.SHELL==="/bin/jsh"&&globalThis.process?.versions?.webcontainer?{name:"stackblitz",ci:!1}:{name:"",ci:!1}}const I=B(),P=I.name;function n(e){return e?e!=="false":!1}const l=globalThis.process?.platform||"",T=n(s.CI)||I.ci!==!1,a=n(globalThis.process?.stdout&&globalThis.process?.stdout.isTTY);n(s.DEBUG);const c=E==="test"||n(s.TEST);n(s.MINIMAL)||T||c||!a;const C=/^win/i.test(l);!n(s.NO_COLOR)&&(n(s.FORCE_COLOR)||C&&s.TERM!=="dumb"||a&&s.TERM&&s.TERM==="dumb"||T);const R=(globalThis.process?.versions?.node||"").replace(/^v/,"")||null;Number(R?.split(".")[0])||null;const w=globalThis.process||Object.create(null),_={versions:{}};new Proxy(w,{get(e,o){if(o==="env")return s;if(o in e)return e[o];if(o in _)return _[o]}});const L=!!globalThis.Netlify,A=!!globalThis.EdgeRuntime,O=globalThis.navigator?.userAgent==="Cloudflare-Workers",D=!!globalThis.Deno,u=!!globalThis.__lagon__,N=globalThis.process?.release?.name==="node",S=!!globalThis.Bun||!!globalThis.process?.versions?.bun,b=!!globalThis.fastly,G=[[L,"netlify"],[A,"edge-light"],[O,"workerd"],[D,"deno"],[u,"lagon"],[N,"node"],[S,"bun"],[b,"fastly"]];function K(){const e=G.find(o=>o[0]);if(e)return {name:e[1]}}const g=K();g?.name||"";
 
@@ -69,7 +68,7 @@ const _inlineRuntimeConfig = {
     "baseURL": "/_ipx",
     "alias": {},
     "fs": {
-      "dir": "/Users/ali/Desktop/Profit-Connect/public"
+      "dir": "D:/Profit-Connect/public"
     },
     "http": {
       "domains": []
@@ -141,7 +140,7 @@ new Proxy(/* @__PURE__ */ Object.create(null), {
   }
 });
 
-const serverAssets = [{"baseName":"server","dir":"/Users/ali/Desktop/Profit-Connect/server/assets"}];
+const serverAssets = [{"baseName":"server","dir":"D:/Profit-Connect/server/assets"}];
 
 const assets = createStorage();
 
@@ -153,11 +152,11 @@ const storage = createStorage({});
 
 storage.mount('/assets', assets);
 
-storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/ali/Desktop/Profit-Connect","ignore":["**/node_modules/**","**/.git/**"]}));
-storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/ali/Desktop/Profit-Connect/server","ignore":["**/node_modules/**","**/.git/**"]}));
-storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/ali/Desktop/Profit-Connect/.nuxt","ignore":["**/node_modules/**","**/.git/**"]}));
-storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/ali/Desktop/Profit-Connect/.nuxt/cache","ignore":["**/node_modules/**","**/.git/**"]}));
-storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"/Users/ali/Desktop/Profit-Connect/.data/kv","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"D:\\Profit-Connect","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"D:\\Profit-Connect\\server","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"D:\\Profit-Connect\\.nuxt","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"D:\\Profit-Connect\\.nuxt\\cache","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"D:\\Profit-Connect\\.data\\kv","ignore":["**/node_modules/**","**/.git/**"]}));
 
 function useStorage(base = "") {
   return base ? prefixStorage(storage, base) : storage;
@@ -581,14 +580,14 @@ if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
 window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
 `;
 
-const _uVLqGDwXBc = (function(nitro) {
+const _bzT9dbxJXB = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
 });
 
 const plugins = [
-  _uVLqGDwXBc
+  _bzT9dbxJXB
 ];
 
 function defineRenderHandler(handler) {
@@ -687,7 +686,7 @@ function publicAssetsURL(...path) {
   return path.length ? joinURL(publicBase, ...path) : publicBase;
 }
 
-const _xgiCiA = lazyEventHandler(() => {
+const _tBJNcX = lazyEventHandler(() => {
   const opts = useRuntimeConfig().ipx || {};
   const fsDir = opts.fs?.dir ? isAbsolute(opts.fs.dir) ? opts.fs.dir : fileURLToPath(new URL(opts.fs.dir, globalThis._importMeta_.url)) : void 0;
   const fsStorage = opts.fs?.dir ? ipxFSStorage({ ...opts.fs, dir: fsDir }) : void 0;
@@ -705,12 +704,12 @@ const _xgiCiA = lazyEventHandler(() => {
   return useBase(opts.baseURL, ipxHandler);
 });
 
-const _lazy_icjtkX = () => Promise.resolve().then(function () { return renderer$1; });
+const _lazy_d7cXDc = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
-  { route: '/__nuxt_error', handler: _lazy_icjtkX, lazy: true, middleware: false, method: undefined },
-  { route: '/_ipx/**', handler: _xgiCiA, lazy: false, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_icjtkX, lazy: true, middleware: false, method: undefined }
+  { route: '/__nuxt_error', handler: _lazy_d7cXDc, lazy: true, middleware: false, method: undefined },
+  { route: '/_ipx/**', handler: _tBJNcX, lazy: false, middleware: false, method: undefined },
+  { route: '/**', handler: _lazy_d7cXDc, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {
@@ -958,8 +957,8 @@ const appRootTag = "div";
 
 globalThis.__buildAssetsURL = buildAssetsURL;
 globalThis.__publicAssetsURL = publicAssetsURL;
-const getClientManifest = () => import('file:///Users/ali/Desktop/Profit-Connect/.nuxt/dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
-const getServerEntry = () => import('file:///Users/ali/Desktop/Profit-Connect/.nuxt/dist/server/server.mjs').then((r) => r.default || r);
+const getClientManifest = () => import('file://D:/Profit-Connect/.nuxt/dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
+const getServerEntry = () => import('file://D:/Profit-Connect/.nuxt/dist/server/server.mjs').then((r) => r.default || r);
 const getSSRStyles = lazyCachedFunction(() => Promise.resolve().then(function () { return styles$1; }).then((r) => r.default || r));
 const getSSRRenderer = lazyCachedFunction(async () => {
   const manifest = await getClientManifest();
