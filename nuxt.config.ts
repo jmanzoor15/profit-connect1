@@ -25,4 +25,12 @@ export default defineNuxtConfig({
       },
     },
   },
+  runtimeConfig: {
+    // private variable
+    API_URL: process.env.API_URL,
+    CDN_URL: process.env.CDN_URL,
+    public: {
+      // for any variable which need to access in both ssr and client side
+    },
+},
 })
