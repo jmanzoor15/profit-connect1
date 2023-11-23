@@ -58,7 +58,7 @@ export const useMenuStore = defineStore("menu", () => {
           label: "Spaces",
           description:
             "Manage various spaces, including it's capacity, and attributes.",
-          link: "/",
+          link: "/spaces",
         },
         {
           id: 7,

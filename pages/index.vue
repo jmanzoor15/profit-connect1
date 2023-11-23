@@ -1,5 +1,5 @@
 <template>
-  <div>Welcome</div>
+  <div>Welcome {{ data }}</div>
 </template>
 
 <script lang="ts" setup>

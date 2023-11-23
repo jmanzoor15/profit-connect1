@@ -1,0 +1,600 @@
+<template>
+  <div class="sidebar-box">
+    <form class="formEditMember" action="https://app.ihitreset.com/resetcrm/members/update/member">
+      <a href="~pages/membership-overview.php" class="sidebar-box__title text-center selectMemberId" data-selected-id title="View membership">
+        <img src="https://app.ihitreset.com/resetcrm/upload/1/image/members/profile/2.jpg?timestamp=1700716647968" class="previewMemberAvatar avatar" alt="Member avatar" data-name="ABC XYZ">
+        <h2 class="content-title-bold editUserName">junaid</h2>
+        <div class="editUserOccupation"></div>
+      </a>
+
+      <div v-if="!toggleStates.isPersonalEditMode.value" class="personal-show data-block-show">
+        <h3 class="small-title-bold">
+          Personal
+          <img  @click="() => startEdit('isPersonalEditMode')" class="editMemberData" data-edit="personal-edit" src="~assets/images/svg/edit-icon-black.svg" alt="Edit icon">
+        </h3>
+
+        <div class="icon-text">
+          <img src="~assets/images/svg/members-info/female.svg" alt="Female icon">
+          <span class="showUserGender">Male</span>
+        </div>
+
+        <div class="icon-text">
+          <img src="~assets/images/svg/members-info/birthday.svg" alt="Birthday icon">
+          <span class="showUserBirthday">1981-12-17</span>
+        </div>
+
+        <div class="icon-text">
+          <img src="~assets/images/svg/members-info/phone.svg" alt="Phone icon">
+          <span class="showPhoneNumber">11646131646</span>
+        </div>
+
+        <div class="icon-text">
+          <img src="~assets/images/svg/members-info/email.svg" alt="Email icon">
+          <span class="showUserEmail">123@gmail.com</span>
+        </div>
+      </div>
+
+      <div  v-if="toggleStates.isPersonalEditMode.value" class="personal-edit data-block-edit">
+        <h3 class="small-title-bold">Personal<div class="goBackShowMode" data-show="personal-show" @click="() => cancelEdit('isPersonalEditMode')">Cancel</div>
+        </h3>
+
+        <div class="upload-image">
+          <div id="uploadEditAvatar"></div>
+        </div>
+
+        <div class="custom-select">
+          <div class="customSelectToggle">
+            <div class="custom-select__text customSelectText showUserGender2">Gender</div>
+            <div class="select-arrow"></div>
+          </div>
+
+          <div class="custom-select__options">
+            <div data-value="male">Male</div>
+            <div data-value="female">Female</div>
+          </div>
+
+          <input class="selectValue editUserGender" name="gender" type="hidden">
+        </div>
+
+        <input type="text" placeholder="Birthday" class="editUserBirthday" name="dob">
+        <input type="text" placeholder="Phone number" class="editPhoneNumber" name="contactno">
+        <input type="email" placeholder="Email" name="email" class="editUserEmail">
+
+        <div class="input-label-box d-none">
+          <input type="password" class="passwordInput" placeholder="Password">
+
+          <div class="password-status">
+            <img class="showPassIcon" src="~assets/images/svg/show-eye-icon.svg" alt="Show password icon">
+            <img class="hidePassIcon" src="~assets/images/svg/hide-eye-icon.svg" alt="Hide password icon">
+          </div>
+        </div>
+      </div>
+
+      <div v-if="!toggleStates.isSocialEditMode.value" class="social-show data-block-show">
+        <h3 class="small-title-bold">
+          Contact
+          <img @click="() => startEdit('isSocialEditMode')" class="editMemberData" data-edit="social-edit" src="~assets/images/svg/edit-icon-black.svg" alt="Edit icon">
+        </h3>
+
+        <div  class="social-show__icons">
+          <div class="icon-text">
+            <img src="~assets/images/svg/social/facebook.svg" alt="Phone icon">
+            Facebook
+          </div>
+
+          <div class="icon-text">
+            <img src="~assets/images/svg/social/instagram.svg" alt="Instagram icon">
+            Instagram
+          </div>
+
+          <div class="icon-text">
+            <img src="~assets/images/svg/social/linkedin.svg" alt="Linkedin icon">
+            Linkedin
+          </div>
+        </div>
+      </div>
+
+      <div v-if="toggleStates.isSocialEditMode.value"  class="social-edit data-block-edit">
+        <h3 class="small-title-bold">Social<div class="goBackShowMode" data-show="social-show" @click="() => cancelEdit('isSocialEditMode')">Cancel</div>
+        </h3>
+
+        <input type="text" placeholder="Facebook" class="userEditFacebook" name="facebook">
+        <input type="text" placeholder="Instagram" class="userEditInstagram" name="instagram">
+        <input type="text" placeholder="Linkedin" class="userEditLinkedin" name="linkedin">
+      </div>
+
+      <div v-if="!toggleStates.isAboutEditMode.value" class="about-show data-block-show">
+        <h3 class="small-title-bold">
+          About
+          <img @click="() => startEdit('isAboutEditMode')" class="editMemberData" data-edit="about-edit" src="~assets/images/svg/edit-icon-black.svg" alt="Edit icon">
+        </h3>
+
+        <div class="icon-text showMemberAbout">
+        </div>
+      </div>
+
+      <div v-if="toggleStates.isAboutEditMode.value"  class="about-edit member-edit-box data-block-edit">
+        <h3 class="small-title-bold">About<div class="goBackShowMode" data-show="about-show" @click="() => cancelEdit('isAboutEditMode')">Cancel</div>
+        </h3>
+
+        <input type="text" class="editMemberAbout" placeholder="About" name="about">
+      </div>
+
+      <div v-if="!toggleStates.isEmergencyEditMode.value" class="emergency-show data-block-show">
+        <h3 class="small-title-bold">
+          Emergency
+          <img @click="() => startEdit('isEmergencyEditMode')" class="editMemberData" data-edit="emergency-edit" src="~assets/images/svg/edit-icon-black.svg" alt="Edit icon">
+        </h3>
+
+        <div class="icon-text showMemberemergeny">
+        </div>
+      </div>
+
+      <div v-if="toggleStates.isEmergencyEditMode.value" class="emergency-edit member-edit-box data-block-edit">
+        <h3 class="small-title-bold">Emergency<div class="goBackShowMode" data-show="emergency-show" @click="() => cancelEdit('isEmergencyEditMode')">Cancel</div>
+        </h3>
+
+        <input type="text" class="editEmergencyContact" placeholder="Emergency contact name" name="emergency_contact_name">
+        <input type="text" class="editEmergencyPhone" placeholder="Emergency contact phone" name="emergency_contact_no">
+      </div>
+
+      <div v-if="!toggleStates.isTagsEditMode.value" class="tags-show data-block-show">
+        <h3 class="small-title-bold">
+          Tags
+          <img  @click="() => startEdit('isTagsEditMode')" class="editMemberData" data-edit="tags-edit" src="~assets/images/svg/edit-icon-black.svg" alt="Edit icon">
+        </h3>
+
+        <div class="showTagsWithComma"></div>
+      </div>
+
+      <div v-if="toggleStates.isTagsEditMode.value" class="tags-edit data-block-edit">
+        <h3 class="small-title-bold">Tags<div class="goBackShowMode" data-show="tags-show" @click="() => cancelEdit('isTagsEditMode')">Cancel</div>
+        </h3>
+
+        <div class="search-dropdown-input top">
+          <input type="text" class="searchTags search" placeholder="tags">
+          <ul class="list tagsOptions unique editMemberTagSelect" data-tag-box="members_tags_edit"></ul>
+        </div>
+
+        <div class="tags-box members_tags_edit">
+          <input type="hidden" class="tagValue" name="tags" value="[]">
+        </div>
+      </div>
+
+      <div class="sidebarSaveBtn mt-3 d-none text-center">
+        <input class="facilityIdValue" type="hidden" name="facility_id">
+        <input class="uploadEditAvatar" type="hidden" name="image">
+        <input class="memberIdValue" type="hidden" name="member_id">
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+
+    <form class="formCreateMember" action="https://app.ihitreset.com/resetcrm/members/add/member">
+      <div>
+        <div>
+          <div id="uploadImg"></div>
+          <input class="mt-3" type="text" name="firstname" placeholder="First name">
+          <input type="text" name="lastname" placeholder="Last Name">
+        </div>
+
+        <h3 class="small-title-bold">Personal</h3>
+
+        <div class="custom-select">
+          <div class="customSelectToggle">
+            <div class="custom-select__text customSelectText">Gender</div>
+            <div class="select-arrow"></div>
+          </div>
+
+          <div class="custom-select__options">
+            <div data-value="male">Male</div>
+            <div data-value="female">Female</div>
+          </div>
+
+          <input class="selectValue" name="gender" type="hidden">
+        </div>
+
+        <input type="text" class="createMemberBirthday" placeholder="Birthday" name="dob" autocomplete="off">
+        <input type="text" placeholder="Phone number" name="contactno" autocomplete="off">
+        <input type="email" placeholder="Email" name="email" autocomplete="off">
+
+        <div class="input-label-box">
+          <input type="password" class="passwordInput" autocomplete="off" placeholder="Password" name="password">
+
+          <div class="password-status">
+            <img class="showPassIcon" src="~assets/images/svg/show-eye-icon.svg" alt="Show password icon">
+            <img class="hidePassIcon" src="~assets/images/svg/hide-eye-icon.svg" alt="Hide password icon">
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="small-title-bold">Social</h3>
+
+        <input type="text" placeholder="Facebook" name="facebook" autocomplete="off">
+        <input type="text" placeholder="Instagram" name="instagram" autocomplete="off">
+        <input type="text" placeholder="Linkedin" name="linkedin" autocomplete="off">
+      </div>
+
+      <div>
+        <h3 class="small-title-bold">Tags</h3>
+
+        <div class="search-dropdown-input top">
+          <input type="text" class="searchTags search" placeholder="tags">
+          <ul class="list tagsOptions unique" data-tag-box="members_tags"></ul>
+        </div>
+
+        <div class="tags-box members_tags">
+          <input type="hidden" class="tagValue" name="tags" value="[]">
+        </div>
+      </div>
+
+      <div class="sidebarSaveBtn mt-3 text-center">
+        <input class="facilityIdValue" type="hidden" name="facility_id">
+        <input class="memberImgString" type="hidden" name="image">
+        <button class="btn btn-primary w-100" type="submit">Save</button>
+      </div>
+
+    </form>
+  </div>
+  </template>
+  
+  <script lang="ts" setup>
+import { ref } from 'vue';
+
+// Define the type for toggle states
+type ToggleStates = {
+  isPersonalEditMode: Ref<boolean>;
+  isSocialEditMode: Ref<boolean>;
+  isAboutEditMode: Ref<boolean>;
+  isEmergencyEditMode: Ref<boolean>;
+  isTagsEditMode: Ref<boolean>;
+  // Add more toggle states for other sections as needed
+};
+
+// Initialize toggle states
+const toggleStates: ToggleStates = {
+  isPersonalEditMode: ref(false),
+  isSocialEditMode: ref(false),
+  isAboutEditMode: ref(false),
+  isEmergencyEditMode: ref(false),
+  isTagsEditMode: ref(false),
+  
+  // Add more toggle states for other sections as needed
+};
+
+// Function to start edit mode dynamically
+const startEdit = (toggleKey: keyof ToggleStates) => {
+  toggleStates[toggleKey].value = true;
+  console.log("svjs");
+};
+
+// Function to cancel edit mode dynamically
+const cancelEdit = (toggleKey: keyof ToggleStates) => {
+  toggleStates[toggleKey].value = false;
+};
+  const { setBreadcrumb } = useBreadcrumb();
+  setBreadcrumb({
+    items: [
+      { label: "Manage", link: "/" },
+      { label: "Members", link: "/" },
+    ],
+  });
+
+  
+  </script>
+  <style lang="scss" scoped>
+.sidebar-box {
+    max-width: 400px;
+    width: 30vw;
+    margin-right: 20px;
+    padding: 20px;
+    height: fit-content;
+    min-height: calc(100vh - 129px);
+    background: #fff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, .0784313725)
+}
+.sidebar-box__title img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+}
+.sidebar-box {
+//   display: none;
+
+  &__title {
+    display: block;
+    text-decoration: none;
+    transition: $transitionSpeed;
+
+    .editUserOccupation {
+      color: #323a45;
+    }
+
+    .editUserName {
+      transition: $transitionSpeed;
+    }
+
+    &:hover {
+      .editUserName {
+        color: $main-blue;
+      }
+    }
+  }
+ 
+
+.sidebar-box__title {
+    display: block;
+    text-decoration: none;
+    transition: .35s;
+    margin-bottom: 25px;
+}
+.small-title-bold {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.editMemberData {
+    opacity: .4;
+    cursor: pointer;
+    transition: .35s;
+}
+.icon-text {
+    display: flex;
+    margin-bottom: 10px;
+}
+.icon-text img {
+    display: block;
+    margin-right: 10px;
+}
+
+
+
+.sidebar-box__title .editUserOccupation {
+    color: #323a45
+}
+
+.sidebar-box__title .editUserName {
+    transition: .35s
+}
+
+.sidebar-box__title:hover .editUserName {
+    color: #84ceff
+}
+
+.sidebar-box .formCreateMember,
+.sidebar-box .formEditMember {
+    display: none
+}
+
+.sidebar-box.is-create {
+    display: block
+}
+
+.sidebar-box.is-create .formCreateMember {
+    display: block
+}
+
+.sidebar-box.is-edit {
+    display: block
+}
+.sidebar-box__title {
+    margin-bottom: 25px
+}
+
+.sidebar-box__title img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+    border-radius: 50%
+}
+
+.sidebar-box__title .default-avatar {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 10px
+}
+
+.input-label-box {
+    position: relative
+}
+
+.password-status {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    width: 24px;
+    color: #000;
+    cursor: pointer
+}
+
+.password-status .showPassIcon {
+    display: none
+}
+
+.password-status .hidePassIcon {
+    display: block
+}
+
+.password-status.is-active .showPassIcon {
+    display: block
+}
+
+.password-status.is-active .hidePassIcon {
+    display: none
+}
+.custom-select, .custom-select-checkbox {
+    position: relative;
+    width: 100%;
+    color: #000;
+    font-size: .875rem;
+    border: 0;
+    border-radius: 10px;
+    transition: all .2s ease;
+    background: #f2faff;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+.customSelectToggle{
+    position:relative;
+    padding:16px 30px 16px 16px;
+    display:flex;
+    border-radius:10px;
+    transition:.35s;
+    box-shadow:0 10px 20px transparent
+}
+.select-arrow {
+    position: absolute;
+    right: 10px;
+    width: 16px;
+    height: 16px;
+    background-image: url(~/assets/images/svg/select-dropdown.svg);
+    background-size: cover;
+    pointer-events: none;
+    transition: .35s;
+}
+.sidebar-box input {
+    padding: 8px;
+}
+input {
+    
+    position: relative;
+    width: 100%;
+    padding: 8px;
+    color: #000;
+    font-size: .875rem;
+    line-height: 1.15;
+    border: 1px solid #f2faff;
+    border-radius: 10px;
+    transition: all .2s ease;
+    background: #f2faff;
+    margin-bottom: 20px;
+}
+input:focus,input:hover{
+    border-color:#84ceff;
+    outline:0;
+    box-shadow:none
+}
+.social-show__icons {
+    display: flex;
+    justify-content: space-around
+}
+
+.social-show__icons h3 {
+    width: 100%
+}
+
+.social-show__icons .icon-text {
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-direction: column
+}
+
+.social-show__icons .icon-text img {
+    margin-bottom: 10px;
+    margin-right: 0
+}
+.sidebar-box .showMemberemergeny {
+    justify-content: space-between
+}
+
+.upload-image {
+    margin: 15px 0 10px
+}
+
+.customSelectToggle {
+    padding: 8px
+}
+
+.custom-select__options {
+    top: 30px
+}
+
+.custom-select__options div {
+    padding: 8px
+}
+
+
+.goBackShowMode {
+    font: 14px "Poppins Regular", sans-serif, Arial;
+    cursor: pointer;
+    padding: 5px 12px;
+    border: 1.5px solid #84ceff;
+    border-radius: 5px;
+    background: 0 0;
+    transition: .35s
+}
+
+.sidebar-box .goBackShowMode:hover {
+    background: rgba(132, 206, 255, .2509803922)
+}
+.btn{
+    position:relative;
+    padding:.3rem 1.5rem;
+    height:45px;
+    font-weight:500;
+    letter-spacing:.025rem;
+    border-radius:10px;
+    background:#ffd500;
+    border-color:#ffd500;
+    width:100%;
+    color:#000;
+    transition:.35s;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    overflow:hidden;
+    font:22px "Poppins Medium",sans-serif,Arial
+}
+.btn {
+    font-size: 14px;
+    width: fit-content;
+    padding: .3rem 2.8rem
+}
+
+.btn.w-100 {
+    font: 22px "Poppins Medium", sans-serif, Arial
+}
+
+.sidebar-box .data-block-edit {
+    display: none
+}
+
+.sidebar-box .data-block-edit.is-active {
+    display: block
+}
+
+.data-block-show {
+    margin-bottom: 30px
+}
+
+.sidebar-box .data-block-show.is-hide {
+    display: none
+}
+.sidebar-box.is-edit .formEditMember {
+    display: block
+}
+
+  .formEditMember,
+  .formCreateMember {
+    // display: none;
+  }
+
+  &.is-create {
+    display: block;
+
+    .formCreateMember {
+      display: block;
+    }
+  }
+
+  &.is-edit {
+    display: block;
+
+    .formEditMember {
+      display: block;
+    }
+  }
+}
+
+</style>
