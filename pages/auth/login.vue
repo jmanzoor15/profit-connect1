@@ -2,10 +2,11 @@
   <div class="card bg-white rounded-lg mt-5" style="width: 536px">
     <div class="card-body d-flex flex-column justify-content-center">
       <NuxtImg
-        src="profit-logo.png"
+        src="images/profit-logo.png"
         width="351"
         height="85"
         class="mx-auto"
+        provider="none"
         aria-placeholder="Pro-Fit logo"
       />
       <FormLogin />

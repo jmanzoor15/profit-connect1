@@ -28,7 +28,7 @@ export default defineNuxtConfig({
     },
   },
   image: {
-    dir: "assets/images",
+    none: {},
   },
   piniaPersistedstate: {
     cookieOptions: {
