@@ -45,7 +45,7 @@
           </a>
         </li>
         <li>
-          <a id="logoutBtn" href="#">
+          <a id="logoutBtn" @click="initLogout">
             <img src="@/assets/images/svg/header/logout.svg" alt="Logout" />
             Logout
           </a>
@@ -56,7 +56,10 @@
 </template>
 
 <script lang="ts" setup>
+import { useAuthStore } from "~/store/auth";
+
 const openUserDropdown = ref(false);
+const { initLogout } = useAuthStore();
 </script>
 
 <style lang="scss" scoped>

@@ -6,7 +6,14 @@ export default defineNuxtConfig({
   ],
 
   plugins: [{ src: "~/plugins/bootstrap.client", mode: "client" }],
-  modules: ["@pinia/nuxt", "@nuxt/image", "@formkit/nuxt", "@vueuse/nuxt"],
+  modules: [
+    "@pinia/nuxt",
+    "@nuxt/image",
+    "@formkit/nuxt",
+    "@vueuse/nuxt",
+    "@pinia-plugin-persistedstate/nuxt",
+    "nuxt-lodash",
+  ],
   formkit: {
     autoImport: true,
   },
@@ -14,13 +21,20 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: '@import "@/assets/scss/_tools/_variables.scss";',
+          additionalData:
+            '@import "@/assets/scss/_tools/_variables.scss";@import "@/assets/scss/_tools/mixins";@import "@/assets/scss/_tools/helpers";',
         },
       },
     },
   },
   image: {
     dir: "assets/images",
+  },
+  piniaPersistedstate: {
+    cookieOptions: {
+      sameSite: 'strict',
+    },
+    storage: 'localStorage'
   },
   runtimeConfig: {
     // private variable
