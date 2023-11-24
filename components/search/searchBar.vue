@@ -1,7 +1,14 @@
 <template>
-    <div class="search-with-icon">
-      <input id="searchMembersInput" type="text" placeholder="Search Member">
-      <img src="~/assets/images/svg/search-black.svg" alt="Search black icon">
+    <div class="search-with-icon"  >
+      <FormKit
+    type="search"
+    label="FormKit Input"
+    help="edit me to get started"
+    placeholder="Search..."
+    
+  />
+      <!-- <input id="searchMembersInput" type="text" placeholder="Search Member">
+      <img src="~/assets/images/svg/search-black.svg" alt="Search black icon"> -->
     </div>
 
   </template>
