@@ -1,73 +1,86 @@
+<template>
+  <div class="login-form">
+    <FormKit type="form" @submit="submitHandler" :actions="false">
+      <FormKit
+        type="text"
+        label="Franchise/Facility"
+        name="franchise_id"
+        placeholder="Franchise/Facility"
+        validation="required"
+      />
+      <FormKit
+        type="text"
+        name="username"
+        label="username"
+        placeholder="Username"
+        validation="required"
+      />
+
+      <FormKit
+        type="password"
+        name="password"
+        label="password"
+        suffix-icon="eyeClosed"
+        @suffix-icon-click="handleIconClick"
+        validation="required|length:6|matches:/[^a-zA-Z]/"
+        :validation-messages="{
+          matches: 'Please include at least one symbol',
+        }"
+        placeholder="Password"
+      />
+
+      <FormKit type="submit" label="Sign In" />
+      <div class="bottom-link-action d-flex justify-content-between">
+        <FormKit
+          type="checkbox"
+          label="Remember me"
+          name="remember_me"
+          :value="true"
+        />
+
+        <NuxtLink to="/auth/forget-password"> Forgot password </NuxtLink>
+      </div>
+    </FormKit>
+  </div>
+</template>
+
 <script setup>
 import { ref } from "vue";
+
 const submitted = ref(false);
+
 const submitHandler = async () => {
   // Let's pretend this is an ajax request:
   await new Promise((r) => setTimeout(r, 1000));
   submitted.value = true;
 };
+
+const handleIconClick = (node, e) => {
+  node.props.suffixIcon = node.props.suffixIcon === "eye" ? "eyeClosed" : "eye";
+  node.props.type = node.props.type === "password" ? "text" : "password";
+};
 </script>
+<style lang="scss" scoped>
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+</style>
 
-<template>
-  <FormKit
-    type="form"
-    id="registration-example"
-    :form-class="submitted ? 'hide' : 'show'"
-    submit-label="Register"
-    @submit="submitHandler"
-    :actions="false"
-    #default="{ value }"
-    style="background-color: #ffff"
-  >
-    <h1>Register!</h1>
-    <p>
-      You can put any type of element inside a form, not just FormKit inputs
-      (although only FormKit inputs are included with the submission).
-    </p>
-    <hr />
-    <FormKit
-      type="text"
-      name="name"
-      label="Your name"
-      placeholder="Jane Doe"
-      help="What do people call you?"
-      validation="required"
-      disabled
-    />
-    <FormKit
-      type="text"
-      name="email"
-      label="Your email"
-      placeholder="jane@example.com"
-      help="What email should we use?"
-      validation="required|email"
-    />
-    <div class="double">
-      <FormKit
-        type="password"
-        name="password"
-        label="Password"
-        validation="required|length:6|matches:/[^a-zA-Z]/"
-        :validation-messages="{
-          matches: 'Please include at least one symbol',
-        }"
-        placeholder="Your password"
-        help="Choose a password"
-      />
-      <FormKit
-        type="password"
-        name="password_confirm"
-        label="Confirm password"
-        placeholder="Confirm password"
-        validation="required|confirm"
-        help="Confirm your password"
-      />
-    </div>
-
-    <FormKit type="submit" label="Register" />
-    <pre wrap>{{ value }}</pre>
-  </FormKit>
-  <div v-if="submitted">
-    <h2>Submission successful!</h2>
-  </div>
-</template>
+<style lang="scss">
+.login-form {
+  .bottom-link-action {
+    .formkit-label {
+      display: block !important;
+      color: #000;
+      font-size: 14px;
+    }
+    a {
+      color: #000;
+      text-decoration: none;
+      font-size: 14px;
+    }
+  }
+}
+</style>

@@ -19,14 +19,14 @@
   --fk-font-weight-option: var(--fk-font-weight);
   --fk-font-weight-message: var(--fk-font-weight);
 
-  --fk-font-size: .875rem;
+  --fk-font-size: 0.875rem;
   --fk-font-size-input: var(--fk-font-size);
   --fk-font-size-label: var(--fk-font-size);
   --fk-font-size-legend: var(--fk-font-size);
   --fk-font-size-help: var(--fk-font-size);
   --fk-font-size-remove: 0.8125em;
   --fk-font-size-option: 0.9em;
-  --fk-font-size-message: 0.8125em;
+  --fk-font-size-message: 14px;
   --fk-font-size-button: 0.875em;
   --fk-font-size-summary: 1.25em;
 
@@ -40,7 +40,7 @@
   --fk-line-height-button: 1.3;
 
   /* Structure */
-  --fk-max-width-input: 25em;
+  --fk-max-width-input: 100%;
   --fk-box-size: 1.25em;
 
   /* Colors */
@@ -50,7 +50,7 @@
   --fk-color-input-selection: rgba(0, 122, 255, 25%);
   --fk-color-border: #94929c;
   --fk-color-border-focus: #{$main-blue};
-  --fk-color-danger: #ea0000;
+  --fk-color-danger: #ff0000;
   --fk-color-error: var(--fk-color-danger);
   --fk-color-placeholder: #000;
   --fk-color-disabled: rgba(0 0 0 / 10%);
@@ -70,7 +70,7 @@
 
   --fk-bg-input: #{$main-bg};
   --fk-bg-disabled: rgba(0 0 0 / 5%);
-  --fk-bg-decorator: linear-gradient(0deg, rgba(0, 0, 0, 0.07), transparent);
+  --fk-bg-decorator: #{$main-blue};
   --fk-bg-button: var(--fk-color-primary);
   --fk-bg-button-hover: var(--fk-bg-button);
   --fk-bg-submit: var(--fk-bg-button);
@@ -416,6 +416,7 @@ input.formkit-input[type="checkbox"]:checked ~ .formkit-decorator::before {
   line-height: var(--fk-line-height-textarea);
 }
 .formkit-label {
+  display: none !important;
   font-family: var(--fk-font-family-label);
   font-size: var(--fk-font-size-label);
   font-weight: var(--fk-font-weight-label);
@@ -454,6 +455,7 @@ input.formkit-input[type="checkbox"]:checked ~ .formkit-decorator::before {
 .formkit-message {
   font-size: var(--fk-font-size-message);
   font-weight: var(--fk-font-weight-message);
+  text-align: center;
 }
 .formkit-outer {
   margin: var(--fk-margin-outer);
@@ -497,12 +499,13 @@ input.formkit-input[type="checkbox"]:checked ~ .formkit-decorator::before {
   border-radius: var(--fk-border-radius);
   display: flex;
   align-items: center;
+  background-color: var(--fk-bg-input);
 }
-.formkit-inner:focus-within {
-  box-shadow: var(--fk-border-box-shadow-focus);
-}
-.formkit-inner:hover {
-  box-shadow: var(--fk-border-box-shadow-focus);
+[data-type="text"],
+[data-type="password"] {
+  .formkit-inner:hover {
+    box-shadow: var(--fk-border-box-shadow-focus);
+  }
 }
 .formkit-input
 /*
@@ -536,11 +539,10 @@ input.formkit-input[type="checkbox"]:checked ~ .formkit-decorator::before {
 .formkit-input[disabled] {
   background-color: var(--fk-bg-disabled);
 }
-.formkit-input{
-  &::placeholder{
+.formkit-input {
+  &::placeholder {
     color: #000;
   }
- 
 }
 .formkit-input[multiple] {
   padding: 0;
@@ -622,19 +624,18 @@ input.formkit-input[type="radio"] ~ .formkit-decorator::before {
 }
 [data-type="button"] .formkit-input,
 [data-type="submit"] .formkit-input {
-  font-size: var(--fk-font-size-button);
   border-radius: var(--fk-border-radius);
   cursor: pointer;
   display: inline-flex;
-  width: auto;
+  width: 100%;
   justify-content: center;
-  padding: .3rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   margin: var(--fk-margin-button);
-  letter-spacing: .025rem;
+  letter-spacing: 0.025rem;
   position: relative;
   transition: filter 0.25s;
   border: 1px solid transparent;
-  font-size: 22px;
+  font-size: 20px;
   line-height: var(--fk-line-height-button);
   text-overflow: ellipsis;
 }
@@ -762,7 +763,7 @@ input.formkit-input[type="radio"] ~ .formkit-decorator::before {
   ~ .formkit-decorator
   .formkit-icon,
 [data-type="radio"] .formkit-input:checked ~ .formkit-decorator .formkit-icon {
-  color: var(--fk-color-border-focus);
+  color: #fff;
 }
 [data-type="checkbox"] .formkit-input:focus ~ .formkit-decorator,
 [data-type="radio"] .formkit-input:focus ~ .formkit-decorator {
@@ -1130,4 +1131,16 @@ input.formkit-input[type="radio"] ~ .formkit-decorator::before {
 [data-prefix-icon="true"][data-suffix-icon="true"][data-type="color"]
   .formkit-inner {
   max-width: 10em;
+}
+[data-invalid] .formkit-inner {
+  border-color: var(--fk-color-danger);
+  box-shadow: 0 0 0 1px var(--fk-color-danger);
+}
+
+// Disable error messgae
+.formkit-outer {
+  .formkit-message {
+    text-align: left;
+    font-size: 12px;
+  }
 }
