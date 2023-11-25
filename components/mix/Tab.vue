@@ -54,7 +54,7 @@ const currentIndex = useVModel(props, "modelValue", emit);
         color: #fff;
       }
       &:hover {
-        opacity: 0.8;
+        background: $hover-blue;
       }
     }
   }
