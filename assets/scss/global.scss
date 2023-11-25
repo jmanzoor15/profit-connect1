@@ -183,3 +183,9 @@ h6 {
     text-decoration: underline;
   }
 }
+
+.disable-user-interaction{
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.5;
+}
