@@ -1,6 +1,7 @@
 <template>
   <div class="container bg-white h-full">
     <div class="p-5">
+      <MixButton/>
       <MixTab v-model="activeTab" :items="items" />
     </div>
   </div>
