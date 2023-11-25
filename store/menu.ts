@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
-import HubIcon from "@/assets/images/svg/header/home.svg";
-import InsightsIcon from "@/assets/images/svg/header/insights.svg";
-import CommsIcon from "@/assets/images/svg/header/comms.svg";
-import ControlPanelIcon from "@/assets/images/svg/header/panel.svg";
+import HubIcon from "/images/svg/header/home.svg";
+import InsightsIcon from "/images/svg/header/insights.svg";
+import CommsIcon from "/images/svg/header/comms.svg";
+import ControlPanelIcon from "/images/svg/header/panel.svg";
 
 export const useMenuStore = defineStore("menu", () => {
   const menuitems = [

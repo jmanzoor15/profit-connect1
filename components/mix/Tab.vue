@@ -5,10 +5,16 @@
         v-for="(item, key) in items"
         :key="key"
         :class="key === currentIndex ? 'active' : ''"
-        class="d-flex align-items-center"
+        class="d-flex align-items-center position-relative"
         @click="currentIndex = key"
       >
         {{ item }}
+        <NuxtImg
+          class="position-absolute end-0 mx-4"
+          src="/images/svg/edit-icon-white.svg"
+          height="14"
+          width="14"
+        />
       </li>
     </ul>
   </div>
@@ -48,7 +54,7 @@ const currentIndex = useVModel(props, "modelValue", emit);
       cursor: pointer;
       border-start-start-radius: 23px;
       border-start-end-radius: 23px;
-      padding: 0 40px;
+      padding: 0px 64px;
       &.active {
         background-color: $main-blue;
         color: #fff;
