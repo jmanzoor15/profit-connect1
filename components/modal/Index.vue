@@ -6,7 +6,7 @@
       id="offcanvasModal"
       aria-labelledby="offcanvasModalLabel"
     >
-      <div class="offcanvas-header"  v-if="$slots.title">
+      <div class="offcanvas-header" v-if="$slots.title">
         <h4
           class="offcanvas-title flex-fill text-center"
           id="offcanvasModalLabel"
@@ -43,6 +43,12 @@ onMounted(() => {
   const { $bootstrap } = useNuxtApp();
   const bsOffcanvas = new $bootstrap.Offcanvas("#offcanvasModal");
   showModal.value = bsOffcanvas;
+
+  const offcanvas = document.getElementById("offcanvasModal");
+  if (offcanvas)
+    offcanvas.addEventListener("hidden.bs.offcanvas", (event) => {
+      show.value = false;
+    });
 });
 </script>
 
