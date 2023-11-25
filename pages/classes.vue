@@ -1,10 +1,18 @@
 <template>
   <div class="container bg-white h-full">
     <div class="p-5">
-      <MixButton />
       <MixTab v-model="activeTab" :items="getCategories" />
       <MixNoData v-if="showNoDataMsg" />
       <div class="row g-3" v-else>
+        <div
+          class="col-6 col-lg-4 d-flex justify-content-center align-item-center"
+        >
+          <MixButton
+            @click="showClassForm = true"
+            size="lg"
+            label="New Class"
+          />
+        </div>
         <div
           class="col-6 col-lg-4"
           v-for="category in computedCategories"
@@ -14,6 +22,10 @@
         </div>
       </div>
     </div>
+    <Modal v-model="showClassForm">
+      <template #title> Create a Class or Event </template>
+      <FormClass/>
+    </Modal>
   </div>
 </template>
 <script lang="ts" setup>
@@ -29,6 +41,7 @@ setBreadcrumb({
 });
 const activeTab = ref(0);
 const { currentUserType } = useAuthStore();
+const showClassForm = ref(false);
 
 const { data, pending } = await useFetch("/api/class/categories", {
   query: { facility_id: currentUserType?.id },
@@ -56,6 +69,10 @@ const computedCategories = computed(() => {
 });
 
 const showNoDataMsg = computed(() => {
-  return computedCategories.value && !computedCategories.value.length && !pending.value;
+  return (
+    computedCategories.value &&
+    !computedCategories.value.length &&
+    !pending.value
+  );
 });
 </script>

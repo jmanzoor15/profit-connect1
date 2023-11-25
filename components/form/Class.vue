@@ -1,5 +1,5 @@
 <template>
     <div>
-        This is test
+        Class form
     </div>
 </template>

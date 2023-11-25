@@ -1,6 +1,6 @@
 <template>
   <div>
-    Welcome <CardClass/>
+    Welcome 
   </div>
 </template>
 
