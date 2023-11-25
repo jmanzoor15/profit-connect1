@@ -5,7 +5,7 @@
         {{ name }}
       </h3>
       <div class="d-flex gap-2">
-        <NuxtImg src="/images/svg/time-icon.svg" width="18" />
+        <NuxtImg src="/images/svg/time-icon.svg" width="18" loading="lazy" />
         <span>{{ duration }} {{ period }}</span>
       </div>
       <p>
@@ -61,6 +61,7 @@ const computedStyle = computed(() => {
   padding: 8px 22px;
   cursor: pointer;
   height: 132px;
+  background-position: center;
   transition: 100ms all;
   &::before {
     content: "";
@@ -69,7 +70,7 @@ const computedStyle = computed(() => {
     width: 100%;
     top: 0;
     left: 0;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.4);
   }
   &:hover {
     box-shadow: 0 0 13px #00000026;
