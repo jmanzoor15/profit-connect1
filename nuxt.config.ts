@@ -4,7 +4,9 @@ export default defineNuxtConfig({
     "assets/scss/formkit.scss",
     "assets/scss/app.scss",
   ],
-
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' }
+  },
   plugins: [{ src: "~/plugins/bootstrap.client", mode: "client" }],
   modules: [
     "@pinia/nuxt",

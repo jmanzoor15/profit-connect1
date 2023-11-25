@@ -1,8 +1,11 @@
 <template>
-  <NuxtLayout :class="computedClasses">
-    <NuxtLoadingIndicator />
-    <NuxtPage />
-  </NuxtLayout>
+  <div>
+    <NuxtLayout :class="computedClasses">
+      <NuxtLoadingIndicator />
+      <NuxtPage />
+    </NuxtLayout>
+    <MixAlertBox />
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -25,5 +28,7 @@ const loadInitialClientOnlyData = async () => {
 
 onMounted(() => {
   loadInitialClientOnlyData();
+  // this composable handling the mobile disable
+  useMobileDisabler()
 });
 </script>
