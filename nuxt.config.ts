@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     "assets/scss/app.scss",
   ],
   app: {
-    pageTransition: { name: 'page', mode: 'out-in' }
+    pageTransition: { name: "page", mode: "out-in" },
   },
   plugins: [{ src: "~/plugins/bootstrap.client", mode: "client" }],
   modules: [
@@ -23,8 +23,9 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData:
-            '@import "@/assets/scss/_tools/_variables.scss";@import "@/assets/scss/_tools/mixins";@import "@/assets/scss/_tools/helpers";',
+          additionalData: `@import "@/assets/scss/_tools/_variables.scss";
+            @import "@/assets/scss/_tools/mixins";
+            @import "@/assets/scss/_tools/helpers";`,
         },
       },
     },
@@ -34,16 +35,16 @@ export default defineNuxtConfig({
   },
   piniaPersistedstate: {
     cookieOptions: {
-      sameSite: 'strict',
+      sameSite: "strict",
     },
-    storage: 'localStorage'
+    storage: "localStorage",
   },
   runtimeConfig: {
     // private variable
     API_URL: process.env.API_URL,
     CDN_URL: process.env.CDN_URL,
     public: {
-      imageUrl: process.env.IMG_URL
+      imageUrl: process.env.IMG_URL,
       // for any variable which need to access in both ssr and client side
     },
   },
