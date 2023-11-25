@@ -3,6 +3,7 @@
     <div class="p-5">
       <MixButton/>
       <MixTab v-model="activeTab" :items="items" />
+      <CardClass/>
     </div>
   </div>
 </template>

@@ -43,6 +43,7 @@ export default defineNuxtConfig({
     API_URL: process.env.API_URL,
     CDN_URL: process.env.CDN_URL,
     public: {
+      imageUrl: process.env.IMG_URL
       // for any variable which need to access in both ssr and client side
     },
   },
