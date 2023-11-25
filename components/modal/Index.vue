@@ -62,6 +62,6 @@ onMounted(() => {
   }
 }
 .offcanvas-header {
-  padding: 34px var(--bs-offcanvas-padding-x);
+  padding: 24px var(--bs-offcanvas-padding-x);
 }
 </style>
