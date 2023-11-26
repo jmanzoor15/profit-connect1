@@ -196,3 +196,20 @@ h6 {
     height: 0;
   }
 }
+
+// uppy custom style 
+.uppy-Root .uppy-Dashboard-inner{
+  background:$main-bg;
+}
+.uppy-Root .uppy-Dashboard-AddFiles-title,.uppy-Root .uppy-Dashboard-Item-status,.uppy-Root .uppy-DashboardContent-back,.uppy-Root .uppy-DashboardContent-title{
+  font-family:"Poppins Regular",sans-serif,Arial
+}
+.uppy-Root .uppy-Dashboard-browse{
+  color:$main-blue
+}
+.uppy-Root .uppy-Dashboard-browse:hover{
+  border-bottom:none
+}
+.uppy-Root .uppy-Dashboard-AddFiles-info{
+  display: none !important;
+}
