@@ -1,10 +1,8 @@
 <template>
   <div>
-    <FormKit type="uppy" v-model="files" />
-    {{ files }}
+    Hello
   </div>
 </template>
 
 <script lang="ts" setup>
-const files = ref();
 </script>

@@ -1144,3 +1144,14 @@ input.formkit-input[type="radio"] ~ .formkit-decorator::before {
     font-size: 12px;
   }
 }
+.formkit-outer[data-type="uppy"] {
+  .formkit-inner {
+    background-color: transparent !important;
+    & > div {
+      width: 100%;
+    }
+  }
+  .formkit-help{
+    text-align: center;
+  }
+}

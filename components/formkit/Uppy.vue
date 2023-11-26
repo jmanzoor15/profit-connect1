@@ -1,17 +1,15 @@
 <template>
   <ClientOnly>
-    <Dashboard :uppy="uppy" :plugins="['DragDrop']" />
+    <Dashboard :uppy="uppy" :props="dataTemp" :plugins="['DragDrop']" />
   </ClientOnly>
 </template>
 
 <script setup>
 import { Dashboard } from "@uppy/vue";
 import Uppy from "@uppy/core";
-import DragDrop from "@uppy/drag-drop";
 // Don't forget the CSS: core and UI components + plugins you are using
 import "@uppy/core/dist/style.css";
 import "@uppy/dashboard/dist/style.css";
-import "@uppy/drag-drop/dist/style.min.css";
 
 const props = defineProps({
   context: Object,
@@ -19,9 +17,41 @@ const props = defineProps({
 
 const values = ref(props.context._value);
 
+const dataTemp = {
+  inline: true,
+  height: props.context.height ?? 200,
+  width: "100%",
+  maxHeight: props.context.heigh ?? 200,
+  hideUploadButton: props.context.hideUploadButton ?? true,
+  closeAfterFinish: false,
+  showProgressDetails: true,
+  proudlyDisplayPoweredByUppy: false,
+  showRemoveButtonAfterComplete: true,
+};
+
 const uppy = ref();
 onMounted(() => {
-  uppy.value = new Uppy().use(DragDrop);
+  uppy.value = new Uppy({
+    debug: false,
+    autoProceed: false,
+    restrictions: {
+      maxFileSize: props.context.maxFileSize ?? 1000000,
+      maxNumberOfFiles: props.context.maxNumberOfFiles ?? 1,
+      minNumberOfFiles: props.context.minNumberOfFiles ?? 0,
+      allowedFileTypes: props.context.allowedFileTypes ?? [
+        ".png",
+        ".jpg",
+        ".jpeg",
+      ],
+    },
+    locale: {
+      strings: {
+        dropPasteFiles:
+          `${props.context.label}%{browse}` ?? "Browse files%{browse}",
+      },
+    },
+  });
+
   const getFiles = computed(() => {
     return uppy.value.getFiles();
   });
@@ -31,5 +61,3 @@ onMounted(() => {
   });
 });
 </script>
-
-<style lang="scss" scoped></style>
