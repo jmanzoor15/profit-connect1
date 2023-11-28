@@ -1,5 +1,6 @@
 import { createInput } from "@formkit/vue";
 import Uppy from "@/components/formkit/Uppy.vue";
+import Multiselect from "@/components/formkit/Multiselect.vue";
 
 // When integrating tailwind add classes here
 export default {
@@ -11,8 +12,11 @@ export default {
         "maxNumberOfFiles",
         "maxFileSize",
         "minNumberOfFiles",
-        "height"
+        "height",
       ],
+    }),
+    multiselect: createInput(Multiselect, {
+      props: ["openDirection","options","mode","placeholder"],
     }),
   },
 };

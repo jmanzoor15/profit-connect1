@@ -1151,7 +1151,19 @@ input.formkit-input[type="radio"] ~ .formkit-decorator::before {
       width: 100%;
     }
   }
-  .formkit-help{
+  .formkit-help {
     text-align: center;
+  }
+}
+.formkit-outer[data-type="radio"] {
+  .formkit-fieldset {
+    border: none;
+  }
+  .formkit-options{
+    display: flex;
+    gap: 18px;
+  }
+  .formkit-label{
+    display: block !important;
   }
 }

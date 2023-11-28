@@ -10,6 +10,7 @@ import Uppy from "@uppy/core";
 // Don't forget the CSS: core and UI components + plugins you are using
 import "@uppy/core/dist/style.css";
 import "@uppy/dashboard/dist/style.css";
+import { getBase64 } from "@/utils/file";
 
 const props = defineProps({
   context: Object,
@@ -56,8 +57,16 @@ onMounted(() => {
     return uppy.value.getFiles();
   });
 
-  watch(getFiles, (val) => {
-    props.context.node.input(val);
+  watch(getFiles, async (val) => {
+    const base64Images = [];
+
+    for (let i = 0; i < val.length; i++) {
+      const image = await getBase64(val[i].data);
+      base64Images.push(image);
+    }
+    props.context.node.input(
+      base64Images.length === 1 ? base64Images[0] : base64Images
+    );
   });
 });
 </script>
