@@ -7,7 +7,7 @@ export default ($event: H3Event) => {
   const userAuth = getCookie($event, "token") || "";
 
   return ofetch.create({
-    baseURL: config.API_URL,
+    baseURL: config.CDN_URL,
     headers: {
       Authorization: `Bearer ${userAuth}`,
       accept: "application/json",

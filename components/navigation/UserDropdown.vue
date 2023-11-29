@@ -7,7 +7,7 @@
     <div class="user-open-menu">
       <img
         class="avatar-img"
-        src="@/assets/images/svg/header/avatar-demo.png"
+        src="/images/svg/header/avatar-demo.png"
         alt="Avatar"
       />
     </div>
@@ -22,31 +22,31 @@
       <ul>
         <li>
           <a href="/">
-            <img src="@/assets/images/svg/header/schedule.svg" alt="Schedule" />
+            <img src="/images/svg/header/schedule.svg" alt="Schedule" />
             Schedule
           </a>
         </li>
         <li>
           <a href="/">
-            <img src="@/assets/images/svg/header/profile.svg" alt="Profile" />
+            <img src="/images/svg/header/profile.svg" alt="Profile" />
             Profile
           </a>
         </li>
         <li>
           <a href="/">
-            <img src="@/assets/images/svg/header/social.svg" alt="Social" />
+            <img src="/images/svg/header/social.svg" alt="Social" />
             Social
           </a>
         </li>
         <li>
           <a href="/">
-            <img src="@/assets/images/svg/header/privacy.svg" alt="Privacy" />
+            <img src="/images/svg/header/privacy.svg" alt="Privacy" />
             Privacy
           </a>
         </li>
         <li>
-          <a id="logoutBtn" href="#">
-            <img src="@/assets/images/svg/header/logout.svg" alt="Logout" />
+          <a id="logoutBtn" @click="initLogout">
+            <img src="/images/svg/header/logout.svg" alt="Logout" />
             Logout
           </a>
         </li>
@@ -56,7 +56,10 @@
 </template>
 
 <script lang="ts" setup>
+import { useAuthStore } from "~/store/auth";
+
 const openUserDropdown = ref(false);
+const { initLogout } = useAuthStore();
 </script>
 
 <style lang="scss" scoped>

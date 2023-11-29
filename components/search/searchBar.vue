@@ -3,7 +3,6 @@
       <FormKit
     type="search"
     label="FormKit Input"
-    help="edit me to get started"
     placeholder="Search..."
     
   />
@@ -14,13 +13,7 @@
   </template>
   
   <script lang="ts" setup>
-  const { setBreadcrumb } = useBreadcrumb();
-  setBreadcrumb({
-    items: [
-      { label: "Manage", link: "/" },
-      { label: "Members", link: "/" },
-    ],
-  });
+
   </script>
   <style lang="scss" scoped>
 .search-with-icon {

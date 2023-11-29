@@ -4,7 +4,7 @@
       <FormKit
         type="text"
         label="Franchise/Facility"
-        name="franchise_id"
+        name="franchise_or_facility_name"
         placeholder="Franchise/Facility"
         validation="required"
       />
@@ -22,10 +22,7 @@
         label="password"
         suffix-icon="eyeClosed"
         @suffix-icon-click="handleIconClick"
-        validation="required|length:6|matches:/[^a-zA-Z]/"
-        :validation-messages="{
-          matches: 'Please include at least one symbol',
-        }"
+        validation="required"
         placeholder="Password"
       />
 
@@ -46,12 +43,43 @@
 
 <script setup>
 import { ref } from "vue";
+import { useFranchiseStore } from "~/store/franchise";
+import { useAuthStore } from "~/store/auth";
 
 const submitted = ref(false);
+const { getCurrentFranchiseOrCurrentFacility } = useFranchiseStore();
+const { initClientAuthSetup } = useAuthStore();
 
-const submitHandler = async () => {
-  // Let's pretend this is an ajax request:
-  await new Promise((r) => setTimeout(r, 1000));
+const submitHandler = async (event) => {
+  const authData = {
+    username: event.username,
+    password: event.password,
+    facility_id: "",
+    franchise_id: "",
+  };
+  const userTypeData = getCurrentFranchiseOrCurrentFacility(
+    event.franchise_or_facility_name
+  );
+  if (userTypeData) {
+    userTypeData.type === "franchise"
+      ? (authData.franchise_id = userTypeData.id)
+      : (authData.facility_id = userTypeData.id);
+    try {
+      const { data } = await useFetch("/api/auth/login", {
+        method: "POST",
+        body: {
+          ...authData,
+        },
+      });
+      if (data.value.return) {
+        initClientAuthSetup(data, userTypeData);
+      } else {
+        alert(data.value.message);
+      }
+    } catch (err) {
+      console.log("Error:/api/auth/login", err);
+    }
+  }
   submitted.value = true;
 };
 

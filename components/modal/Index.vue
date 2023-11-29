@@ -3,10 +3,10 @@
     <div
       class="offcanvas offcanvas-end"
       tabindex="-1"
-      id="offcanvasModal"
-      aria-labelledby="offcanvasModalLabel"
+      :id="`offcanvasModal-${id}`"
+      :aria-labelledby="`offcanvasModalLabel-${id}`"
     >
-      <div class="offcanvas-header"  v-if="$slots.title">
+      <div class="offcanvas-header" v-if="$slots.title">
         <h4
           class="offcanvas-title flex-fill text-center"
           id="offcanvasModalLabel"
@@ -26,6 +26,7 @@ import { useVModel } from "@vueuse/core";
 
 const props = defineProps<{
   modelValue: boolean;
+  id: string;
 }>();
 const emit = defineEmits(["update:modelValue"]);
 const show = useVModel(props, "modelValue", emit);
@@ -41,8 +42,14 @@ watch(show, (val) => {
 
 onMounted(() => {
   const { $bootstrap } = useNuxtApp();
-  const bsOffcanvas = new $bootstrap.Offcanvas("#offcanvasModal");
+  const bsOffcanvas = new $bootstrap.Offcanvas(`#offcanvasModal-${props.id}`);
   showModal.value = bsOffcanvas;
+
+  const offcanvas = document.getElementById(`offcanvasModal-${props.id}`);
+  if (offcanvas)
+    offcanvas.addEventListener("hidden.bs.offcanvas", (event) => {
+      show.value = false;
+    });
 });
 </script>
 
@@ -56,6 +63,6 @@ onMounted(() => {
   }
 }
 .offcanvas-header {
-  padding: 34px var(--bs-offcanvas-padding-x);
+  padding: 24px var(--bs-offcanvas-padding-x);
 }
 </style>

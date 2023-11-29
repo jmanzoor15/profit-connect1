@@ -1,7 +1,12 @@
 <template>
+<<<<<<< HEAD
   <div>Welcome {{ data }}</div>
+=======
+  <div>
+    Hello
+  </div>
+>>>>>>> main
 </template>
 
 <script lang="ts" setup>
-// const { data } = await useFetch("/api/franchise");
 </script>

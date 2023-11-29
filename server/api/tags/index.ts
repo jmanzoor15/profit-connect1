@@ -1,11 +1,13 @@
 import useApiFetch from "~/composables/useApi";
 
 export default defineEventHandler(async ($event) => {
-  const body = await readBody($event);
+  const { facility_id } = getQuery($event);
   const api = useApiFetch($event);
-  const resp = await api("/franchise/get/login", {
+  const resp = await api("/tags/get/tags", {
     method: "POST",
-    body,
+    body: {
+      facility_id,
+    },
   });
 
   return resp;
