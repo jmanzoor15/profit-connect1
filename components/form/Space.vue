@@ -65,6 +65,7 @@
           label="Add url"
           name="Add url"
           placeholder="Add url"
+         :disabled="isUrlInputDisabled"
         />
       </div>
     </div>
@@ -76,7 +77,7 @@
         <FormKit
               name="type"
               type="radio"
-              v-model="classType"
+              v-model="UrlType"
             />
             <label class="">
                 Follows Facility Timing
@@ -113,6 +114,15 @@
       default: () => {},
     },
   });
+
+  import { ref, computed } from 'vue';
+
+  const UrlType = ref(null);
+
+const isUrlInputDisabled = computed(() => {
+  // Adjust the condition based on your specific requirement
+  return UrlType.value !== 'desiredValue';
+});
   
   const selectedCategory = ref();
   const emits = defineEmits(["reload"]);
@@ -131,7 +141,7 @@
       });
       if (data.success) {
         emits("reload");
-        alert("Class added successfully!");
+        alert("spaceadded successfully!");
       } else {
         alert(data.message);
       }

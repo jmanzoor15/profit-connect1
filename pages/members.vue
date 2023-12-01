@@ -16,7 +16,8 @@
       <!-- *************  <list of members>  ****************** -->
       <ListMembers />
     </div>
-    <SidebarMember />
+    <!-- <SidebarAddMember /> -->
+    <SidebarUpdateMember />
   </section>
 </template>
   

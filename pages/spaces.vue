@@ -26,7 +26,7 @@
           <MixButton
             @click="showClassForm = true"
             size="lg"
-            label="New Class"
+            label="New Space"
           />
         </div>
         <div
