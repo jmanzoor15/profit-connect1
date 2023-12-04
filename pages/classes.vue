@@ -42,7 +42,7 @@
       <template #title> Create a Class or Event </template>
       <FormClass
         :categories="getCategorOptions"
-        @reload="refresh"
+        @reload="refreshData"
         :category="getCurrentCategory"
         :class-data="selectedClass"
       />
@@ -73,6 +73,11 @@ const showCatrgoryForm = ref(false);
 const { data, pending, refresh } = await useFetch("/api/class/categories", {
   query: { facility_id: currentUserType?.id },
 });
+
+const refreshData = () => {
+  console.log("refresh me");
+  refresh();
+};
 
 const getCategorOptions = computed(() => {
   return data.value && data.value.categories

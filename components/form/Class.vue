@@ -182,7 +182,7 @@ const props = defineProps({
 });
 
 const selectedCategory = ref();
-const emits = defineEmits(["reload"]);
+const emit = defineEmits(["reload"]);
 
 const { currentUserType } = useAuthStore();
 const classType = ref("On-site");
@@ -230,11 +230,11 @@ const submitHandler = async (classData) => {
         facility_id: currentUserType?.id,
       },
     });
-    if (data.success) {
-      emits("reload");
+    if (data.value.return) {
       alert("Class added successfully!");
+      emit("reload");
     } else {
-      alert(data.message);
+      alert(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/class/add", err);

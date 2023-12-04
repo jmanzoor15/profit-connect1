@@ -125,7 +125,7 @@ const isUrlInputDisabled = computed(() => {
 });
   
   const selectedCategory = ref();
-  const emits = defineEmits(["reload"]);
+  const emit = defineEmits(["reload"]);
   
   const { currentUserType } = useAuthStore();
   const classType = ref("On-site");
@@ -139,11 +139,11 @@ const isUrlInputDisabled = computed(() => {
           facility_id: currentUserType?.id,
         },
       });
-      if (data.success) {
-        emits("reload");
+      if (data.value.return) {
+        emit("reload");
         alert("spaceadded successfully!");
       } else {
-        alert(data.message);
+        alert(data.value.message);
       }
     } catch (err) {
       console.log("Error:/api/space/add", err);

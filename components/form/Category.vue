@@ -40,7 +40,7 @@ import { useTagStore } from "@/store/tag";
 import { useAuthStore } from "@/store/auth";
 import { storeToRefs } from "pinia";
 
-const emits = defineEmits(["reload"]);
+const emit = defineEmits(["reload"]);
 
 const { currentUserType } = useAuthStore();
 
@@ -53,11 +53,11 @@ const submitHandler = async (categoryData) => {
         facility_id: currentUserType?.id,
       },
     });
-    if (data.success) {
-      emits("reload");
+    if (data.value.return) {
+      emit("reload");
       alert("Category added successfully!");
     } else {
-      alert(data.message);
+      alert(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/class/add", err);
