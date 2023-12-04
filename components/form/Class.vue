@@ -195,7 +195,9 @@ const exceptTags = computed(() => {
   return tags.value
     ? tags.value
         .filter(
-          (item) => !availableTagsSelected.value.includes(item.id.toString())
+          (item) =>
+            availableTagsSelected.value &&
+            !availableTagsSelected.value.includes(item.id.toString())
         )
         .map((item) => ({ label: item.name, value: item.id }))
     : [];
@@ -205,8 +207,12 @@ const computedSelectedClass = computed(() => {
   return props.classData
     ? {
         ...props.classData,
-        available_tags: props.classData.available_tags.map((item) => item.id),
-        except_tags: props.classData.except_tags.map((item) => item.id),
+        available_tags: props.classData.available_tags
+          .filter((item) => item)
+          .map((item) => item.id),
+        except_tags: props.classData.except_tags
+          .filter((item) => item)
+          .map((item) => item.id),
       }
     : {};
 });
@@ -215,7 +221,9 @@ const availableTags = computed(() => {
   return tags.value
     ? tags.value
         .filter(
-          (item) => !exceptTagsSelected.value.includes(item.id.toString())
+          (item) =>
+            exceptTagsSelected.value &&
+            !exceptTagsSelected.value.includes(item.id.toString())
         )
         .map((item) => ({ label: item.name, value: item.id }))
     : [];

@@ -75,7 +75,6 @@ const { data, pending, refresh } = await useFetch("/api/class/categories", {
 });
 
 const refreshData = () => {
-  console.log("refresh me");
   refresh();
 };
 
@@ -106,7 +105,7 @@ const computedClasses = computed(() => {
           description: item.description,
           period: item.period,
         }))
-    : null;
+    : [];
 });
 
 const showNoDataMsg = computed(() => {
