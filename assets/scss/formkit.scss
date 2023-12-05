@@ -1167,3 +1167,8 @@ input.formkit-input[type="radio"] ~ .formkit-decorator::before {
     display: block !important;
   }
 }
+.formkit-outer[data-type="checkbox"] {
+  .formkit-label{
+    display: block !important;
+  }
+}

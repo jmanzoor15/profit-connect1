@@ -2,26 +2,21 @@
   <div class="container bg-white h-full">
     <div class="p-5">
       <div class="d-flex align-items-baseline">
-        <MixTab v-model="activeTab" :items="getCategories" />
-
+        <MixTab
+          v-model="activeTab"
+          :items="getCategories"
+          @edit="onSelectCategory"
+        />
         <MixButton
           @click="showCatrgoryForm = true"
           size="sm"
           label="New Category"
-          style="width: 328px"
         />
       </div>
-
-      <MixButton
-        @click="showSpaceForm = true"
-        size="lg"
-        label="New Class"
-        v-if="showNoDataMsg"
-      />
-
-      <div class="row g-3" v-else>
+      <div class="row g-3">
         <div
           class="col-6 col-lg-4 d-flex justify-content-center align-item-center"
+          style="min-height: 138px"
         >
           <MixButton
             @click="showSpaceForm = true"
@@ -31,31 +26,40 @@
         </div>
         <div
           class="col-6 col-lg-4"
-          v-for="category in computedSpaces"
-          :key="category.id"
+          v-for="space in computedSpaces"
+          :key="space.id"
         >
-          <CardSpace v-bind="category" @click="onSpaceSelect(category.id)" />
+          <CardSpace v-bind="space" @click="onSpaceSelect(space.id)" />
         </div>
       </div>
     </div>
-    <Modal v-model="showSpaceForm" id="class-modal">
-      <template #title> Create a Space</template>
+    <Modal v-model="showSpaceForm" id="space-modal">
+      <template #title>
+        {{ selectedSpace ? "Update" : "Create" }} Space
+      </template>
       <FormSpace
         :categories="getCategorOptions"
-        @reload="refresh"
+        @reload="refreshData"
         :category="getCurrentCategory"
-        :class-data="selectedSpace"
+        :space-data="selectedSpace"
+        v-if="showSpaceForm"
       />
     </Modal>
     <Modal v-model="showCatrgoryForm" id="category-modal">
-      <template #title> Create a Category </template>
-      <FormSpaceCategory/>
+      <template #title>
+        {{ selectedCategory ? "Update" : "Create" }} a Category
+      </template>
+      <FormSpaceCategory
+        v-if="showCatrgoryForm"
+        v-model:category-data="selectedCategory"
+        @reload="refreshData"
+        :categories="computedCategories"
+      />
     </Modal>
   </div>
 </template>
 <script lang="ts" setup>
 import { useAuthStore } from "~/store/auth";
-import type { ICategory, ISpace } from "@/types/api/space/category";
 
 const { setBreadcrumb } = useBreadcrumb();
 setBreadcrumb({
@@ -64,20 +68,25 @@ setBreadcrumb({
     { label: "Spaces", link: "/" },
   ],
 });
+
 const activeTab = ref(0);
 const { currentUserType } = useAuthStore();
 const showSpaceForm = ref(false);
 const selectedSpace = ref();
+const selectedCategory = ref();
 const showCatrgoryForm = ref(false);
 
 const { data, pending, refresh } = await useFetch("/api/space/categories", {
   query: { facility_id: currentUserType?.id },
-  
 });
+
+const refreshData = () => {
+  refresh();
+};
 
 const getCategorOptions = computed(() => {
   return data.value && data.value.categories
-    ? data.value.categories.map((item: ICategory) => ({
+    ? data.value.categories.map((item: any) => ({
         label: item.name,
         value: item.id,
       }))
@@ -86,27 +95,31 @@ const getCategorOptions = computed(() => {
 
 const getCategories = computed(() => {
   return data.value && data.value.categories
-    ? data.value.categories.map((item: ICategory) => item.name)
+    ? data.value.categories.map((item: any) => item.name)
     : [];
 });
 
 const computedSpaces = computed(() => {
   return data.value && data.value.categories && data.value.categories.length
     ? data.value.categories[activeTab.value].room
-        .filter((item: ISpace) => item)
-        .map((item: ISpace) => ({
+        .filter((item: any) => item)
+        .map((item: any) => ({
           id: item.id,
           name: item.name,
+          capacity: item.capacity,
           description: item.description,
-          capacity:item.capacity,
         }))
-    : null;
+    : [];
 });
 
-const showNoDataMsg = computed(() => {
-  return (
-    computedSpaces.value && !computedSpaces.value.length && !pending.value
-  );
+const computedCategories = computed(() => {
+  return data.value && data.value.categories && data.value.categories.length
+    ? data.value.categories.map((item: any) => ({
+        name: item.name,
+        description: item.description,
+        category_id: item.id,
+      }))
+    : [];
 });
 
 const getCurrentCategory = computed(() => {
@@ -115,14 +128,26 @@ const getCurrentCategory = computed(() => {
     : null;
 });
 
-const onSpaceSelect = (class_id: number) => {
+const onSpaceSelect = (space_id: number) => {
   selectedSpace.value =
     data.value && data.value.categories && data.value.categories.length
-      ? data.value.categories[activeTab.value].class.find(
-          (item: ISpace) => item && item.id === class_id.toString()
+      ? data.value.categories[activeTab.value].room.find(
+          (item: any) => item && item.id === space_id.toString()
         )
       : null;
-      showSpaceForm.value = true;
+  showSpaceForm.value = true;
+};
+
+const onSelectCategory = (tab: number) => {
+  selectedCategory.value =
+    data.value && data.value.categories && data.value.categories.length
+      ? {
+          name: data.value.categories[tab].name,
+          description: data.value.categories[tab].description,
+          category_id: data.value.categories[tab].id,
+        }
+      : null;
+  showCatrgoryForm.value = true;
 };
 
 watch(showSpaceForm, (val) => {
@@ -130,6 +155,10 @@ watch(showSpaceForm, (val) => {
     selectedSpace.value = null;
   }
 });
-</script>
 
-  
+watch(showCatrgoryForm, (val) => {
+  if (!val) {
+    selectedCategory.value = null;
+  }
+});
+</script>

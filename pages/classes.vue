@@ -49,7 +49,7 @@
       <template #title>
         {{ selectedCategory ? "Update" : "Create" }} a Category
       </template>
-      <FormCategory
+      <FormClassCategory
         v-if="showCatrgoryForm"
         v-model:category-data="selectedCategory"
         @reload="refreshData"
