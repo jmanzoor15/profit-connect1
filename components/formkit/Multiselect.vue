@@ -6,6 +6,7 @@
     :placeholder="props?.context?.placeholder"
     @change="handleInput"
     :modelValue="props?.context?._value"
+    :searchable="props?.context?.searchable"
   />
 </template>
 
@@ -117,7 +118,7 @@ function handleInput(value: any) {
   appearance: none;
   font-size: inherit;
   font-family: inherit;
-  background: var(--ms-bg, #ffffff);
+  background: transparent;
   border-radius: var(--ms-radius, 4px);
   padding-left: var(--ms-px, 0.875rem);
 

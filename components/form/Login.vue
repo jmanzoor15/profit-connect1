@@ -47,21 +47,22 @@
 import { ref } from "vue";
 import { useFranchiseStore } from "~/store/franchise";
 import { useAuthStore } from "~/store/auth";
+import { storeToRefs } from "pinia";
 
 const submitted = ref(false);
-const { getCurrentFranchiseOrCurrentFacility, franchise } = useFranchiseStore();
+const { getCurrentFranchiseOrCurrentFacility } = useFranchiseStore();
 const { initClientAuthSetup } = useAuthStore();
-
+const { franchise } = storeToRefs(useFranchiseStore());
 
 const combinedNames = computed(() => {
   try {
-    const franchises = franchise.franchise || [];
-    return franchises.flatMap(franchise => [
+    const franchises = franchise.value?.franchise || [];
+    return franchises.flatMap((franchise) => [
       franchise.name,
-      ...franchise.facility.map(facility => facility.name)
+      ...franchise.facility.map((facility) => facility.name),
     ]);
   } catch (error) {
-    console.error('Error getting combined names:', error);
+    console.error("Error getting combined names:", error);
     return [];
   }
 });

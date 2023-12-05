@@ -16,7 +16,7 @@ export default {
       ],
     }),
     multiselect: createInput(Multiselect, {
-      props: ["openDirection","options","mode","placeholder"],
+      props: ["openDirection", "options", "mode", "placeholder", "searchable"],
     }),
   },
 };
