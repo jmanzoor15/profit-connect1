@@ -17,3 +17,13 @@ export function cleanObjectL1(obj: {
 
   return result;
 }
+
+export function removeObjectKeys(obj: any, keysToRemove: string[]): any {
+  const newObj: any = { ...obj };
+
+  keysToRemove.forEach((key) => {
+    delete newObj[key];
+  });
+
+  return newObj;
+}

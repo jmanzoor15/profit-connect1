@@ -36,6 +36,7 @@
         @reload="refreshData"
         :category="getCurrentCategory"
         :class-data="selectedClass"
+        v-if="showClassForm"
       />
     </Modal>
     <Modal v-model="showCatrgoryForm" id="category-modal">

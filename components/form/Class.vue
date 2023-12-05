@@ -5,7 +5,6 @@
       @submit="submitHandler"
       :actions="false"
       :modelValue="computedSelectedClass"
-      :key="computedSelectedClass?.id"
     >
       <FormKit
         type="text"
@@ -96,7 +95,7 @@
           />
         </div>
       </div>
-      <div class="row" :key="['On-site', 'Online'].includes(classType)">
+      <div class="row">
         <div class="col-6">
           <FormKit
             type="text"
@@ -124,7 +123,6 @@
             name="url"
             placeholder="Url"
             :disabled="['On-site', 'Off-site'].includes(classType)"
-            :key="['On-site', 'Off-site'].includes(classType)"
           />
         </div>
       </div>
@@ -166,6 +164,7 @@ import { classOptions, timeTypeSelect } from "@/constants/class";
 import { useTagStore } from "@/store/tag";
 import { useAuthStore } from "@/store/auth";
 import { storeToRefs } from "pinia";
+import { removeObjectKeys } from "@/utils/dataCleaner";
 
 const props = defineProps({
   categories: {
@@ -230,7 +229,7 @@ const availableTags = computed(() => {
     : [];
 });
 
-const submitHandler = async (classData) => {
+const addClass = async (classData) => {
   try {
     const { data } = await useFetch("/api/class/add", {
       method: "POST",
@@ -249,5 +248,44 @@ const submitHandler = async (classData) => {
     console.log("Error:/api/class/add", err);
   }
 };
+
+const updateClass = async (classData) => {
+  try {
+    const { data } = await useFetch("/api/class/edit", {
+      method: "POST",
+      body: {
+        ...classData,
+        facility_id: currentUserType?.id,
+        class_id: computedSelectedClass.value?.id,
+      },
+    });
+    if (data.value.return) {
+      alert("Class edited successfully!");
+      emit("reload");
+    } else {
+      alert(data.value.message);
+    }
+  } catch (err) {
+    console.log("Error:/api/class/edit", err);
+  }
+};
+
+const submitHandler = async (classData) => {
+  let tempData = removeObjectKeys(classData, [
+    "img_src",
+    "img_video",
+    "updated_date",
+  ]);
+  // remove disabled data
+  if (classData.type === "On-site" || classData.type === "Online") {
+    tempData = removeObjectKeys(tempData, ["location", "googlemaps"]);
+  } else if (classData.type === "Off-site" || classData.type === "On-site") {
+    tempData = removeObjectKeys(tempData, ["url"]);
+  }
+  computedSelectedClass.value?.id
+    ? updateClass(classData)
+    : addClass(classData);
+};
 </script>
+
 <style lang="scss" scoped></style>
