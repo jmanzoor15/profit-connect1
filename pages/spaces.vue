@@ -13,7 +13,7 @@
       </div>
 
       <MixButton
-        @click="showClassForm = true"
+        @click="showSpaceForm = true"
         size="lg"
         label="New Class"
         v-if="showNoDataMsg"
@@ -24,7 +24,7 @@
           class="col-6 col-lg-4 d-flex justify-content-center align-item-center"
         >
           <MixButton
-            @click="showClassForm = true"
+            @click="showSpaceForm = true"
             size="lg"
             label="New Space"
           />
@@ -38,18 +38,18 @@
         </div>
       </div>
     </div>
-    <Modal v-model="showClassForm" id="class-modal">
+    <Modal v-model="showSpaceForm" id="class-modal">
       <template #title> Create a Space</template>
       <FormSpace
         :categories="getCategorOptions"
         @reload="refresh"
         :category="getCurrentCategory"
-        :class-data="selectedClass"
+        :class-data="selectedSpace"
       />
     </Modal>
     <Modal v-model="showCatrgoryForm" id="category-modal">
       <template #title> Create a Category </template>
-      <FormCategory />
+      <FormSpaceCategory/>
     </Modal>
   </div>
 </template>
@@ -66,8 +66,8 @@ setBreadcrumb({
 });
 const activeTab = ref(0);
 const { currentUserType } = useAuthStore();
-const showClassForm = ref(false);
-const selectedClass = ref();
+const showSpaceForm = ref(false);
+const selectedSpace = ref();
 const showCatrgoryForm = ref(false);
 
 const { data, pending, refresh } = await useFetch("/api/space/categories", {
@@ -91,7 +91,6 @@ const getCategories = computed(() => {
 });
 
 const computedSpaces = computed(() => {
-  console.log(data.value);
   return data.value && data.value.categories && data.value.categories.length
     ? data.value.categories[activeTab.value].room
         .filter((item: ISpace) => item)
@@ -117,18 +116,18 @@ const getCurrentCategory = computed(() => {
 });
 
 const onSpaceSelect = (class_id: number) => {
-  selectedClass.value =
+  selectedSpace.value =
     data.value && data.value.categories && data.value.categories.length
       ? data.value.categories[activeTab.value].class.find(
           (item: ISpace) => item && item.id === class_id.toString()
         )
       : null;
-  showClassForm.value = true;
+      showSpaceForm.value = true;
 };
 
-watch(showClassForm, (val) => {
+watch(showSpaceForm, (val) => {
   if (!val) {
-    selectedClass.value = null;
+    selectedSpace.value = null;
   }
 });
 </script>
