@@ -2,7 +2,11 @@
   <div class="container bg-white h-full">
     <div class="p-5">
       <div class="d-flex align-items-baseline">
-        <MixTab v-model="activeTab" :items="getCategories" />
+        <MixTab
+          v-model="activeTab"
+          :items="getCategories"
+          @edit="onSelectCategory"
+        />
         <MixButton
           @click="showCatrgoryForm = true"
           size="sm"
@@ -12,7 +16,7 @@
       <div class="row g-3">
         <div
           class="col-6 col-lg-4 d-flex justify-content-center align-item-center"
-          style="min-height: 138px;"
+          style="min-height: 138px"
         >
           <MixButton
             @click="showClassForm = true"
@@ -30,7 +34,9 @@
       </div>
     </div>
     <Modal v-model="showClassForm" id="class-modal">
-      <template #title> Create a Class or Event </template>
+      <template #title>
+        {{ selectedClass ? "Update" : "Create" }} a Class or Event
+      </template>
       <FormClass
         :categories="getCategorOptions"
         @reload="refreshData"
@@ -40,8 +46,15 @@
       />
     </Modal>
     <Modal v-model="showCatrgoryForm" id="category-modal">
-      <template #title> Create a Category </template>
-      <FormCategory />
+      <template #title>
+        {{ selectedCategory ? "Update" : "Create" }} a Category
+      </template>
+      <FormCategory
+        v-if="showCatrgoryForm"
+        v-model:category-data="selectedCategory"
+        @reload="refreshData"
+        :categories="computedCategories"
+      />
     </Modal>
   </div>
 </template>
@@ -60,6 +73,7 @@ const activeTab = ref(0);
 const { currentUserType } = useAuthStore();
 const showClassForm = ref(false);
 const selectedClass = ref();
+const selectedCategory = ref();
 const showCatrgoryForm = ref(false);
 
 const { data, pending, refresh } = await useFetch("/api/class/categories", {
@@ -100,6 +114,17 @@ const computedClasses = computed(() => {
     : [];
 });
 
+const computedCategories = computed(() => {
+  return data.value && data.value.categories && data.value.categories.length
+    ? data.value.categories.map((item: any) => ({
+        name: item.name,
+        description: item.description,
+        image: item.img_src,
+        category_id: item.id,
+      }))
+    : [];
+});
+
 const showNoDataMsg = computed(() => {
   return (
     computedClasses.value && !computedClasses.value.length && !pending.value
@@ -122,9 +147,28 @@ const onClassSelect = (class_id: number) => {
   showClassForm.value = true;
 };
 
+const onSelectCategory = (tab: number) => {
+  selectedCategory.value =
+    data.value && data.value.categories && data.value.categories.length
+      ? {
+          name: data.value.categories[tab].name,
+          description: data.value.categories[tab].description,
+          image: data.value.categories[tab].img_src,
+          category_id: data.value.categories[tab].id,
+        }
+      : null;
+  showCatrgoryForm.value = true;
+};
+
 watch(showClassForm, (val) => {
   if (!val) {
     selectedClass.value = null;
+  }
+});
+
+watch(showCatrgoryForm, (val) => {
+  if (!val) {
+    selectedCategory.value = null;
   }
 });
 </script>

@@ -14,6 +14,7 @@
           src="/images/svg/edit-icon-white.svg"
           height="14"
           width="14"
+          @click="onClickEdit(key)"
         />
       </li>
     </ul>
@@ -32,8 +33,12 @@ const props = defineProps({
     default: [],
   },
 });
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "edit"]);
 const currentIndex = useVModel(props, "modelValue", emit);
+
+const onClickEdit = (tab:number) => {
+  emit("edit",tab);
+};
 </script>
 
 <style scoped lang="scss">

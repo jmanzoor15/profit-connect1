@@ -30,6 +30,15 @@ export default defineNuxtConfig({
   },
   image: {
     none: {},
+    providers: {
+      backend: {
+        name: "backend",
+        provider: "~/utils/providers/boImage.ts",
+        options: {
+          baseURL: process.env.IMG_URL,
+        },
+      },
+    },
   },
   piniaPersistedstate: {
     cookieOptions: {
