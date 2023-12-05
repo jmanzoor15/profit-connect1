@@ -3,25 +3,16 @@
     <div class="p-5">
       <div class="d-flex align-items-baseline">
         <MixTab v-model="activeTab" :items="getCategories" />
-
         <MixButton
           @click="showCatrgoryForm = true"
           size="sm"
           label="New Category"
-          style="width: 328px"
         />
       </div>
-
-      <MixButton
-        @click="showClassForm = true"
-        size="lg"
-        label="New Class"
-        v-if="showNoDataMsg"
-      />
-
-      <div class="row g-3" v-else>
+      <div class="row g-3">
         <div
           class="col-6 col-lg-4 d-flex justify-content-center align-item-center"
+          style="min-height: 138px;"
         >
           <MixButton
             @click="showClassForm = true"
