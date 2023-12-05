@@ -62,7 +62,7 @@ onMounted(() => {
 
     for (let i = 0; i < val.length; i++) {
       const image = await getBase64(val[i].data);
-      base64Images.push(image);
+      base64Images.push(image.split(',')[1]);
     }
     props.context.node.input(
       base64Images.length === 1 ? base64Images[0] : base64Images

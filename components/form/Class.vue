@@ -62,6 +62,7 @@
             name="description"
             label="Description"
             placeholder="Description"
+            validation="required"
           />
         </div>
       </div>
@@ -70,7 +71,7 @@
           <FormKit
             type="uppy"
             label="Upload Image or Video"
-            name="image"
+            name="image_video"
             :hideUploadButton="true"
             help="Max image upload: 960x540px, 1MB, in .jpg and .png."
           />
@@ -78,7 +79,7 @@
         <div class="col-6">
           <FormKit
             type="uppy"
-            label="Upload Image or Video"
+            label="Upload Image"
             name="image"
             :hideUploadButton="true"
             help="Max image upload: 960x540px, 1MB, in .jpg and .png."
