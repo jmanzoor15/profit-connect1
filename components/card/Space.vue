@@ -58,17 +58,18 @@ const props = defineProps({
   margin-top: 10px;
 }
 
-.category-item {
-  display: flex;
-  flex-direction: column; /* Make category item a column layout */
-  align-items: stretch; /* Stretch items to fill the container */
-  position: relative;
-  max-width: 260px;
-  background: #f2faff;
-  border-radius: 10px;
-  padding: 9px 35px 9px 20px;
-  margin-right: 10px;
-  margin-bottom: 10px;
+.category-items .category-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    position: relative;
+    max-width: 260px;
+    background: #f2faff;
+    border-radius: 10px;
+    padding: 9px 35px 9px 20px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    height: 220px;
 }
 
 .category-item__title {
