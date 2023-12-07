@@ -65,7 +65,7 @@ export const useMenuStore = defineStore("menu", () => {
           label: "Store",
           description:
             "Create and manage store items. Also process in-store purchases.",
-          link: "/",
+          link: "/store",
         },
         {
           id: 8,

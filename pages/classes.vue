@@ -1,6 +1,14 @@
 <template>
   <div class="container bg-white h-full">
     <div class="p-5">
+      <div class="d-flex align-items-center gap-3"> 
+    <h1 style="font-size: 22px; margin-bottom: 0px;">Classes</h1>
+        <MixButton style="background-color: #f2faff; ;"
+          @click="showClassForm = true"
+          size="sm"
+          label="New Class"
+        />
+      </div>
       <div class="d-flex align-items-baseline">
         <MixTab
           v-model="activeTab"
@@ -14,16 +22,6 @@
         />
       </div>
       <div class="row g-3">
-        <div
-          class="col-6 col-lg-4 d-flex justify-content-center align-item-center"
-          style="min-height: 138px"
-        >
-          <MixButton
-            @click="showClassForm = true"
-            size="lg"
-            label="New Class"
-          />
-        </div>
         <div
           class="col-6 col-lg-4"
           v-for="category in computedClasses"

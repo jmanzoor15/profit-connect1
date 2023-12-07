@@ -1,24 +1,29 @@
 <template>
-    <div class="member-scroll">
-      <div class="addNewMember">
+    <div class="addNewMember"  @click="$emit('add')">
         <img class="plusIcon" src="~/assets/images/svg/plus-icon.svg" alt="Plus icon">
         Add New
       </div>
+    <div  v-if="items.length > 0"  class="member-scroll"  v-for="(item, key) in items"
+        :key="key"
+        @click="$emit('edit')"
+        >
+        
   <div class="member-box allMembersBox">
        
     <div class="member-row">
       <div class="d-flex member-row-ava-box">
         <div>
-          <img class="member-row__avatar avatar"
-           src="https://app.ihitreset.com/resetcrm/upload/1/image/members/profile/2.jpg?timestamp=1700653055551" 
-               alt="Member avatar" data-name="junaid mir">
+          <img v-if="item.img_src" class="member-row__avatar avatar" :src="`https://app.ihitreset.com/resetcrm/${item.img_src}`" 
+          >
+            <div v-else class="member-row__avatar-placeholder">
+              {{ item.firstname }} {{ item.lastname }}
+            </div>
         </div>
-
+  
         <div class="member-row__data">
-           <div class="member-row__name">junaid Manzoor</div>
+           <div class="member-row__name">{{ item.firstname }} {{ item.lastname }}</div>
           <div class="d-flex">
-            <!-- <div class="member-row__time">{{ daysLeft }}</div> -->
-            <div class="member-row__time">21 daysleft</div>
+            <div class="member-row__time">{{item.membership_status}}</div>
             <!-- <div>{{ member.occupation || '' }}</div> -->
             <div>occupation  </div>
           </div>
@@ -27,18 +32,18 @@
 
       <div class="member-row__phone">
         <img src="~/assets/images/svg/phone.svg" alt="Member phone">
-        <div>contactno </div>
+        <div>{{item.contactno}} </div>
       </div>
 
       <div class="member-row__email">
         <img src="~/assets/images/svg/email.svg" alt="Member email">
-        <div> email </div>
+        <div> {{item.email}} </div>
       </div>
     </div>
     
   </div>
       </div>
-      <div class="member-no-result d-none">
+      <div v-else class="member-no-result d-none">
         <img src="~/assets/images/no-result.jpg" alt="No result icon">
         <div class="w-100">No results</div>
       </div>
@@ -46,14 +51,19 @@
   </template>
   
   <script lang="ts" setup>
-  
+  const props = defineProps({
+  modelValue: {
+    type: Number,
+  },
+  items: {
+    type: Array<string>,
+    default: [],
+  },
+});
   </script>
+
+
   <style lang="scss" scoped>
-  
-
-
-
-
 .addNewMember {
   font: 18px $font-family-medium;
   cursor: pointer;
