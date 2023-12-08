@@ -1,11 +1,15 @@
 <template>
     <div class="sidebar-box">
-      <FormKit class="formEditMember" type="form" @submit="submitHandler" :actions="false">
+      <FormKit 
+      class="formEditMember" type="form" @submit="submitHandler" :actions="false"
+      v-for="(memberdata, key) in member"
+        :key="key"
+        >
       <!-- <form class="formEditMember" action="https://app.ihitreset.com/resetcrm/members/update/member"> -->
   
        <nuxt-link to="/membership-overview" class="sidebar-box__title text-center selectMemberId" data-selected-id title="View membership">
-      <img src="https://app.ihitreset.com/resetcrm/upload/1/image/members/profile/2.jpg?timestamp=1700716647968" class="previewMemberAvatar avatar" alt="Member avatar" data-name="ABC XYZ">
-      <h2 class="content-title-bold editUserName">junaid</h2>
+      <img   :src="`https://app.ihitreset.com/resetcrm/${memberdata.img_src}`" class="previewMemberAvatar avatar" alt="Member avatar" data-name="ABC XYZ">
+      <h2 class="content-title-bold editUserName">{{memberdata.firstname }} {{memberdata.lastname }}</h2>
       <div class="editUserOccupation"></div>
       </nuxt-link>
   
@@ -19,22 +23,22 @@
   
           <div class="icon-text">
             <img src="~assets/images/svg/members-info/female.svg" alt="Female icon">
-            <span class="showUserGender">Male</span>
+            <span class="showUserGender">{{memberdata.gender }}</span>
           </div>
   
           <div class="icon-text">
             <img src="~assets/images/svg/members-info/birthday.svg" alt="Birthday icon">
-            <span class="showUserBirthday">1981-12-17</span>
+            <span class="showUserBirthday">{{memberdata.dob }}</span>
           </div>
   
           <div class="icon-text">
             <img src="~assets/images/svg/members-info/phone.svg" alt="Phone icon">
-            <span class="showPhoneNumber">11646131646</span>
+            <span class="showPhoneNumber">{{memberdata.contactno }}</span>
           </div>
   
           <div class="icon-text">
             <img src="~assets/images/svg/members-info/email.svg" alt="Email icon">
-            <span class="showUserEmail">123@gmail.com</span>
+            <span class="showUserEmail">{{memberdata.email }}</span>
           </div>
         </div>
   
@@ -207,6 +211,16 @@
     
     <script lang="ts" setup>
   import { ref } from 'vue';
+
+  const props = defineProps({
+  modelValue: {
+    type: Number,
+  },
+  member: {
+    type: Array<string>,
+    default: [],
+  },
+});
   
   // Define the type for toggle states
   type ToggleStates = {

@@ -5,7 +5,8 @@
       </div>
     <div  v-if="items.length > 0"  class="member-scroll"  v-for="(item, key) in items"
         :key="key"
-        @click="$emit('edit')"
+        :class="key === currentIndex ? 'active' : ''"
+        @click="onClickEdit(key)"
         >
         
   <div class="member-box allMembersBox">
@@ -60,6 +61,14 @@
     default: [],
   },
 });
+
+const emit = defineEmits(["update:modelValue", "edit"]);
+const currentIndex = useVModel(props, "modelValue", emit);
+
+const onClickEdit = (tab:number) => {
+  emit("edit",tab);
+};
+
   </script>
 
 
