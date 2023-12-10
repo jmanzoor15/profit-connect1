@@ -27,12 +27,12 @@
       </div>
       <div class="row g-3">
         <div
-          class="col-6 col-lg-3"
+          class="col-12 col-lg-4"
           v-for="store in computedStores"
           :key="store.id"
           @click="onStoreSelect(store.id)"
         >
-          {{ store }}
+        <CardStore v-bind="store"/>
         </div>
       </div>
     </div>
@@ -111,6 +111,10 @@ const computedStores = computed(() => {
           name: item.name,
           capacity: item.capacity,
           description: item.description,
+          image: item.img_src,
+          price: item.price,
+          promotion_price: item.promotion_price,
+          display_original_price: item.display_original_price,
         }))
     : [];
 });
@@ -148,6 +152,7 @@ const onSelectCategory = (tab: number) => {
           name: data.value.categories[tab].name,
           description: data.value.categories[tab].description,
           category_id: data.value.categories[tab].id,
+          id: data.value.categories[tab].id,
         }
       : null;
   showCatrgoryForm.value = true;
