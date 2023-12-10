@@ -17,6 +17,7 @@ export default defineNuxtConfig({
     autoImport: true,
     configFile: "./formkit.config.ts",
   },
+  ssr: false,
   vite: {
     css: {
       preprocessorOptions: {
