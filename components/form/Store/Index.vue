@@ -1,5 +1,5 @@
 <template>
-  <div class="px-5">
+  <div class="px-5 store-form">
     <FormKit
       type="form"
       @submit="submitHandler"
@@ -47,6 +47,9 @@
             label="Description"
             placeholder="Description"
             validation="required"
+            :classes="{
+              input: 'description-height',
+            }"
           />
         </div>
       </div>
@@ -282,3 +285,10 @@ const submitHandler = async (storeData) => {
   computedSelectedStore.value?.id ? updateStore(data) : addStore(data);
 };
 </script>
+<style lang="scss">
+.store-form {
+  .description-height {
+    height: 10em !important;
+  }
+}
+</style>
