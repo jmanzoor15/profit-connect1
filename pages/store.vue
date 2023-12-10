@@ -6,7 +6,7 @@
           <h1 style="font-size: 22px; margin-bottom: 0px">Store</h1>
           <MixButton
             style="background-color: #f2faff"
-            @click="showSpaceForm = true"
+            @click="showStoreForm = true"
             size="sm"
             label="New Item"
           />
@@ -25,28 +25,29 @@
           label="Add category"
         />
       </div>
-      <!-- <div class="row g-3">
+      <div class="row g-3">
         <div
           class="col-6 col-lg-3"
-          v-for="space in computedSpaces"
-          :key="space.id"
+          v-for="store in computedStores"
+          :key="store.id"
+          @click="onStoreSelect(store.id)"
         >
-          <CardSpace v-bind="space" @click="onSpaceSelect(space.id)" />
+          {{ store }}
         </div>
-      </div> -->
+      </div>
     </div>
-    <!-- <Modal v-model="showSpaceForm" id="space-modal">
+    <Modal v-model="showStoreForm" id="store-modal">
       <template #title>
-        {{ selectedSpace ? "Update" : "Create" }} Space
+        {{ selectedStore ? "Update" : "Create" }} Store Item
       </template>
-      <FormSpace
+      <FormStore
         :categories="getCategorOptions"
         @reload="refreshData"
         :category="getCurrentCategory"
-        :space-data="selectedSpace"
-        v-if="showSpaceForm"
+        :store-data="selectedStore"
+        v-if="showStoreForm"
       />
-    </Modal> -->
+    </Modal>
     <Modal v-model="showCatrgoryForm" id="category-modal">
       <template #title>
         {{ selectedCategory ? "Update" : "Create" }} a Category
@@ -72,9 +73,9 @@ setBreadcrumb({
 });
 
 const activeTab = ref(0);
-const { currentUserType } =  useAuthStore();
-const showSpaceForm = ref(false);
-const selectedSpace = ref();
+const { currentUserType } = useAuthStore();
+const showStoreForm = ref(false);
+const selectedStore = ref();
 const selectedCategory = ref();
 const showCatrgoryForm = ref(false);
 
@@ -101,18 +102,18 @@ const getCategories = computed(() => {
     : [];
 });
 
-// const computedSpaces = computed(() => {
-//   return data.value && data.value.categories && data.value.categories.length
-//     ? data.value.categories[activeTab.value].room
-//         .filter((item: any) => item)
-//         .map((item: any) => ({
-//           id: item.id,
-//           name: item.name,
-//           capacity: item.capacity,
-//           description: item.description,
-//         }))
-//     : [];
-// });
+const computedStores = computed(() => {
+  return data.value && data.value.categories && data.value.categories.length
+    ? data.value.categories[activeTab.value].items
+        .filter((item: any) => item)
+        .map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          capacity: item.capacity,
+          description: item.description,
+        }))
+    : [];
+});
 
 const computedCategories = computed(() => {
   return data.value && data.value.categories && data.value.categories.length
@@ -130,15 +131,15 @@ const getCurrentCategory = computed(() => {
     : null;
 });
 
-// const onSpaceSelect = (space_id: number) => {
-//   selectedSpace.value =
-//     data.value && data.value.categories && data.value.categories.length
-//       ? data.value.categories[activeTab.value].room.find(
-//           (item: any) => item && item.id === space_id.toString()
-//         )
-//       : null;
-//   showSpaceForm.value = true;
-// };
+const onStoreSelect = (store_id: number) => {
+  selectedStore.value =
+    data.value && data.value.categories && data.value.categories.length
+      ? data.value.categories[activeTab.value].items.find(
+          (item: any) => item && item.id === store_id.toString()
+        )
+      : null;
+  showStoreForm.value = true;
+};
 
 const onSelectCategory = (tab: number) => {
   selectedCategory.value =
@@ -152,11 +153,11 @@ const onSelectCategory = (tab: number) => {
   showCatrgoryForm.value = true;
 };
 
-// watch(showSpaceForm, (val) => {
-//   if (!val) {
-//     selectedSpace.value = null;
-//   }
-// });
+watch(showStoreForm, (val) => {
+  if (!val) {
+    selectedStore.value = null;
+  }
+});
 
 watch(showCatrgoryForm, (val) => {
   if (!val) {
