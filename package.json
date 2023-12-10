@@ -21,6 +21,7 @@
     "@uppy/vue": "^1.1.0",
     "@uppy/webcam": "^3.3.4",
     "@vueform/multiselect": "^2.6.6",
+    "@vueform/toggle": "^2.1.4",
     "bootstrap": "^5.3.0"
   },
   "devDependencies": {
