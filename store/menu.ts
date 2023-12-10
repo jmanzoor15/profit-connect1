@@ -44,7 +44,7 @@ export const useMenuStore = defineStore("menu", () => {
           label: "Memberships",
           description:
             "Create and manage various membership plans, including pricing, duration, and access levels.",
-          link: "/memberships",
+          link: "/packages",
         },
         {
           id: 5,
