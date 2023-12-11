@@ -19,7 +19,10 @@
     </div>
     <div class="content-filters">
       <FilterSort />
-      <FilterStatus />
+      <MixBtnGroup
+        v-model="currentFilter"
+        :labels="['All', 'Active', 'Inactive']"
+      />
     </div>
     <ListPackages :packages="data.packages" />
 
@@ -36,6 +39,7 @@ import { useAuthStore } from "~/store/auth";
 const { setBreadcrumb } = useBreadcrumb();
 const { currentUserType } = useAuthStore();
 const showCatrgoryForm = ref(false);
+const currentFilter = ref(1);
 setBreadcrumb({
   items: [
     { label: "Control Panel", link: "/" },
