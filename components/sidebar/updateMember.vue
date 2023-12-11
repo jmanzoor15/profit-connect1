@@ -1,29 +1,32 @@
 <template>
     <div class="sidebar-box">
       <FormKit 
-      class="formEditMember" type="form" @submit="submitHandler" :actions="false"
-      v-for="(memberdata, key) in member"
-        :key="key"
+      class="formEditMember"
+       type="form" 
+       @submit="submitHandler" 
+       :actions="false"
+       :v-model="memberInfo"
         >
       <!-- <form class="formEditMember" action="https://app.ihitreset.com/resetcrm/members/update/member"> -->
-  
+       <div class="personal"
+       v-for="(memberdata, key) in memberInfo.data"
+        :key="key">
        <nuxt-link to="/membership-overview" class="sidebar-box__title text-center selectMemberId" data-selected-id title="View membership">
       <img   :src="`https://app.ihitreset.com/resetcrm/${memberdata.img_src}`" class="previewMemberAvatar avatar" alt="Member avatar" data-name="ABC XYZ">
-      <h2 class="content-title-bold editUserName">{{memberdata.firstname }} {{memberdata.lastname }}</h2>
+      <h2 class="content-title-bold editUserName">{{memberdata.firstname }} {{memberdata.lastname }} </h2>
       <div class="editUserOccupation"></div>
       </nuxt-link>
   
-  
-  
+
         <div v-if="!toggleStates.isPersonalEditMode.value" class="personal-show data-block-show">
           <h3 class="small-title-bold">
             Personal
             <img  @click="() => startEdit('isPersonalEditMode')" class="editMemberData" data-edit="personal-edit" src="~assets/images/svg/edit-icon-black.svg" alt="Edit icon">
           </h3>
-  
+           <div >
           <div class="icon-text">
             <img src="~assets/images/svg/members-info/female.svg" alt="Female icon">
-            <span class="showUserGender">{{memberdata.gender }}</span>
+            <span class="showUserGender">{{memberdata.gender }} </span>
           </div>
   
           <div class="icon-text">
@@ -40,6 +43,7 @@
             <img src="~assets/images/svg/members-info/email.svg" alt="Email icon">
             <span class="showUserEmail">{{memberdata.email }}</span>
           </div>
+        </div>
         </div>
   
         <div  v-if="toggleStates.isPersonalEditMode.value" class="personal-edit data-block-edit">
@@ -58,14 +62,13 @@
           <FormKit
           type="select"
           name="gender"
-          :options="[
-            'Male',
-            'Female',
-          ]"
+          :options="[ 'Male','Female']"
+          :value="memberdata.gender"
+          @input="(value) => memberdata.gender = value"
         />
           <FormKit
             type="date"
-            value="2011-01-01"
+            v-model="memberdata.dob"
             label="Birthday"
             help="Enter your birth day"
             validation="required|date_before:2010-01-01"
@@ -73,34 +76,30 @@
           />
         <FormKit
           type="tel"
+          v-model="memberdata.contactno"
           label=""
           placeholder="Phone number"
-          validation="required|matches:/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/"
+          validation="required|matches:/^[0-9]{10}$/"
           :validation-messages="{
             required: 'Phone number is required',
-            matches: 'Phone number must be in the format xxx-xxx-xxxx',
           }"
           validation-visibility="dirty"
         />
         <FormKit
           type="email"
+          v-model="memberdata.email"
           validation="required|email|"
           validation-visibility="live"
           placeholder="Email"
         />
           <div class="input-label-box d-none">
             <input type="password" class="passwordInput" placeholder="Password">
-  
-            <div class="password-status">
-              <img class="showPassIcon" src="~assets/images/svg/show-eye-icon.svg" alt="Show password icon">
-              <img class="hidePassIcon" src="~assets/images/svg/hide-eye-icon.svg" alt="Hide password icon">
-            </div>
           </div>
         </div>
-  
+      </div>
         <div v-if="!toggleStates.isSocialEditMode.value" class="social-show data-block-show">
           <h3 class="small-title-bold">
-            Contact
+            Contact 
             <img @click="() => startEdit('isSocialEditMode')" class="editMemberData" data-edit="social-edit" src="~assets/images/svg/edit-icon-black.svg" alt="Edit icon">
           </h3>
   
@@ -128,20 +127,23 @@
           <FormKit
           type="text"
           placeholder="Facebook"
+          v-model="memberInfo.social.facebook" 
         />
         <FormKit
           type="text"
           placeholder="Instagram"
+          v-model="memberInfo.social.instagram" 
         />
         <FormKit
           type="text"
           placeholder="Linkedin"
+          v-model="memberInfo.social.linkedin" 
         />
         </div>
   
-        <div v-if="!toggleStates.isAboutEditMode.value" class="about-show data-block-show">
+        <div v-if="!toggleStates.isAboutEditMode.value " class="about-show data-block-show">
           <h3 class="small-title-bold">
-            About
+            About 
             <img @click="() => startEdit('isAboutEditMode')" class="editMemberData" data-edit="about-edit" src="~assets/images/svg/edit-icon-black.svg" alt="Edit icon">
           </h3>
   
@@ -149,13 +151,14 @@
           </div>
         </div>
   
-        <div v-if="toggleStates.isAboutEditMode.value"  class="about-edit member-edit-box data-block-edit">
+        <div v-if="toggleStates.isAboutEditMode.value "  class="about-edit member-edit-box data-block-edit">
           <h3 class="small-title-bold">About<div class="goBackShowMode" data-show="about-show" @click="() => cancelEdit('isAboutEditMode')">Cancel</div>
           </h3>
   
           <FormKit
           type="text"
           placeholder="About"
+          v-model="memberInfo.about.about"
           />
         </div>
   
@@ -175,31 +178,35 @@
           <FormKit
           type="text"
           placeholder="Emergency contact name"
+          v-model="memberInfo.emergency_contact.name"
           />
           <FormKit
           type="text"
           placeholder="Emergency contact phone"
+          v-model="memberInfo.emergency_contact.contactno"
           />
         </div>
   
-        <div v-if="!toggleStates.isTagsEditMode.value" class="tags-show data-block-show">
+        <div v-if="!toggleStates.isTagsEditMode.value " class="tags-show data-block-show">
           <h3 class="small-title-bold">
-            Tags
+            Tags 
             <img  @click="() => startEdit('isTagsEditMode')" class="editMemberData" data-edit="tags-edit" src="~assets/images/svg/edit-icon-black.svg" alt="Edit icon">
           </h3>
   
           <div class="showTagsWithComma"></div>
         </div>
   
-        <div v-if="toggleStates.isTagsEditMode.value" class="tags-edit data-block-edit">
+        <div v-if="toggleStates.isTagsEditMode.value" class="tags-edit data-block-edit" >
           <h3 class="small-title-bold">Tags<div class="goBackShowMode" data-show="tags-show" @click="() => cancelEdit('isTagsEditMode')">Cancel</div>
           </h3>
-  
-          <!-- <div class="search-dropdown-input top"> -->
+       <div 
+          v-for="tag in memberInfo.tags ">
           <FormKit
           type="text"
           placeholder="Tags"
+          v-model="tag.name"
           />
+        </div>
         </div>
       <!-- </form> -->
       <FormKit type="submit" label="Save" class="EditSave" />
@@ -216,10 +223,31 @@
   modelValue: {
     type: Number,
   },
+  memberInfo: {
+    type: Array,
+    default: () => [],
+  },
   member: {
     type: Array<string>,
     default: [],
   },
+  social: {
+    type: Array<string>,
+    default: [],
+  },
+  about: {
+    type: Array<string>,
+    default: [],
+  },
+  emergency: {
+    type: Array<string>,
+    default: [],
+  },
+  tags: {
+    type: Array<string>,
+    default: [],
+  },
+
 });
   
   // Define the type for toggle states
@@ -262,7 +290,7 @@
     });
   
   
-   
+ 
   
     
     </script>

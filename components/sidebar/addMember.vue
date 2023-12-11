@@ -1,26 +1,19 @@
 <template>
   <div class="sidebar-box">
-   <FormKit class="formCreateMember" type="form" @submit="submitHandler" :actions="false">
+   <FormKit class="formCreateMember" type="form" @submit="createCategory" :actions="false">
     <!-- <form class="formCreateMember" action="https://app.ihitreset.com/resetcrm/members/add/member"> -->
       <div>
         <div>
           <!-- <div id="uploadImg"></div> -->
           <div>
-            <FormKit
-          type="file"
-          label="Documents"
-          accept=".pdf,.doc,.docx,.xml,.md,.csv"
-          multiple="true"
-        />
+        
         <FormKit
             type="uppy"
-            label="Upload Image or Video"
+            label="Upload Image"
             name="image"
-            :hideUploadButton="true"
-           
+            :hideUploadButton="true" 
           />
           </div>
-        
           <FormKit type="text" name="First name" id="First name"  placeholder="First name"/>
           <FormKit type="text" name="Last name" id="Last name"  placeholder="Last name"/>
         </div>
@@ -113,6 +106,8 @@ const handleIconClick = (node: { props: NodeProps }, e: Event) => {
   node.props.suffixIcon = node.props.suffixIcon === 'eye' ? 'eyeClosed' : 'eye';
   node.props.type = node.props.type === 'password' ? 'text' : 'password';
 };
+
+
 
   
   </script>

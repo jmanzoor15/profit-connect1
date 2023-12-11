@@ -13,7 +13,7 @@
       <!-- *********** <Search>    *************** -->
       <SearchBar />
       <!-- *************  <list of members>  ****************** -->
-      <ListMembers 
+      <ListMembers   
       :items="getMembers"
       @add="handleAddSidebar"
       @edit="handleEditSidebar"
@@ -24,8 +24,9 @@
     <SidebarUpdateMember
     v-model:category-data="selectedMember"
      v-if="showEditSidebar"
-     :member="getMemberData "
-      @close="handleSidebarClose" />
+     v-model:memberInfo="getMemberInfo "
+    
+     @close="handleSidebarClose" />
   </section>
 </template>
   
@@ -80,11 +81,12 @@ const getMembers = computed(() => {
     ? membersData.value.members
     : [];
 });
-const getMemberData = computed(() => {
-  return memberInfoData.value && memberInfoData.value.member.data
-    ? memberInfoData.value.member.data
+const getMemberInfo = computed(() => {
+  return memberInfoData.value && memberInfoData.value.member
+    ? memberInfoData.value.member
     : [];
 });
+
 
 watch(selectedMember, () => {
   // Fetch detailed member information based on the new selectedMember
