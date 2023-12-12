@@ -20,19 +20,18 @@
       />
      
     </div>
-    <SidebarAddMember v-if="showAddSidebar" @close="handleSidebarClose" />
+    <SidebarAddMember v-if="showAddSidebar" />
     <SidebarUpdateMember
-    v-model:category-data="selectedMember"
      v-if="showEditSidebar"
-     v-model:memberInfo="getMemberInfo "
-    
-     @close="handleSidebarClose" />
+     v-model:member-information="getMemberInfo"
+     @reload="refreshData"
+     />
   </section>
 </template>
   
 <script lang="ts" setup>
 import { useAuthStore } from "~/store/auth";
-
+import type { ITag } from "@/types/api/member/info";
 const props = defineProps({
   modelValue: {
     type: Number,
@@ -82,10 +81,46 @@ const getMembers = computed(() => {
     : [];
 });
 const getMemberInfo = computed(() => {
-  return memberInfoData.value && memberInfoData.value.member
-    ? memberInfoData.value.member
-    : [];
+ if (memberInfoData.value && memberInfoData.value.member && memberInfoData.value.member.data && memberInfoData.value.member.data.length > 0) {
+        const memberData = memberInfoData.value.member.data[0];
+      const socialData = memberInfoData.value.member.social || {};
+      const aboutData = memberInfoData.value.member.about || {};
+      const emergencyContactData = memberInfoData.value.member.emergency_contact || {};
+      const tags = memberInfoData.value.member?.tags || [];
+      // const tagNames = tags ? tags.map((tag: ITag) => tag && tag.name) : [];
+
+
+      return {
+      id: memberData.id,
+      firstname: memberData.firstname,
+      lastname: memberData.lastname,
+      dob: memberData.dob,
+      gender: memberData.gender,
+      country_code: memberData.country_code,
+      contactno: memberData.contactno,
+      email: memberData.email,
+      image: memberData.img_src,
+      membership_status: memberData.membership_status,
+      start_date: memberData.start_date,
+      end_date: memberData.end_date,
+      facebook: socialData.facebook,
+      instagram: socialData.instagram,
+      linkedin: socialData.linkedin,
+      about: aboutData.about,
+      emergency_name: emergencyContactData.name,
+      emergency_contactno: emergencyContactData.contactno,
+      tags:tags?.map((tag: ITag) => ({
+        id: tag?.id,
+        name: tag?.name,
+        updated_date: tag?.updated_date
+      }))
+     
+    };
+  }
+
+  return {};
 });
+
 
 
 watch(selectedMember, () => {

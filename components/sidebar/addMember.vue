@@ -1,22 +1,18 @@
 <template>
   <div class="sidebar-box">
-   <FormKit class="formCreateMember" type="form" @submit="createCategory" :actions="false">
-    <!-- <form class="formCreateMember" action="https://app.ihitreset.com/resetcrm/members/add/member"> -->
-      <div>
-        <div>
-          <!-- <div id="uploadImg"></div> -->
-          <div>
-        
+   <FormKit class="formCreateMember" type="form" @submit="addMember"
+     :v-model="addNewMember"
+    :actions="false">
         <FormKit
             type="uppy"
             label="Upload Image"
             name="image"
             :hideUploadButton="true" 
           />
-          </div>
-          <FormKit type="text" name="First name" id="First name"  placeholder="First name"/>
-          <FormKit type="text" name="Last name" id="Last name"  placeholder="Last name"/>
-        </div>
+        
+          <FormKit type="text" name="firstname" id="First name"  placeholder="First name"/>
+          <FormKit type="text" name="lastname" id="Last name"  placeholder="Last name"/>
+  
 
         <h3 class="small-title-bold">Personal</h3>
         <FormKit
@@ -29,6 +25,7 @@
       />
       <FormKit
           type="date"
+          name="gender"
           value="2011-01-01"
           label="Birthday"
           validation="required|date_before:2010-01-01"
@@ -36,6 +33,7 @@
         />
       <FormKit
         type="tel"
+        name="contactno"
         label=""
         placeholder="Phone number"
         validation="required|matches:/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/"
@@ -47,6 +45,7 @@
       />
       <FormKit
         type="email"
+        name="email"
         validation="required|email|"
         validation-visibility="live"
         placeholder="Email"
@@ -84,19 +83,16 @@
         type="text"
         placeholder="Tags"
       />
-      </div>
-
       <FormKit type="submit" label="Save" class="EditSave" />
 
-      
     </FormKit>
   </div>
   </template>
   
   <script lang="ts" setup>
 import { ref } from 'vue';
-
-
+import type { IAddMember } from "@/types/api/member/info";
+import { useAuthStore } from "@/store/auth";
   interface NodeProps {
   suffixIcon: string;
   type: string;
@@ -107,6 +103,31 @@ const handleIconClick = (node: { props: NodeProps }, e: Event) => {
   node.props.type = node.props.type === 'password' ? 'text' : 'password';
 };
 
+const { currentUserType } = useAuthStore();
+const addNewMember = ref({});
+const emit = defineEmits(["reload", "add:addNewMember"]);
+
+const addMember = async (addNewMember: IAddMember) => {
+  console.log(addNewMember);
+  try {
+    const { data } = await useFetch("/api/member/update-member", {
+      method: "POST",
+      body: {
+        ...addNewMember,
+        facility_id: currentUserType?.id,
+     
+      },
+    });
+    if (data.value.return) {
+      emit("reload");
+      alert("Member edited successfully!");
+    } else {
+      alert(data.value.message);
+    }
+  } catch (err) {
+    console.log("Error:/api/Member/add", err);
+  }
+};
 
 
   

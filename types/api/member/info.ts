@@ -4,6 +4,22 @@ export interface IMemberResponse {
     members:IMember;
   }
   
+  export interface IAddMember {
+    facility_id: string;
+    email: string;
+    firstname: string;
+    lastname: string;
+    dob: string; 
+    gender: string;
+    contactno: string;
+    facebook: string;
+    instagram: string;
+    linkedin: string;
+    password: string;
+    tags: number[];
+    image: string; 
+  }
+  
   export interface IMemberData {
     data: IMember[];
     social: ISocial;
