@@ -3,7 +3,7 @@
     <FormKit
       class="formEditMember"
       type="form"
-      :modelValue="selectedMember"
+      :modelValue="memberInformation"
       @submit="editMember"
       :actions="false"
     >
@@ -15,19 +15,19 @@
         title="View membership"
       >
         <img
-          :src="`https://app.ihitreset.com/resetcrm/${selectedMember.image}`"
+          :src="`https://app.ihitreset.com/resetcrm/${memberInformation.image}`"
           class="previewMemberAvatar avatar"
           alt="Member avatar"
           data-name="ABC XYZ"
         />
         <h2 class="content-title-bold editUserName">
-          {{ selectedMember.firstname }} {{ selectedMember.lastname }}
+          {{ memberInformation.firstname }} {{ memberInformation.lastname }}
         </h2>
         <div class="editUserOccupation"></div>
       </nuxt-link>
 
       <div
-        v-if="!toggleStates.isPersonalEditMode.value"
+        v-show="!toggleStates.isPersonalEditMode.value"
         class="personal-show data-block-show"
       >
         <h3 class="small-title-bold">
@@ -46,7 +46,7 @@
               src="~assets/images/svg/members-info/female.svg"
               alt="Female icon"
             />
-            <span class="showUserGender">{{ selectedMember.gender }} </span>
+            <span class="showUserGender">{{ memberInformation.gender }} </span>
           </div>
 
           <div class="icon-text">
@@ -54,7 +54,7 @@
               src="~assets/images/svg/members-info/birthday.svg"
               alt="Birthday icon"
             />
-            <span class="showUserBirthday">{{ selectedMember.dob }}</span>
+            <span class="showUserBirthday">{{ memberInformation.dob }}</span>
           </div>
 
           <div class="icon-text">
@@ -62,7 +62,7 @@
               src="~assets/images/svg/members-info/phone.svg"
               alt="Phone icon"
             />
-            <span class="showPhoneNumber">{{ selectedMember.contactno }}</span>
+            <span class="showPhoneNumber">{{ memberInformation.contactno }}</span>
           </div>
 
           <div class="icon-text">
@@ -70,17 +70,17 @@
               src="~assets/images/svg/members-info/email.svg"
               alt="Email icon"
             />
-            <span class="showUserEmail">{{ selectedMember.email }}</span>
+            <span class="showUserEmail">{{ memberInformation.email }}</span>
           </div>
         </div>
       </div>
 
       <div
-        v-if="toggleStates.isPersonalEditMode.value"
+        v-show="toggleStates.isPersonalEditMode.value"
         class="personal-edit data-block-edit"
       >
         <h3 class="small-title-bold">
-          Personal
+          Personal 
           <div
             class="goBackShowMode"
             data-show="personal-show"
@@ -112,7 +112,7 @@
           name="contactno"
           label=""
           placeholder="Phone number"
-          validation="required|matches:/^[0-9]{10}$/"
+          
           :validation-messages="{
             required: 'Phone number is required',
           }"
@@ -131,7 +131,7 @@
       </div>
 
       <div
-        v-if="!toggleStates.isSocialEditMode.value"
+        v-show="!toggleStates.isSocialEditMode.value"
         class="social-show data-block-show"
       >
         <h3 class="small-title-bold">
@@ -173,7 +173,7 @@
       </div>
 
       <div
-        v-if="toggleStates.isSocialEditMode.value"
+        v-show="toggleStates.isSocialEditMode.value"
         class="social-edit data-block-edit"
       >
         <h3 class="small-title-bold">
@@ -192,7 +192,7 @@
       </div>
 
       <div
-        v-if="!toggleStates.isAboutEditMode.value"
+        v-show="!toggleStates.isAboutEditMode.value"
         class="about-show data-block-show"
       >
         <h3 class="small-title-bold">
@@ -210,7 +210,7 @@
       </div>
 
       <div
-        v-if="toggleStates.isAboutEditMode.value"
+        v-show="toggleStates.isAboutEditMode.value"
         class="about-edit member-edit-box data-block-edit"
       >
         <h3 class="small-title-bold">
@@ -228,7 +228,7 @@
       </div>
 
       <div
-        v-if="!toggleStates.isEmergencyEditMode.value"
+        v-show="!toggleStates.isEmergencyEditMode.value"
         class="emergency-show data-block-show"
       >
         <h3 class="small-title-bold">
@@ -246,7 +246,7 @@
       </div>
 
       <div
-        v-if="toggleStates.isEmergencyEditMode.value"
+        v-show="toggleStates.isEmergencyEditMode.value"
         class="emergency-edit member-edit-box data-block-edit"
       >
         <h3 class="small-title-bold">
@@ -272,7 +272,7 @@
       </div>
 
       <div
-        v-if="!toggleStates.isTagsEditMode.value"
+        v-show="!toggleStates.isTagsEditMode.value"
         class="tags-show data-block-show"
       >
         <h3 class="small-title-bold">
@@ -290,7 +290,7 @@
       </div>
 
       <div
-        v-if="toggleStates.isTagsEditMode.value"
+        v-show="toggleStates.isTagsEditMode.value"
         class="tags-edit data-block-edit"
       >
         <h3 class="small-title-bold">
@@ -303,14 +303,14 @@
             Cancel
           </div>
         </h3>
-        <div v-for="tag in selectedMember.tags">
-          <FormKit
+        <FormKit
             type="multiselect"
-            placeholder="Tags"
-            name="tag"
-            :value="tag.name"
+            name="tags"
+            mode="tags"
+            openDirection="top"
+            :options="computedTags"
+            
           />
-        </div>
       </div>
       <FormKit type="submit" label="Save" class="EditSave" />
     </FormKit>
@@ -320,7 +320,8 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { useAuthStore } from "@/store/auth";
-
+import { useTagStore } from "@/store/tag";
+import { storeToRefs } from "pinia";
 const emit = defineEmits(["reload", "update:categoryData"]);
 
 const props = defineProps({
@@ -330,9 +331,13 @@ const props = defineProps({
   },
 });
 
+const { tags } = storeToRefs(useTagStore());
 const { currentUserType } = useAuthStore();
-const selectedMember = useVModel(props, "memberInformation", emit);
 
+
+const computedTags = computed(()=>{
+  return tags.value? tags.value.map((item) => ({ label: item.name, value: item.id })) : []
+});
 type ToggleStates = {
   isPersonalEditMode: Ref<boolean>;
   isSocialEditMode: Ref<boolean>;
@@ -364,7 +369,7 @@ setBreadcrumb({
   ],
 });
 
-const editMember = async (memberInformation) => {
+const editMember = async (memberInformation: any) => {
   try {
     const { data } = await useFetch("/api/member/update-member", {
       method: "POST",

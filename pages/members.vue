@@ -109,11 +109,10 @@ const getMemberInfo = computed(() => {
       about: aboutData.about,
       emergency_name: emergencyContactData.name,
       emergency_contactno: emergencyContactData.contactno,
-      tags:tags?.map((tag: ITag) => ({
-        id: tag?.id,
-        name: tag?.name,
-        updated_date: tag?.updated_date
-      }))
+      tags:tags?.map((tag: ITag) => (
+        tag?.id
+       
+      ))
      
     };
   }
