@@ -1,10 +1,11 @@
 <template> 
+
 <div class="content-main-box">
   <div class="content-box mb-3">
     <div class="content__title-box">
       <h1 class="content-title">Membership Overview</h1>
     </div>
-
+{{ membersData.member.memberships }}
     <div class="pre-text activePlanName">Personal Training Session</div>
 
     <div class="no-active-plan d-none">This member does not have a memberships</div>
@@ -29,7 +30,6 @@
     </div>
 
   </div>
-
   <div class=" content-box">
     <div class="content__title-box">
       <h1 class="content-title">Membership Packages</h1>
@@ -42,71 +42,42 @@
       </div>
     </div>
 
-    <div class="membership-packages">   
-      <div class="mm-package purchaseBoxBtn" data-id="2" data-index="8" data-plan-type="credits">
-          <div class="mmPackageAdd">
-            <img src="../assets/images/svg/plus-icon.svg?timestamp=1701415748096" alt="Add Package">
+    <div class="membership-packages"  >   
+      <div class="mm-package purchaseBoxBtn" v-for="(plan, index) in computedPlanDetails" :key="index" >
+          <div class="mmPackageAdd"   @click="showCatrgoryForm = true">
+            <img src="../assets/images/svg/plus-icon.svg?timestamp=1701415748096" >
+
           </div>
 
-          <div class="mm-package__title">Ramadan Credits </div>
-
-          <div class="mm-package__data">
-            <img src="../assets/images/svg/tag-icon.svg?timestamp=1701415748096" alt="Tag icon">
-            AED 2000
-          </div>
-        </div>
-      
-      
-      <div class="mm-package purchaseBoxBtn" data-id="6" data-index="9" data-plan-type="credits">
-          <div class="mmPackageAdd">
-            <img src="../assets/images/svg/plus-icon.svg?timestamp=1701415748096" alt="Add Package">
-          </div>
-
-          <div class="mm-package__title">Personal Training Session</div>
+          <div class="mm-package__title">{{plan.name}} </div>
 
           <div class="mm-package__data">
-            <img src="../assets/images/svg/tag-icon.svg?timestamp=1701415748096" alt="Tag icon">
-            AED 4500
+            <img src="../assets/images/svg/tag-icon.svg?timestamp=1701415748096" >
+            AED {{plan.price}}
           </div>
         </div>
-      
-      
-      <div class="mm-package purchaseBoxBtn" data-id="8" data-index="10" data-plan-type="add-on">
-          <div class="mmPackageAdd">
-            <img src="../assets/images/svg/plus-icon.svg?timestamp=1701415748096" alt="Add Package">
-          </div>
-
-          <div class="mm-package__title">PT Assessment</div>
-
-          <div class="mm-package__data">
-            <img src="../assets/images/svg/tag-icon.svg?timestamp=1701415748096" alt="Tag icon">
-            AED 850
-          </div>
-        </div>
-      
-      
-      <div class="mm-package purchaseBoxBtn" data-id="7" data-index="11" data-plan-type="unlimited">
-          <div class="mmPackageAdd">
-            <img src="../assets/images/svg/plus-icon.svg?timestamp=1701415748096" alt="Add Package">
-          </div>
-
-          <div class="mm-package__title">PT Studio Hire (20 Pack)</div>
-
-          <div class="mm-package__data">
-            <img src="../assets/images/svg/tag-icon.svg?timestamp=1701415748096" alt="Tag icon">
-            AED 2000
-          </div>
-        </div>
-      
       </div>
-
   </div>
 </div>
-
+<Modal v-model="showCatrgoryForm" id="category-modal">
+      <template #title>
+        Purchase Item
+      </template>
+      <FormMemberAddplan />
+    </Modal>
 
 </template>
   
 <script lang="ts" setup>
+import { useAuthStore } from "@/store/auth";
+const { currentUserType } = useAuthStore();
+const props = defineProps({
+  memberId: {
+    type: String,
+    default: ''
+  },
+});
+const showCatrgoryForm = ref(false);
 const { setBreadcrumb } = useBreadcrumb();
 setBreadcrumb({
   items: [
@@ -114,6 +85,37 @@ setBreadcrumb({
     { label: "Members", link: "/" },
   ],
 });
+
+
+
+
+    const { data: membersData, pending: membersPending} = await useFetch("/api/member/info", {
+  query: { facility_id: currentUserType?.id, member_id: props.memberId  },
+});
+
+
+const { data, pending } = await useFetch(`/api/member/overview`, {
+      query: { facility_id: currentUserType?.id },
+    });
+
+    const ComputedPackage = computed(() => {
+  if (data.value && data.value.packages) {
+    return data.value.packages
+      .filter(pkg => pkg.plans && pkg.plans.length > 0) 
+      .flatMap(pkg => pkg.plans);
+  }
+  return []; 
+});
+const computedPlanDetails = computed(() => {
+ 
+  return ComputedPackage.value
+    .filter(plan => plan !== null) // Filter out null values
+    .map(plan => ({
+      name: plan.name,
+      price: plan.price
+    }));
+});
+
 </script>
 <style lang="scss" scoped>
 .content-main-box .content-box {

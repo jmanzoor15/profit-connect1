@@ -1,11 +1,6 @@
 <template>
-    <div class="addNewMember"  @click="$emit('add')">
-        <img class="plusIcon" src="~/assets/images/svg/plus-icon.svg" alt="Plus icon">
-        Add New
-      </div>
     <div  v-if="items.length > 0"  class="member-scroll"  v-for="(item, key) in items"
-        :key="key"
-        :class="key === currentIndex ? 'active' : ''"
+        :key="key"   
         @click="onClickEdit(key)"
         >
         
@@ -53,17 +48,15 @@
   
   <script lang="ts" setup>
   const props = defineProps({
-  modelValue: {
-    type: Number,
-  },
+ 
   items: {
     type: Array<string>,
     default: [],
   },
 });
 
-const emit = defineEmits(["update:modelValue", "edit"]);
-const currentIndex = useVModel(props, "modelValue", emit);
+const emit = defineEmits([ "edit"]);
+
 
 const onClickEdit = (tab:number) => {
   emit("edit",tab);
@@ -73,16 +66,7 @@ const onClickEdit = (tab:number) => {
 
 
   <style lang="scss" scoped>
-.addNewMember {
-  font: 18px $font-family-medium;
-  cursor: pointer;
-  margin-left: 20px;
 
-  .plusIcon {
-    width: 40px;
-    margin-right: 10px;
-  }
-}
 
 .member-scroll {
   max-height: calc(100vh - 300px);

@@ -1,8 +1,12 @@
 <template> 
       <section class="content-section">
-        <SidebarUpdateMember />
-
-    <MembershipOverview />
+      
+        <SidebarUpdateMember 
+        v-model:member-id="memberId"
+        />
+      
+    <MembershipOverview 
+    v-model:member-id="memberId" />
   
 
 </section>
@@ -10,13 +14,8 @@
   </template>
     
   <script lang="ts" setup>
-  const { setBreadcrumb } = useBreadcrumb();
-  setBreadcrumb({
-    items: [
-      { label: "Manage", link: "/" },
-      { label: "Members", link: "/" },
-    ],
-  });
+ const memberId = useRoute().params.id
+  
   </script>
   <style lang="scss" scoped>
   .content-section {

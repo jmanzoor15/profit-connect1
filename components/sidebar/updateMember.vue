@@ -1,27 +1,26 @@
 <template>
   <div class="sidebar-box">
+    <!-- {{ memberId }}{{ getMemberInfo }} -->
     <FormKit
       class="formEditMember"
       type="form"
-      :modelValue="memberInformation"
+      :modelValue="getMemberInfo"
       @submit="editMember"
       :actions="false"
-    >
-  
+    > 
       <nuxt-link
-        to="/membership-overview"
-        class="sidebar-box__title text-center selectMemberId"
-        data-selected-id
+        :to="`/members/${ getMemberInfo.id }/membership-overview`"
+        class="sidebar-box__title text-center "
         title="View membership"
-      >
+      > 
         <img
-          :src="`https://app.ihitreset.com/resetcrm/${memberInformation.image}`"
+          :src="`https://app.ihitreset.com/resetcrm/${getMemberInfo.image}`"
           class="previewMemberAvatar avatar"
           alt="Member avatar"
           data-name="ABC XYZ"
         />
         <h2 class="content-title-bold editUserName">
-          {{ memberInformation.firstname }} {{ memberInformation.lastname }}
+          {{ getMemberInfo.firstname }} {{ getMemberInfo.lastname }}
         </h2>
         <div class="editUserOccupation"></div>
       </nuxt-link>
@@ -34,7 +33,7 @@
           Personal
           <img
             @click="() => startEdit('isPersonalEditMode')"
-            class="editmemberInformation"
+            class="editgetMemberInfo"
             data-edit="personal-edit"
             src="~assets/images/svg/edit-icon-black.svg"
             alt="Edit icon"
@@ -46,7 +45,7 @@
               src="~assets/images/svg/members-info/female.svg"
               alt="Female icon"
             />
-            <span class="showUserGender">{{ memberInformation.gender }} </span>
+            <span class="showUserGender">{{ getMemberInfo.gender }} </span>
           </div>
 
           <div class="icon-text">
@@ -54,7 +53,7 @@
               src="~assets/images/svg/members-info/birthday.svg"
               alt="Birthday icon"
             />
-            <span class="showUserBirthday">{{ memberInformation.dob }}</span>
+            <span class="showUserBirthday">{{ getMemberInfo.dob }}</span>
           </div>
 
           <div class="icon-text">
@@ -62,7 +61,7 @@
               src="~assets/images/svg/members-info/phone.svg"
               alt="Phone icon"
             />
-            <span class="showPhoneNumber">{{ memberInformation.contactno }}</span>
+            <span class="showPhoneNumber">{{ getMemberInfo.contactno }}</span>
           </div>
 
           <div class="icon-text">
@@ -70,7 +69,7 @@
               src="~assets/images/svg/members-info/email.svg"
               alt="Email icon"
             />
-            <span class="showUserEmail">{{ memberInformation.email }}</span>
+            <span class="showUserEmail">{{ getMemberInfo.email }}</span>
           </div>
         </div>
       </div>
@@ -138,7 +137,7 @@
           Contact
           <img
             @click="() => startEdit('isSocialEditMode')"
-            class="editmemberInformation"
+            class="editgetMemberInfo"
             data-edit="social-edit"
             src="~assets/images/svg/edit-icon-black.svg"
             alt="Edit icon"
@@ -199,7 +198,7 @@
           About  
           <img
             @click="() => startEdit('isAboutEditMode')"
-            class="editmemberInformation"
+            class="editgetMemberInfo"
             data-edit="about-edit"
             src="~assets/images/svg/edit-icon-black.svg"
             alt="Edit icon"
@@ -235,7 +234,7 @@
           Emergency
           <img
             @click="() => startEdit('isEmergencyEditMode')"
-            class="editmemberInformation"
+            class="editgetMemberInfo"
             data-edit="emergency-edit"
             src="~assets/images/svg/edit-icon-black.svg"
             alt="Edit icon"
@@ -279,7 +278,7 @@
           Tags
           <img
             @click="() => startEdit('isTagsEditMode')"
-            class="editmemberInformation"
+            class="editgetMemberInfo"
             data-edit="tags-edit"
             src="~assets/images/svg/edit-icon-black.svg"
             alt="Edit icon"
@@ -323,21 +322,77 @@ import { useAuthStore } from "@/store/auth";
 import { useTagStore } from "@/store/tag";
 import { storeToRefs } from "pinia";
 const emit = defineEmits(["reload", "update:categoryData"]);
-
+import type { ITag } from "@/types/api/member/info";
 const props = defineProps({
-  memberInformation: {
-    type: Object,
-    default: () => {},
+  memberId: {
+    type: String,
+    default: ''
   },
 });
 
+const { memberId } = toRefs(props);
+const memberInfoData = ref(null);
+const memberInfoPending = ref(false);
 const { tags } = storeToRefs(useTagStore());
 const { currentUserType } = useAuthStore();
 
 
+
 const computedTags = computed(()=>{
-  return tags.value? tags.value.map((item) => ({ label: item.name, value: item.id })) : []
+  return tags.value? tags.value.map((item: any) => ({ label: item.name, value: item.id })) : []
 });
+
+watch(memberId, async () => {
+  if (memberId.value) {
+    const { data, pending } = await useFetch(`/api/member/info`, {
+      query: { facility_id: currentUserType?.id, member_id: memberId.value },
+    });
+    memberInfoData.value = data.value;
+    memberInfoPending.value = pending.value;
+  }
+}, { immediate: true });
+
+const getMemberInfo = computed(() => {
+ if (memberInfoData.value && memberInfoData.value.member && memberInfoData.value.member.data && memberInfoData.value.member.data.length > 0) {
+        const memberData = memberInfoData.value.member.data[0];
+      const socialData = memberInfoData.value.member.social || {};
+      const aboutData = memberInfoData.value.member.about || {};
+      const emergencyContactData = memberInfoData.value.member.emergency_contact || {};
+      const tags = memberInfoData.value.member?.tags || [];
+      // const tagNames = tags ? tags.map((tag: ITag) => tag && tag.name) : [];
+
+
+      return {
+      id: memberData.id,
+      firstname: memberData.firstname,
+      lastname: memberData.lastname,
+      dob: memberData.dob,
+      gender: memberData.gender,
+      country_code: memberData.country_code,
+      contactno: memberData.contactno,
+      email: memberData.email,
+      image: memberData.img_src,
+      membership_status: memberData.membership_status,
+      start_date: memberData.start_date,
+      end_date: memberData.end_date,
+      facebook: socialData.facebook,
+      instagram: socialData.instagram,
+      linkedin: socialData.linkedin,
+      about: aboutData.about,
+      emergency_name: emergencyContactData.name,
+      emergency_contactno: emergencyContactData.contactno,
+      tags:tags?.map((tag: ITag) => (
+        tag?.id
+       
+      ))
+     
+    };
+  }
+
+  return {};
+});
+
+
 type ToggleStates = {
   isPersonalEditMode: Ref<boolean>;
   isSocialEditMode: Ref<boolean>;
@@ -369,15 +424,17 @@ setBreadcrumb({
   ],
 });
 
-const editMember = async (memberInformation: any) => {
+const editMember = async (getMemberInfo: any) => {
   try {
+    const body = JSON.stringify({
+      member_id: getMemberInfo.id,
+      facility_id: currentUserType?.id,
+      ...getMemberInfo,
+    });
+
     const { data } = await useFetch("/api/member/update-member", {
       method: "POST",
-      body: {
-        member_id: memberInformation.id,
-        facility_id: currentUserType?.id,
-        ...memberInformation,
-      },
+      body: body
     });
     if (data.value.return) {
       emit("reload");
@@ -389,7 +446,10 @@ const editMember = async (memberInformation: any) => {
     console.log("Error:/api/Member/add", err);
   }
 };
+
+
 </script>
+
 <style lang="scss" scoped>
 .sidebar-box {
   max-width: 400px;
@@ -496,7 +556,7 @@ const editMember = async (memberInformation: any) => {
   .data-block-show {
     margin-bottom: 30px;
   }
-  .editmemberInformation {
+  .editgetMemberInfo {
     opacity: 0.4;
     cursor: pointer;
     transition: 0.35s;
