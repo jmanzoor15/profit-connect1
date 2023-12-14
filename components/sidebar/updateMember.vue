@@ -7,6 +7,7 @@
       :modelValue="getMemberInfo"
       @submit="editMember"
       :actions="false"
+      #default="{value}"
     > 
       <nuxt-link
         :to="`/members/${ getMemberInfo.id }/membership-overview`"
@@ -97,7 +98,11 @@
           name="image"
           :hideUploadButton="true"
         />
-        <FormKit type="select" name="gender" :options="['Male', 'Female']" />
+        <FormKit 
+        type="select" 
+        name="gender" 
+        :options="['Male', 'Female']" 
+        />
         <FormKit
           type="date"
           name="dob"
@@ -186,7 +191,7 @@
           </div>
         </h3>
         <FormKit type="text" placeholder="Facebook" name="facebook" />
-        <FormKit type="text" placeholder="instagram" name="Facebook" />
+        <FormKit type="text" placeholder="instagram" name="instagram" />
         <FormKit type="text" placeholder="Linkedin" name="linkedin" />
       </div>
 
@@ -223,7 +228,11 @@
           </div>
         </h3>
 
-        <FormKit type="text" placeholder="About" name="about" />
+        <FormKit 
+        type="text" 
+        placeholder="About" 
+        name="about" 
+        />
       </div>
 
       <div
@@ -266,7 +275,7 @@
         <FormKit
           type="text"
           placeholder="Emergency contact phone"
-          name="emergency_contactno"
+          name="emergency_contact"
         />
       </div>
 
@@ -312,6 +321,7 @@
           />
       </div>
       <FormKit type="submit" label="Save" class="EditSave" />
+      <pre wrap>{{ value }}</pre>
     </FormKit>
   </div>
 </template>

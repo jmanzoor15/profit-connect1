@@ -1,7 +1,7 @@
 <template>
-  <div class="sidebar-box">
-   <FormKit class="formCreateMember" type="form" @submit="addMember"
-     :v-model="addNewMember"
+  <div class="sidebar-box"> 
+   <FormKit class="formCreateMember" type="form" #default="{value}"    @submit="addMember"
+   
     :actions="false">
         <FormKit
             type="uppy"
@@ -10,8 +10,17 @@
             :hideUploadButton="true" 
           />
         
-          <FormKit type="text" name="firstname" id="First name"  placeholder="First name"/>
-          <FormKit type="text" name="lastname" id="Last name"  placeholder="Last name"/>
+          <FormKit 
+          type="text" 
+          name="firstname"  
+          placeholder="First name"
+          />
+
+          <FormKit 
+          type="text" 
+          name="lastname"  
+          placeholder="Last name"
+          />
   
 
         <h3 class="small-title-bold">Personal</h3>
@@ -25,7 +34,7 @@
       />
       <FormKit
           type="date"
-          name="gender"
+          name="dob"
           value="2011-01-01"
           label="Birthday"
           validation="required|date_before:2010-01-01"
@@ -34,7 +43,6 @@
       <FormKit
         type="tel"
         name="contactno"
-        label=""
         placeholder="Phone number"
         :validation-messages="{
           required: 'Phone number is required',
@@ -67,22 +75,28 @@
       <FormKit
         type="text"
         placeholder="Facebook"
+        name="facebook"
       />
       <FormKit
         type="text"
         placeholder="Instagram"
+        name="instagram"
       />
       <FormKit
         type="text"
         placeholder="Linkedin"
+        name="linkedin"
       />
       <h3 class="small-title-bold">Tags</h3>
       <FormKit
-        type="text"
-        placeholder="Tags"
-      />
+            type="multiselect"
+            name="tags"
+            mode="tags"
+            openDirection="top"
+            :options="computedTags"
+            
+          />
       <FormKit type="submit" label="Save" class="EditSave" />
-
     </FormKit>
   </div>
   </template>
@@ -91,6 +105,9 @@
 import { ref } from 'vue';
 import type { IAddMember } from "@/types/api/member/info";
 import { useAuthStore } from "@/store/auth";
+import { useTagStore } from "@/store/tag";
+import { storeToRefs } from "pinia";
+
   interface NodeProps {
   suffixIcon: string;
   type: string;
@@ -103,12 +120,13 @@ const handleIconClick = (node: { props: NodeProps }, e: Event) => {
 
 const { currentUserType } = useAuthStore();
 const addNewMember = ref({});
+const { tags } = storeToRefs(useTagStore());
 const emit = defineEmits(["reload", "add:addNewMember"]);
 
 const addMember = async (addNewMember: IAddMember) => {
   console.log(addNewMember);
   try {
-    const { data } = await useFetch("/api/member/update-member", {
+    const { data } = await useFetch("/api/member/add", {
       method: "POST",
       body: {
         ...addNewMember,
@@ -127,7 +145,9 @@ const addMember = async (addNewMember: IAddMember) => {
   }
 };
 
-
+const computedTags = computed(()=>{
+  return tags.value? tags.value.map((item: any) => ({ label: item.name, value: item.id })) : []
+});
   
   </script>
   <style lang="scss" scoped>
