@@ -4,31 +4,35 @@
       <div class="content__title-box">
         <h1>Member Search</h1>
         <div class="content-filters">
-          <FilterSort  />
+          <FilterSort />
           <FilterStatus />
         </div>
       </div>
       <SearchBar />
-      <div class="addNewMember"  @click="handleAddSidebar()">
-        <img class="plusIcon" src="~/assets/images/svg/plus-icon.svg" alt="Plus icon">
+      <div class="addNewMember" @click="handleAddSidebar()">
+        <img
+          class="plusIcon"
+          src="~/assets/images/svg/plus-icon.svg"
+          alt="Plus icon"
+        />
         Add New
       </div>
-      <ListMembers   
-      :items="getMembers"
-      @add="handleAddSidebar"
-      @edit="handleEditSidebar"
+      <ListMembers
+        :items="getMembers"
+        @add="handleAddSidebar"
+        @edit="handleEditSidebar"
       />
     </div>
 
-    <SidebarAddMember  v-if="showAddSidebar" />
+    <SidebarAddMember v-if="showAddSidebar" />
     <SidebarUpdateMember
-     v-if="showEditSidebar"
-     v-model:member-id="memberId"
-     @reload="refreshData"
-     />
+      v-if="showEditSidebar"
+      v-model:member-id="memberId"
+      @reload="refreshData"
+    />
   </section>
 </template>
-  
+
 <script lang="ts" setup>
 import { useAuthStore } from "~/store/auth";
 const { setBreadcrumb } = useBreadcrumb();
@@ -39,13 +43,16 @@ setBreadcrumb({
   ],
 });
 
-const memberId = ref('');
+const memberId = ref("");
 const showAddSidebar = ref(false);
 const showEditSidebar = ref(false);
 const { currentUserType } = useAuthStore();
 
-
-const { data: membersData, pending: membersPending, refresh: refreshMembers } = await useFetch("/api/member/all", {
+const {
+  data: membersData,
+  pending: membersPending,
+  refresh: refreshMembers,
+} = await useFetch("/api/member/all", {
   query: { facility_id: currentUserType?.id },
 });
 const handleAddSidebar = () => {
@@ -54,8 +61,8 @@ const handleAddSidebar = () => {
 };
 
 const handleEditSidebar = (tab: number) => {
-   memberId.value = membersData.value.members[tab].id,
-  showAddSidebar.value = false;
+  (memberId.value = membersData.value.members[tab].id),
+    (showAddSidebar.value = false);
   showEditSidebar.value = true;
 };
 
@@ -64,7 +71,6 @@ const getMembers = computed(() => {
     ? membersData.value.members
     : [];
 });
-
 
 const refreshData = () => {
   refreshMembers();
@@ -77,9 +83,6 @@ const refreshData = () => {
   justify-content: center;
   margin: 0 15px;
 }
-
-
-
 
 .content-section {
   display: flex;

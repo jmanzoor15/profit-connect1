@@ -1,7 +1,13 @@
 <template>
   <div class="card-package">
+    <MixToggleStar
+      v-model="isFeatured"
+      size="24"
+      class="star-toggle"
+      @update:model-value="onFeaturedChange"
+    />
     <div class="d-flex justify-content-between">
-      <div class="title">
+      <div class="title" role="button" @click="$emit('on-plan-select')">
         {{ name }}
       </div>
       <div class="d-flex gap-4">
@@ -12,7 +18,17 @@
           />
         </a>
         <span>Public</span>
-        <FormKit type="switch" name="is_public" v-model="isPublic" />
+        <FormKit
+          type="switch"
+          name="is_public"
+          @update:model-value="
+            $emit('on-planstatus-change', {
+              plan_id: id,
+              private: `${isPublic ? 'Yes' : 'No'}`,
+            })
+          "
+          v-model="isPublic"
+        />
       </div>
     </div>
     <div class="text-end">
@@ -53,6 +69,10 @@
 
 <script lang="ts" setup>
 const props = defineProps({
+  id: {
+    type: Number,
+    default: 0,
+  },
   name: {
     type: String,
     default: "",
@@ -73,8 +93,25 @@ const props = defineProps({
     type: String,
     default: "No",
   },
+  featured: {
+    type: String,
+    default: "No",
+  },
 });
 const isPublic = ref(props.private === "No" ?? false);
+const isFeatured = ref(props.featured === "Yes" ?? false);
+const emit = defineEmits([
+  "on-planstatus-change",
+  "on-featured-change",
+  "on-plan-select",
+]);
+
+const onFeaturedChange = (val: boolean) => {
+  emit("on-featured-change", {
+    plan_id: props.id,
+    featured: val ? "Yes" : "No",
+  });
+};
 </script>
 
 <style scoped lang="scss">
@@ -83,5 +120,10 @@ const isPublic = ref(props.private === "No" ?? false);
   background: #f2faff;
   padding: 12px;
   border-radius: 10px;
+  .star-toggle {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+  }
 }
 </style>

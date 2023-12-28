@@ -40,15 +40,27 @@
           validation="required|date_before:2010-01-01"
           validation-visibility="live"
         />
-      <FormKit
-        type="tel"
-        name="contactno"
-        placeholder="Phone number"
-        :validation-messages="{
-          required: 'Phone number is required',
-        }"
-        validation-visibility="dirty"
-      />
+        <div class="row g-2">
+          <div class="col-6"> 
+            <FormKit 
+              type="select"
+              label="select Country"
+              name="country_code"
+              :options="countryCodes"
+             />
+        </div>
+       <div class="col-6">
+          <FormKit
+          type="tel"
+          name="contactno"
+          placeholder="Phone number"
+          :validation-messages="{
+            required: 'Phone number is required',
+          }"
+          validation-visibility="dirty"
+        />
+      </div>
+    </div>
       <FormKit
         type="email"
         name="email"
@@ -97,6 +109,7 @@
             
           />
       <FormKit type="submit" label="Save" class="EditSave" />
+      <pre>{{ value }}</pre>
     </FormKit>
   </div>
   </template>
@@ -119,12 +132,13 @@ const handleIconClick = (node: { props: NodeProps }, e: Event) => {
 };
 
 const { currentUserType } = useAuthStore();
-const addNewMember = ref({});
 const { tags } = storeToRefs(useTagStore());
-const emit = defineEmits(["reload", "add:addNewMember"]);
+const emit = defineEmits(["reload"]);
+const countryCodes = ref([]);
+
+
 
 const addMember = async (addNewMember: IAddMember) => {
-  console.log(addNewMember);
   try {
     const { data } = await useFetch("/api/member/add", {
       method: "POST",
@@ -136,7 +150,7 @@ const addMember = async (addNewMember: IAddMember) => {
     });
     if (data.value.return) {
       emit("reload");
-      alert("Member edited successfully!");
+      alert("Member Added successfully!");
     } else {
       alert(data.value.message);
     }
@@ -149,6 +163,23 @@ const computedTags = computed(()=>{
   return tags.value? tags.value.map((item: any) => ({ label: item.name, value: item.id })) : []
 });
   
+onMounted(async () => {
+  try {
+     
+    const response = await fetch('https://gist.githubusercontent.com/anubhavshrimal/75f6183458db8c453306f93521e93d37/raw/CountryCodes.json');
+    if (response.ok) {
+      const data = await response.json();
+      countryCodes.value = data.map(country => ({
+        label: `${country.name} (${country.dial_code})`,
+        value: country.dial_code,
+      }));
+    } else {
+      console.error('Failed to fetch country codes');
+    }
+  } catch (error) {
+    console.error('Error fetching country codes:', error);
+  }
+});
   </script>
   <style lang="scss" scoped>
 .sidebar-box {

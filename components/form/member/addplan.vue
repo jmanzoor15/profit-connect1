@@ -1,15 +1,16 @@
 <template>
-  <div id="buyMembershipModal" class="modal-box buy-membership-modal is-active">
+  <div id="buyMembershipModal" class="modal-box buy-membership-modal is-active" v-if="selectedPlanId">
+    <h3 class="text-center">Purchase Item</h3>
     <FormKit
       type="form"
+      #default="{value}"
       @submit="submitHandler"
       :actions="false"
-      :modelValue="computedSelectedClass"
     >
     <div class="checkout-member">
       <div class="d-flex">
         <img class="member-avatar memberAvatarModal avatar" src="https://app.ihitreset.com/resetcrm/upload/1/image/members/profile/1.jpg?timestamp=1702466664153" alt="Member avatar" data-name="Michel Santana">
-        <div class="member-name memberNameModal">Michel Santana</div>
+        <div class="member-name memberNameModal">{{ getMemberInfo.firstname }} {{ getMemberInfo.lastname }}</div>
       </div>
 
       <div class="d-flex">
@@ -19,7 +20,7 @@
             v-model="classType"
             :options="classOptions"
           />
-      
+        
         <!-- <label class="checkbox-container">
           <input type="checkbox" name="remember">
           <img class="cardIcon" src="../assets/images/master-card.png?timestamp=1702466663557" alt="Master card">
@@ -28,20 +29,34 @@
         </label> -->
       </div>
     </div>
-
+    <div class="col-4">
+      <FormKit
+        type="date"
+        name="date"
+        :value="today"
+        @input="updateDate"
+        validation-visibility="live"
+      />
+      <FormKit
+        type="hidden"
+        v-model="selectedPlanId.price"
+        name="price"
+      />
+    </div>
     <div class="membership-starts">
       Membership Starts:
-      <input type="hidden" class="puchaseDatepicker flatpickr-input" placeholder="Today" name="start_date" value="2023-10-02"><input class="puchaseDatepicker form-control input" placeholder="Today" tabindex="0" type="text" readonly="readonly">
+      <!-- <input type="hidden" class="puchaseDatepicker flatpickr-input" placeholder="Today" name="start_date" :value=" getMemberInfo.start_date "> -->
+      
+      <input class="puchaseDatepicker form-control input" placeholder="Today" tabindex="0" type="text" readonly="readonly" :value="displayDate" >
     </div>
-
     <div class="checkout-item-box">
       <div class="checkout-row">
         <div>
-          <div class="checkout-row__title planNameModal">12 Credits for tribe</div>
-          <div class="planDescModal">Join the tribe offers for 3 month validity</div>
+          <div class="checkout-row__title planNameModal">{{ selectedPlanId.name }}</div>
+          <div class="planDescModal">{{selectedPlanId.desc}}</div>
         </div>
 
-        <div class="checkout-row__price">AED <span class="originalPriceVal">1800</span></div>
+        <div class="checkout-row__price">AED <span class="originalPriceVal">{{ selectedPlanId.price }}</span></div>
       </div>
     </div>
 
@@ -49,7 +64,11 @@
 
       <div class="sub-total">
         <div class="title">Sub-total</div>
-        <div class="price">AED <span class="originalPriceVal">1800</span></div>
+        <div v-if="selectedPlanId.promotionPrice" class="price">AED
+          <span class="originalPriceVal">{{selectedPlanId.promotionPrice}}</span>
+        </div>
+        <div v-else class="price">AED <span class="originalPriceVal">{{selectedPlanId.price}}</span>
+        </div>
       </div>
 
       <div class="info-box promo">
@@ -68,156 +87,78 @@
       <div class="info-box total">
         <div class="d-flex">
           <div class="title">Total</div>
-          <div class="price">AED <span class="originalPriceVal">1800</span></div>
+          <div  v-if="selectedPlanId.promotionPrice" class="price">AED 
+            <span class="originalPriceVal">{{selectedPlanId.promotionPrice}}</span>
+          </div>
+          <div  v-else class="price">AED <span class="originalPriceVal">{{selectedPlanId.price}}</span></div>
         </div>
       </div>
     </div>
-    <div class="mt-4 d-flex justify-content-center ">
+    <div class="save mt-4 d-flex justify-content-center ">
         <FormKit type="submit">Purchase</FormKit>
       </div>
-    <!-- Save & cancel -->
-    <!-- <div class="save-cancel-box">
-      <div>
-        <input class="facilityIdValue" type="hidden" name="facility_id" value="1">
-        <input class="memberIdValue" type="hidden" name="member_id" value="1">
-        <input class="planIdValue" type="hidden" name="plan_id" value="5">
-
-        <button class="btn btn-primary btnWithProgress">Purchase</button>
-        <button type="button" class="btn btn-transparent cancelBtn">Cancel</button>
-      </div>
-    </div> -->
-  
+  <!-- <pre>{{ value }}</pre> -->
   </FormKit>
 </div>
   </template>
-  
-  <script setup>
+
+<script lang="ts" setup>
   import { classOptions, timeTypeSelect } from "@/constants/member";
   import { useTagStore } from "@/store/tag";
-  import { useAuthStore } from "@/store/auth";
-  import { storeToRefs } from "pinia";
-  import { removeObjectKeys } from "@/utils/dataCleaner";
-  
+  import type { ITag } from "@/types/api/member/info";
   const props = defineProps({
-    categories: {
-      type: Array,
-      default: () => [],
-    },
-    category: {
-      tye: Object,
-      default: () => {},
-    },
-    classData: {
+    memberInfo: {
       type: Object,
-      default: () => {},
-    },
+    default: () => {},
+  },
+  selectedPlanId: {
+    type: Object,
+    default: () => {},
+  },
   });
+  const submitHandler = async (purchaseData) => {
+   console.log(purchaseData)
+};
+
+  const classType = ref("Card");
+             
+
+          const today = new Date().toISOString().split('T')[0];
+          const selectedDate = ref(today);
+      
+          const displayDate = computed(() => {
+            return selectedDate.value === today ? 'Today' : selectedDate.value;
+          });
+
+          const updateDate = (newDate) => {
+            selectedDate.value = newDate;
+          };
+
+       const getMemberInfo = computed(() => {
+
+       if (props.memberInfo && props.memberInfo.member && props.memberInfo.     member.data && props.memberInfo.member.data.length > 0) {
+        const memberData = props.memberInfo.member.data[0];
+       const memberships =  props.memberInfo.member.memberships[0];
+    
+      return {
+      id: memberData.id,
+      firstname: memberData.firstname,
+      lastname: memberData.lastname,
+      image: memberData.img_src,
+      membership_status: memberData.membership_status,
+      start_date: memberData.start_date,
+      end_date: memberData.end_date,
+      plan_name: memberships.plan_name,
+      plan_desc: memberships.plan_name,
+      plan_price: memberships.plan_price,
+     
+    };
+  }
+
+  return {};
+});
   
-  const selectedCategory = ref();
-  const emit = defineEmits(["reload"]);
-  
-  const { currentUserType } = useAuthStore();
-  const classType = ref("On-site");
-  const availableTagsSelected = ref([]);
-  const exceptTagsSelected = ref([]);
-  
-  const { tags } = storeToRefs(useTagStore());
-  
-  const exceptTags = computed(() => {
-    return tags.value
-      ? tags.value
-          .filter(
-            (item) =>
-              availableTagsSelected.value &&
-              !availableTagsSelected.value.includes(item.id.toString())
-          )
-          .map((item) => ({ label: item.name, value: item.id }))
-      : [];
-  });
-  
-  const computedSelectedClass = computed(() => {
-    return props.classData
-      ? {
-          ...props.classData,
-          available_tags: props.classData.available_tags
-            .filter((item) => item)
-            .map((item) => item.id),
-          except_tags: props.classData.except_tags
-            .filter((item) => item)
-            .map((item) => item.id),
-        }
-      : {};
-  });
-  
-  const availableTags = computed(() => {
-    return tags.value
-      ? tags.value
-          .filter(
-            (item) =>
-              exceptTagsSelected.value &&
-              !exceptTagsSelected.value.includes(item.id.toString())
-          )
-          .map((item) => ({ label: item.name, value: item.id }))
-      : [];
-  });
-  
-  const addClass = async (classData) => {
-    try {
-      const { data } = await useFetch("/api/class/add", {
-        method: "POST",
-        body: {
-          ...classData,
-          facility_id: currentUserType?.id,
-        },
-      });
-      if (data.value.return) {
-        alert("Class added successfully!");
-        emit("reload");
-      } else {
-        alert(data.value.message);
-      }
-    } catch (err) {
-      console.log("Error:/api/class/add", err);
-    }
-  };
-  
-  const updateClass = async (classData) => {
-    try {
-      const { data } = await useFetch("/api/class/edit", {
-        method: "POST",
-        body: {
-          ...classData,
-          facility_id: currentUserType?.id,
-          class_id: computedSelectedClass.value?.id,
-        },
-      });
-      if (data.value.return) {
-        alert("Class edited successfully!");
-        emit("reload");
-      } else {
-        alert(data.value.message);
-      }
-    } catch (err) {
-      console.log("Error:/api/class/edit", err);
-    }
-  };
-  
-  const submitHandler = async (classData) => {
-    let tempData = removeObjectKeys(classData, [
-      "img_src",
-      "img_video",
-      "updated_date",
-    ]);
-    // remove disabled data
-    if (classData.type === "On-site" || classData.type === "Online") {
-      tempData = removeObjectKeys(tempData, ["location", "googlemaps"]);
-    } else if (classData.type === "Off-site" || classData.type === "On-site") {
-      tempData = removeObjectKeys(tempData, ["url"]);
-    }
-    computedSelectedClass.value?.id
-      ? updateClass(classData)
-      : addClass(classData);
-  };
+
   </script>
   
   <style lang="scss" scoped>
@@ -242,10 +183,32 @@
     visibility: hidden;
     transition: 650ms;
 }
+.buy-membership-modal .total-price {
+    background: #fff;
+    position: absolute;
+    bottom: 150px;
+    right: 30px;
+    left: 30px;
+}
+.save {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 60px;
+}
 .buy-membership-modal .checkout-member {
     display: flex;
     justify-content: space-between;
     margin-bottom: 50px;
+    margin-top: 30px;
+}
+.buy-membership-modal .checkout-row__title {
+    color: #000;
+    font: 22px "Poppins Medium",sans-serif,Arial;
 }
 .buy-membership-modal .checkout-member .member-avatar {
     width: 60px;
@@ -253,6 +216,11 @@
     margin-right: 15px;
     border-radius: 50%;
 }
+.buy-membership-modal .checkout-row__price {
+    font-size: 22px;
+    font-family: "Poppins Medium",sans-serif,Arial;
+}
+
 .buy-membership-modal .checkout-member .member-name {
     font: 22px "Poppins Medium",sans-serif,Arial;
     color: #000;

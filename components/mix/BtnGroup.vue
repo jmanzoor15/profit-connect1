@@ -17,15 +17,12 @@
 import { useVModel } from "@vueuse/core";
 
 const props = defineProps<{
-  modelValue: string;
-  labels: {
-    type: Array<String>;
-    default: () => [];
-  };
+  modelValue: number;
+  labels: string[]
 }>();
 const emit = defineEmits(["update:modelValue"]);
 
-const data = useVModel(props, "modelValue", emit);
+const data:Ref<number> = useVModel(props, "modelValue", emit);
 </script>
 
 <style lang="scss" scoped>
@@ -33,6 +30,7 @@ const data = useVModel(props, "modelValue", emit);
   ul {
     list-style: none;
     display: flex;
+    padding:0px;
     li {
       color: #cccccc;
       padding: 8px 12px;

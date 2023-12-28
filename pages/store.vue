@@ -11,7 +11,9 @@
             label="New Item"
           />
         </div>
-        <SearchBar />
+        <div class="search">
+            <SearchBar />
+        </div>
       </div>
       <div class="d-flex align-items-baseline">
         <MixTab
@@ -170,3 +172,10 @@ watch(showCatrgoryForm, (val) => {
   }
 });
 </script>
+<style lang="scss" scoped>
+.search {
+
+position: relative;
+top: 7px;
+}
+</style>

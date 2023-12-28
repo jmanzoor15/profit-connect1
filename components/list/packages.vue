@@ -8,47 +8,67 @@
       :data-status="data.status === 'Active' ? 'Active' : 'Inactive'"
     >
       <div class="package-row__status">
-        <div class="title editPackageBtn">
+        <div class="title editPackageBtn" @click="onPackageSelect(data)">
           {{ data.name }}
         </div>
-        <div class="switch">
-          <a
-            href="#"
-            :class="data.status === 'Active' ? 'is-active' : ''"
-            class="filter-switch__option"
-            >Active</a
-          >
-          <a
-            href="#"
-            :class="data.status === 'Inactive' ? 'is-active' : ''"
-            class="filter-switch__option red switchToInactive"
-            >Inactive</a
-          >
-        </div>
+
+        <MixToggleBtn
+          v-model="data.status"
+          left-color="#0f2"
+          right-color="red"
+          left="Active"
+          right="Inactive"
+          @update:model-value="$emit('on-change-package-status', data)"
+        />
       </div>
 
       <div class="row g-3 w-100">
         <div class="col-6" v-for="plan in data?.plans" :key="plan?.id">
-          <CardPackage v-bind="plan" />
+          <CardPackage
+            v-bind="plan"
+            @onPlanstatusChange="$emit('on-planstatus-change', $event)"
+            @onFeaturedChange="$emit('on-featured-change', $event)"
+            @onPlanSelect="$emit('on-plan-select', plan)"
+          />
         </div>
         <div class="col-6">
-          <img
-            src="~/assets/images/svg/plus-icon.svg?timestamp=1701243704100"
-            alt="Add plan icon"
-          />
-          <div>Add Plan</div>
+          <div
+            @click="
+              $emit('on-add-plan', {
+                package_id: data.id,
+                package_name: data.name,
+              })
+            "
+          >
+            <img
+              src="~/assets/images/svg/plus-icon.svg?timestamp=1701243704100"
+              alt="Add plan icon"
+            />
+            <div>Add Plan</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
+const emit = defineEmits([
+  "on-package-select",
+  "on-change-package-status",
+  "on-planstatus-change",
+  "on-add-plan",
+  "on-featured-change",
+  "on-plan-select",
+]);
 defineProps({
   packages: {
     type: Array<any>,
     default: () => [],
   },
 });
+const onPackageSelect = (data: any) => {
+  emit("on-package-select", data);
+};
 </script>
 
 <style lang="scss" scoped>
@@ -80,41 +100,6 @@ defineProps({
 
 .content-packages .package-row__status .title:hover {
   color: #84ceff;
-}
-
-.content-packages .package-row__status .switch {
-  display: flex;
-  background: #f2faff;
-  border-radius: 10px;
-  width: fit-content;
-  padding: 4px;
-}
-
-.content-packages .package-row__status .switch a {
-  color: #ccc;
-  padding: 4px 12px;
-  text-decoration: none;
-  transition: 0.35s;
-}
-
-.content-packages .package-row__status .switch a:hover {
-  color: #0a58ca;
-}
-
-.content-packages .package-row__status .switch a.is-active {
-  color: #fff;
-  text-decoration: none;
-  border-radius: 10px;
-  background: #0f2;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1607843137);
-}
-
-.content-packages .package-row__status .switch a.is-active.red {
-  background: red;
-}
-
-.content-packages .package-row__status .switch a.is-active:hover {
-  color: #fff;
 }
 
 .featured-status {
