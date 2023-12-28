@@ -1,3 +1,4 @@
+// composable
 import { useWindowSize } from "@vueuse/core";
 
 export default () => {

@@ -1,3 +1,4 @@
+// composable
 import { useBreadcrumbStore } from "~/store/breadcrumb";
 
 export default () => {
