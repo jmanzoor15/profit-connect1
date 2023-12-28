@@ -1,3 +1,4 @@
+// composable
 import { IAlertBox } from "~/types/mix/alert";
 
 export default () => {
