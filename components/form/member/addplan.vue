@@ -9,17 +9,17 @@
     >
     <div class="checkout-member">
       <div class="d-flex">
-        <img class="member-avatar memberAvatarModal avatar" src="https://app.ihitreset.com/resetcrm/upload/1/image/members/profile/1.jpg?timestamp=1702466664153" alt="Member avatar" data-name="Michel Santana">
+        <img class="member-avatar" :src="getImageUrl(getMemberInfo.image)"    />
         <div class="member-name memberNameModal">{{ getMemberInfo.firstname }} {{ getMemberInfo.lastname }}</div>
       </div>
 
       <div class="d-flex">
-        <FormKit
+        <!-- <FormKit
             name="type"
             type="radio"
             v-model="classType"
             :options="classOptions"
-          />
+          /> -->
         
         <!-- <label class="checkbox-container">
           <input type="checkbox" name="remember">
@@ -37,11 +37,11 @@
         @input="updateDate"
         validation-visibility="live"
       />
-      <FormKit
+      <!-- <FormKit
         type="hidden"
         v-model="selectedPlanId.price"
         name="price"
-      />
+      /> -->
     </div>
     <div class="membership-starts">
       Membership Starts:
@@ -67,18 +67,18 @@
         <div v-if="selectedPlanId.promotionPrice" class="price">AED
           <span class="originalPriceVal">{{selectedPlanId.promotionPrice}}</span>
         </div>
-        <div v-else class="price">AED <span class="originalPriceVal">{{selectedPlanId.price}}</span>
+        <div v-else class="price">AED <span class="originalPriceVal">{{selectedPlanId.price}} </span>
         </div>
       </div>
 
       <div class="info-box promo">
         <div class="d-flex">
           <div class="title">Promocode</div>
-          <FormKit
+          <!-- <FormKit
                 type="text"
                 name="promocode"
                 placeholder="Promocode"    
-            />
+            /> -->
         </div>
 
         <div class="promocode__price">- AED 10.00</div>
@@ -97,15 +97,16 @@
     <div class="save mt-4 d-flex justify-content-center ">
         <FormKit type="submit">Purchase</FormKit>
       </div>
-  <!-- <pre>{{ value }}</pre> -->
+  <pre>{{ value }}</pre>
   </FormKit>
 </div>
   </template>
 
 <script lang="ts" setup>
-  import { classOptions, timeTypeSelect } from "@/constants/member";
-  import { useTagStore } from "@/store/tag";
-  import type { ITag } from "@/types/api/member/info";
+  import { useAuthStore } from "@/store/auth";
+
+  const emit = defineEmits();
+  const { getUrl: getImageUrl } = useBoImage();
   const props = defineProps({
     memberInfo: {
       type: Object,
@@ -116,8 +117,30 @@
     default: () => {},
   },
   });
-  const submitHandler = async (purchaseData) => {
-   console.log(purchaseData)
+  const { currentUserType } = useAuthStore();
+
+  const submitHandler = async (purchaseData : any) => {    
+  try {
+    const { data } = await useFetch("/api/member/add-plan", {
+      method: "POST",
+      body: {
+        
+        start_date: purchaseData.date,
+        facility_id: currentUserType?.id,
+        plan_id: props.selectedPlanId.id,
+        member_id: getMemberInfo.value.id
+      },
+    });
+    if (data.value.return) {
+      emit("reload");
+      alert("Plan added successfully!");
+    } else {
+      alert(data.value.message);
+    }
+  } catch (err) {
+    console.log("Error:/api/member/add-plan", err);
+  }
+
 };
 
   const classType = ref("Card");
@@ -136,9 +159,9 @@
 
        const getMemberInfo = computed(() => {
 
-       if (props.memberInfo && props.memberInfo.member && props.memberInfo.     member.data && props.memberInfo.member.data.length > 0) {
+       if (props.memberInfo && props.memberInfo.member && props.memberInfo.member.data && props.memberInfo.member.data.length > 0) {
         const memberData = props.memberInfo.member.data[0];
-       const memberships =  props.memberInfo.member.memberships[0];
+       
     
       return {
       id: memberData.id,
@@ -146,11 +169,7 @@
       lastname: memberData.lastname,
       image: memberData.img_src,
       membership_status: memberData.membership_status,
-      start_date: memberData.start_date,
-      end_date: memberData.end_date,
-      plan_name: memberships.plan_name,
-      plan_desc: memberships.plan_name,
-      plan_price: memberships.plan_price,
+     
      
     };
   }

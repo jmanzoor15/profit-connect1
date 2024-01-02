@@ -1,4 +1,3 @@
-// composable
 export default () => {
   const config = useRuntimeConfig();
   const imageUrl = config.public.imageUrl;

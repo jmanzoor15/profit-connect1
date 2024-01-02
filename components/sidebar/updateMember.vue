@@ -5,11 +5,12 @@
       class="sidebar-box__title text-center"
       title="View membership"
     >
+    <!-- {{ getMemberInfo.image }} -->
+    <!-- <img :src="`https://app.ihitreset.com/resetcrm/${getMemberInfo.image}`" /> -->
       <img :src="getImageUrl(getMemberInfo.image)" />
       <h2 class="content-title-bold editUserName">
         {{ getMemberInfo.firstname }} {{ getMemberInfo.lastname }}
       </h2>
-      <div class="editUserOccupation"></div>
     </a>
     <FormKit
       class="formEditMember"
@@ -246,8 +247,8 @@
             alt="Edit icon"
           />
         </h3>
-        {{ getMemberInfo.emergency_contactno }}<br />
-        {{ getMemberInfo.emergency_name }}
+        {{ getMemberInfo.emergency_contact_no }}<br />
+        {{ getMemberInfo.emergency_contact_name }}
         <div class="icon-text showMemberemergeny"></div>
       </div>
 
@@ -268,12 +269,12 @@
         <FormKit
           type="text"
           placeholder="Emergency contact name"
-          name="emergency_name"
+          name="emergency_contact_name"
         />
         <FormKit
           type="text"
           placeholder="Emergency contact phone"
-          name="emergency_contact"
+          name="emergency_contact_no"
         />
       </div>
 
@@ -318,7 +319,7 @@
         />
       </div>
       <FormKit type="submit" label="Save" class="EditSave" />
-      <!-- <pre wrap>{{ value }}</pre> -->
+      <pre wrap>{{ value }}</pre>
     </FormKit>
   </div>
 </template>
@@ -402,14 +403,18 @@ const cancelEdit = (toggleKey: keyof ToggleStates) => {
 
 const editMember = async (getMemberInfo: any) => {
   try {
+    
+    const { id, ...memberInfoWithoutId } = getMemberInfo;
+
     const { data } = await useFetch("/api/member/update-member", {
       method: "POST",
       body: {
-        member_id: getMemberInfo.id,
+        member_id: getMemberInfo.id, 
         facility_id: currentUserType?.id,
-        ...getMemberInfo,
+        ...memberInfoWithoutId,
       },
     });
+
     if (data.value.return) {
       emit("reload");
       alert("Member edited successfully!");
@@ -420,6 +425,7 @@ const editMember = async (getMemberInfo: any) => {
     console.log("Error:/api/Member/update", err);
   }
 };
+
 
 const computedTags = computed(() => {
   return tags.value
@@ -463,15 +469,13 @@ const getMemberInfo = computed(() => {
       contactno: memberData.contactno,
       email: memberData.email,
       image: memberData.img_src,
-      membership_status: memberData.membership_status,
-      start_date: memberData.start_date,
-      end_date: memberData.end_date,
+      // membership_status: memberData.membership_status,
       facebook: socialData.facebook,
       instagram: socialData.instagram,
       linkedin: socialData.linkedin,
       about: aboutData.about,
-      emergency_name: emergencyContactData.name,
-      emergency_contactno: emergencyContactData.contactno,
+      emergency_contact_name: emergencyContactData.name,
+      emergency_contact_no: emergencyContactData.contactno,
       tags: tags?.map((tag: ITag) => tag?.id),
     };
   }

@@ -9,7 +9,7 @@
     <div class="member-row">
       <div class="d-flex member-row-ava-box">
         <div>
-          <img v-if="item.img_src" class="member-row__avatar avatar" :src="`https://app.ihitreset.com/resetcrm/${item.img_src}`" 
+          <img v-if="item.img_src" class="member-row__avatar avatar" :src="getImageUrl(item.img_src)" 
           >
             <div v-else class="member-row__avatar-placeholder">
               {{ item.firstname }} {{ item.lastname }}
@@ -19,7 +19,9 @@
         <div class="member-row__data">
            <div class="member-row__name">{{ item.firstname }} {{ item.lastname }}</div>
           <div class="d-flex">
-            <div class="member-row__time">{{item.membership_status}}</div>
+          <div class="member-row__time" v-if=" item.membership_status === 'Active'"> 
+            {{getDaysLeft(item.end_date)}}
+         </div>
             <!-- <div>{{ member.occupation || '' }}</div> -->
             <div>occupation  </div>
           </div>
@@ -47,6 +49,7 @@
   </template>
   
   <script lang="ts" setup>
+  import { getImage } from "~/utils/providers/boImage";
   const props = defineProps({
  
   items: {
@@ -56,11 +59,26 @@
 });
 
 const emit = defineEmits([ "edit"]);
-
+const { getUrl: getImageUrl } = useBoImage();
 
 const onClickEdit = (tab:number) => {
   emit("edit",tab);
 };
+
+import { ref } from 'vue';
+
+const getDaysLeft = (endDate) => {
+    const today = new Date();
+    const end = new Date(endDate);
+
+    if (end > today) {
+      const diffTime = end - today;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return `${diffDays} days left`;
+    }
+  return 'Inactive';
+};
+
 
   </script>
 

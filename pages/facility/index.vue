@@ -1,8 +1,9 @@
 <template>
-    <section class="content-section">
+    <section class="content-section mt-4">
 
         <FacilityUpdate   />
       <div class="content-box">
+        <!-- <button @click="SelectFacility('2')">select facility</button> -->
          <FacilityGeneral />
       </div>
   
@@ -12,51 +13,54 @@
   
   <script lang="ts" setup>
   import { useAuthStore } from "~/store/auth";
-  
- 
-  // const { setBreadcrumb, setBreadcrumbTab } = useBreadcrumb();
-  // setBreadcrumb({
-  //   items: [
-  //     { label: "Control Panel", link: "/" },
-  //     { label: "Facility", link: "/" },
-  //   ],
-  // });
-  // setBreadcrumbTab({
-  //   items: [
-  //     {
-  //       // label: "General",
-  //       link: `/facility`,
-  //     },
-  //     { label: "Timing", link: `/facility/timing` },
-  //     { label: "Staff", link: `/facility/staff` },
-  //     { label: "Forms", link: `/facility/forms` },
-  //     { label: "Payments", link: `/facility/payments` },
-  //     { label: "Discount Codes", link: `/facility/discount` },
-  //     { label: "Tax", link: `/facility/tax` },
-  //     { label: "Activity", link: `/facility/activity` },
-  //   ],
-  // });
-  
-  const { currentUserType } = useAuthStore();
-  
-  const {
-    data: membersData,
-    pending: membersPending,
-    refresh: refreshMembers,
-  } = await useFetch("/api/member/all", {
-    query: { facility_id: currentUserType?.id },
-  });
+
+const facilityData = ref(null);
+const memberInfoPending = ref(false);
+const { currentUserType } = useAuthStore();
+
+
+const SelectFacility = async (value) => {
+  try {
+    const { data } = await useFetch("/api/franchise/current-facility", {
+      method: "POST",
+      body: {
+        facility_id: currentUserType?.id,
+      },
+    });
+    facilityData.value = data;
+  }catch (err) {
+        console.error("Error fetching facility data:", err);
+      } finally {
+        memberInfoPending.value = false; // End loading
+      }
+};
+
+onMounted(SelectFacility);
+
+// Watch for changes in the facility ID
+watch(
+  () => currentUserType.value?.id,
+  async (facilityId) => {
+    if (facilityId) {
+      memberInfoPending.value = true;
+
+      try {
+        const { data } = await useFetch("/api/franchise/current-facility", {
+          method: "POST",
+          body:{ facility_id: facilityId },
+        });
+        facilityUpdateInfoData.value = data.value;
+      } catch (err) {
+        console.error("Error fetching facility data:", err);
+      } finally {
+        memberInfoPending.value = false; // End loading
+      }
+    }
+  },
+  { immediate: true }
+);
 
   
-  const getMembers = computed(() => {
-    return membersData.value && membersData.value.members
-      ? membersData.value.members
-      : [];
-  });
-  
-  const refreshData = () => {
-    refreshMembers();
-  };
   </script>
   
   <style lang="scss" scoped>
