@@ -1,18 +1,15 @@
 <template>
-      <!-- Filters -->
-      <div class="content-filters">
-        <div class="filter-switch switchClick">
-          <a href="#" class="filter-switch__option is-active sortAZbtn">A - Z</a>
-          <a href="#" class="filter-switch__option sortZAbtn">Z - A</a>
-        </div>
-      </div>
-  </template>
-  
-  <script lang="ts" setup>
- 
-  </script>
-  <style lang="scss" scoped>
+  <!-- Filters -->
+  <div class="content-filters">
+    <div class="filter-switch switchClick">
+      <a href="#" class="filter-switch__option is-active sortAZbtn">A - Z</a>
+      <a href="#" class="filter-switch__option sortZAbtn">Z - A</a>
+    </div>
+  </div>
+</template>
 
+<script lang="ts" setup></script>
+<style lang="scss" scoped>
 .filter-switch {
   display: flex;
   align-items: center;
@@ -47,17 +44,16 @@
     }
   }
 }
-.filter-switch__option{
-    color:#ccc;
-    padding:4px 12px;
-    text-decoration:none
+.filter-switch__option {
+  color: #ccc;
+  padding: 4px 12px;
+  text-decoration: none;
 }
-.filter-switch__option.is-active{
-    color:#fff;
-    text-decoration:none;
-    border-radius:10px;
-    background:#84ceff;
-    box-shadow:0 3px 6px rgba(0,0,0,.1607843137)
+.filter-switch__option.is-active {
+  color: #fff;
+  text-decoration: none;
+  border-radius: 10px;
+  background: #84ceff;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1607843137);
 }
-
 </style>

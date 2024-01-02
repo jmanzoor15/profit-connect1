@@ -4,8 +4,10 @@
       class="container d-flex justify-content-between align-items-center h-100 mx-auto"
     >
       <NavigationMenu />
-      <div class="d-flex">
+      <div class="d-flex gap-4">
+        <NavigationFacilityDropdown />
         <NavigationUserDropdown />
+       
       </div>
     </div>
   </header>

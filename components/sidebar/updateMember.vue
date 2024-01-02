@@ -1,30 +1,25 @@
 <template>
   <div class="sidebar-box">
-    <!-- {{ memberId }}{{ getMemberInfo }} -->
+    <a
+      :href="`/members/${getMemberInfo.id}/membership-overview`"
+      class="sidebar-box__title text-center"
+      title="View membership"
+    >
+    <!-- {{ getMemberInfo.image }} -->
+    <!-- <img :src="`https://app.ihitreset.com/resetcrm/${getMemberInfo.image}`" /> -->
+      <img :src="getImageUrl(getMemberInfo.image)" />
+      <h2 class="content-title-bold editUserName">
+        {{ getMemberInfo.firstname }} {{ getMemberInfo.lastname }}
+      </h2>
+    </a>
     <FormKit
       class="formEditMember"
       type="form"
       :modelValue="getMemberInfo"
       @submit="editMember"
       :actions="false"
-    > 
-      <nuxt-link
-        :to="`/members/${ getMemberInfo.id }/membership-overview`"
-        class="sidebar-box__title text-center "
-        title="View membership"
-      > 
-        <img
-          :src="`https://app.ihitreset.com/resetcrm/${getMemberInfo.image}`"
-          class="previewMemberAvatar avatar"
-          alt="Member avatar"
-          data-name="ABC XYZ"
-        />
-        <h2 class="content-title-bold editUserName">
-          {{ getMemberInfo.firstname }} {{ getMemberInfo.lastname }}
-        </h2>
-        <div class="editUserOccupation"></div>
-      </nuxt-link>
-
+      #default="{ value }"
+    >
       <div
         v-show="!toggleStates.isPersonalEditMode.value"
         class="personal-show data-block-show"
@@ -61,7 +56,10 @@
               src="~assets/images/svg/members-info/phone.svg"
               alt="Phone icon"
             />
-            <span class="showPhoneNumber">{{ getMemberInfo.contactno }}</span>
+            <span class="showPhoneNumber"
+              >{{ getMemberInfo.country_code }}
+              {{ getMemberInfo.contactno }}</span
+            >
           </div>
 
           <div class="icon-text">
@@ -79,7 +77,7 @@
         class="personal-edit data-block-edit"
       >
         <h3 class="small-title-bold">
-          Personal 
+          Personal
           <div
             class="goBackShowMode"
             data-show="personal-show"
@@ -102,21 +100,30 @@
           type="date"
           name="dob"
           label="Birthday"
-          help="Enter your birth day"
           validation="required|date_before:2010-01-01"
           validation-visibility="live"
         />
-        <FormKit
-          type="tel"
-          name="contactno"
-          label=""
-          placeholder="Phone number"
-          
-          :validation-messages="{
-            required: 'Phone number is required',
-          }"
-          validation-visibility="dirty"
-        />
+
+        <div class="row g-2">
+          <div class="col-6">
+            <FormKit
+              type="select"
+              name="country_code"
+              :options="countryCodes"
+            />
+          </div>
+          <div class="col-6">
+            <FormKit
+              type="tel"
+              name="contactno"
+              placeholder="Phone number"
+              :validation-messages="{
+                required: 'Phone number is required',
+              }"
+              validation-visibility="dirty"
+            />
+          </div>
+        </div>
         <FormKit
           type="email"
           name="email"
@@ -186,7 +193,7 @@
           </div>
         </h3>
         <FormKit type="text" placeholder="Facebook" name="facebook" />
-        <FormKit type="text" placeholder="instagram" name="Facebook" />
+        <FormKit type="text" placeholder="instagram" name="instagram" />
         <FormKit type="text" placeholder="Linkedin" name="linkedin" />
       </div>
 
@@ -195,7 +202,7 @@
         class="about-show data-block-show"
       >
         <h3 class="small-title-bold">
-          About  
+          About
           <img
             @click="() => startEdit('isAboutEditMode')"
             class="editgetMemberInfo"
@@ -204,7 +211,7 @@
             alt="Edit icon"
           />
         </h3>
-
+        {{ getMemberInfo.about }}
         <div class="icon-text showMemberAbout"></div>
       </div>
 
@@ -240,7 +247,8 @@
             alt="Edit icon"
           />
         </h3>
-
+        {{ getMemberInfo.emergency_contact_no }}<br />
+        {{ getMemberInfo.emergency_contact_name }}
         <div class="icon-text showMemberemergeny"></div>
       </div>
 
@@ -261,12 +269,12 @@
         <FormKit
           type="text"
           placeholder="Emergency contact name"
-          name="emergency_name"
+          name="emergency_contact_name"
         />
         <FormKit
           type="text"
           placeholder="Emergency contact phone"
-          name="emergency_contactno"
+          name="emergency_contact_no"
         />
       </div>
 
@@ -284,7 +292,7 @@
             alt="Edit icon"
           />
         </h3>
-
+        {{ tagname(getMemberInfo.tags) }}
         <div class="showTagsWithComma"></div>
       </div>
 
@@ -303,15 +311,15 @@
           </div>
         </h3>
         <FormKit
-            type="multiselect"
-            name="tags"
-            mode="tags"
-            openDirection="top"
-            :options="computedTags"
-            
-          />
+          type="multiselect"
+          name="tags"
+          mode="tags"
+          openDirection="top"
+          :options="computedTags"
+        />
       </div>
       <FormKit type="submit" label="Save" class="EditSave" />
+      <pre wrap>{{ value }}</pre>
     </FormKit>
   </div>
 </template>
@@ -323,11 +331,20 @@ import { useTagStore } from "@/store/tag";
 import { storeToRefs } from "pinia";
 const emit = defineEmits(["reload", "update:categoryData"]);
 import type { ITag } from "@/types/api/member/info";
+import { getImage } from "~/utils/providers/boImage";
 const props = defineProps({
   memberId: {
     type: String,
-    default: ''
+    default: "",
   },
+});
+
+const { setBreadcrumb, setBreadcrumbTab } = useBreadcrumb();
+setBreadcrumb({
+  items: [
+    { label: "Manage", link: "/" },
+    { label: "Members", link: "/" },
+  ],
 });
 
 const { memberId } = toRefs(props);
@@ -335,63 +352,30 @@ const memberInfoData = ref(null);
 const memberInfoPending = ref(false);
 const { tags } = storeToRefs(useTagStore());
 const { currentUserType } = useAuthStore();
+const { getUrl: getImageUrl } = useBoImage();
+const countryCodes = ref([]);
 
-
-
-const computedTags = computed(()=>{
-  return tags.value? tags.value.map((item: any) => ({ label: item.name, value: item.id })) : []
+setBreadcrumbTab({
+  items: [
+    {
+      label: "Membership",
+      link: `/members/${memberId.value}/membership-overview`,
+    },
+    { label: "Payment", link: `/members/${memberId.value}/payment` },
+    { label: "Attendance", link: `/members/${memberId.value}/attendance` },
+    { label: "Wellness", link: `/members/${memberId.value}/wellness` },
+    { label: "Assessments", link: `/members/${memberId.value}/assessments` },
+    { label: "Nutrition", link: `/members/${memberId.value}/nutrition` },
+    {
+      label: "Transformation",
+      link: `/members/${memberId.value}/transformations`,
+    },
+    { label: "Friends", link: `/members/${memberId.value}/friends` },
+    { label: "Badges", link: `/members/${memberId.value}/badges` },
+    { label: "Notes", link: `/members/${memberId.value}/notes` },
+    { label: "Activity", link: `/members/${memberId.value}/activity` },
+  ],
 });
-
-watch(memberId, async () => {
-  if (memberId.value) {
-    const { data, pending } = await useFetch(`/api/member/info`, {
-      query: { facility_id: currentUserType?.id, member_id: memberId.value },
-    });
-    memberInfoData.value = data.value;
-    memberInfoPending.value = pending.value;
-  }
-}, { immediate: true });
-
-const getMemberInfo = computed(() => {
- if (memberInfoData.value && memberInfoData.value.member && memberInfoData.value.member.data && memberInfoData.value.member.data.length > 0) {
-        const memberData = memberInfoData.value.member.data[0];
-      const socialData = memberInfoData.value.member.social || {};
-      const aboutData = memberInfoData.value.member.about || {};
-      const emergencyContactData = memberInfoData.value.member.emergency_contact || {};
-      const tags = memberInfoData.value.member?.tags || [];
-      // const tagNames = tags ? tags.map((tag: ITag) => tag && tag.name) : [];
-
-
-      return {
-      id: memberData.id,
-      firstname: memberData.firstname,
-      lastname: memberData.lastname,
-      dob: memberData.dob,
-      gender: memberData.gender,
-      country_code: memberData.country_code,
-      contactno: memberData.contactno,
-      email: memberData.email,
-      image: memberData.img_src,
-      membership_status: memberData.membership_status,
-      start_date: memberData.start_date,
-      end_date: memberData.end_date,
-      facebook: socialData.facebook,
-      instagram: socialData.instagram,
-      linkedin: socialData.linkedin,
-      about: aboutData.about,
-      emergency_name: emergencyContactData.name,
-      emergency_contactno: emergencyContactData.contactno,
-      tags:tags?.map((tag: ITag) => (
-        tag?.id
-       
-      ))
-     
-    };
-  }
-
-  return {};
-});
-
 
 type ToggleStates = {
   isPersonalEditMode: Ref<boolean>;
@@ -416,26 +400,21 @@ const startEdit = (toggleKey: keyof ToggleStates) => {
 const cancelEdit = (toggleKey: keyof ToggleStates) => {
   toggleStates[toggleKey].value = false;
 };
-const { setBreadcrumb } = useBreadcrumb();
-setBreadcrumb({
-  items: [
-    { label: "Manage", link: "/" },
-    { label: "Members", link: "/" },
-  ],
-});
 
 const editMember = async (getMemberInfo: any) => {
   try {
-    const body = JSON.stringify({
-      member_id: getMemberInfo.id,
-      facility_id: currentUserType?.id,
-      ...getMemberInfo,
-    });
+    
+    const { id, ...memberInfoWithoutId } = getMemberInfo;
 
     const { data } = await useFetch("/api/member/update-member", {
       method: "POST",
-      body: body
+      body: {
+        member_id: getMemberInfo.id, 
+        facility_id: currentUserType?.id,
+        ...memberInfoWithoutId,
+      },
     });
+
     if (data.value.return) {
       emit("reload");
       alert("Member edited successfully!");
@@ -443,11 +422,99 @@ const editMember = async (getMemberInfo: any) => {
       alert(data.value.message);
     }
   } catch (err) {
-    console.log("Error:/api/Member/add", err);
+    console.log("Error:/api/Member/update", err);
   }
 };
 
 
+const computedTags = computed(() => {
+  return tags.value
+    ? tags.value.map((item: any) => ({ label: item.name, value: item.id }))
+    : [];
+});
+const tagname = (tagIds: number) => {
+  const labels = tagIds
+    ?.map((tagId: number) => {
+      const foundTag = computedTags.value.find(
+        (tag: any) => tag.value === String(tagId)
+      );
+      return foundTag ? foundTag.label : null;
+    })
+    .filter((label) => label !== null);
+  return labels?.join(", ");
+};
+
+const getMemberInfo = computed(() => {
+  if (
+    memberInfoData.value &&
+    memberInfoData.value.member &&
+    memberInfoData.value.member.data &&
+    memberInfoData.value.member.data.length > 0
+  ) {
+    const memberData = memberInfoData.value.member.data[0];
+    const socialData = memberInfoData.value.member.social || {};
+    const aboutData = memberInfoData.value.member.about || {};
+    const emergencyContactData =
+      memberInfoData.value.member.emergency_contact || {};
+    const tags = memberInfoData.value.member?.tags || [];
+    // const tagNames = tags ? tags.map((tag: ITag) => tag && tag.name) : [];
+
+    return {
+      id: memberData.id,
+      firstname: memberData.firstname,
+      lastname: memberData.lastname,
+      dob: memberData.dob,
+      gender: memberData.gender,
+      country_code: memberData.country_code,
+      contactno: memberData.contactno,
+      email: memberData.email,
+      image: memberData.img_src,
+      // membership_status: memberData.membership_status,
+      facebook: socialData.facebook,
+      instagram: socialData.instagram,
+      linkedin: socialData.linkedin,
+      about: aboutData.about,
+      emergency_contact_name: emergencyContactData.name,
+      emergency_contact_no: emergencyContactData.contactno,
+      tags: tags?.map((tag: ITag) => tag?.id),
+    };
+  }
+
+  return {};
+});
+
+watch(
+  memberId,
+  async () => {
+    if (memberId.value) {
+      const { data, pending } = await useFetch(`/api/member/info`, {
+        query: { facility_id: currentUserType?.id, member_id: memberId.value },
+      });
+      memberInfoData.value = data.value;
+      memberInfoPending.value = pending.value;
+    }
+  },
+  { immediate: true }
+);
+
+onMounted(async () => {
+  try {
+    const response = await fetch(
+      "https://gist.githubusercontent.com/anubhavshrimal/75f6183458db8c453306f93521e93d37/raw/CountryCodes.json"
+    );
+    if (response.ok) {
+      const data = await response.json();
+      countryCodes.value = data.map((country) => ({
+        label: `${country.name} (${country.dial_code})`,
+        value: country.dial_code,
+      }));
+    } else {
+      console.error("Failed to fetch country codes");
+    }
+  } catch (error) {
+    console.error("Error fetching country codes:", error);
+  }
+});
 </script>
 
 <style lang="scss" scoped>

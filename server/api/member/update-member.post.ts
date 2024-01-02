@@ -8,6 +8,5 @@ export default defineEventHandler(async ($event) => {
     method: "POST",
     body: cleanObjectL1(body),
   });
-  console.log(body)
   return resp;
 });

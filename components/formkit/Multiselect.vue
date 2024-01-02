@@ -7,6 +7,7 @@
     @change="handleInput"
     :modelValue="props?.context?._value"
     :searchable="props?.context?.searchable"
+    :hideSelected="props?.context?.hideSelected"
   />
 </template>
 
@@ -37,7 +38,7 @@ function handleInput(value: any) {
   border-radius: var(--fk-border-radius);
   background: $main-bg;
   font-size: var(--ms-font-size, 1rem);
-  height: 48px;
+  // height: 48px;
 
   &.is-open {
     border-radius: var(--ms-radius, 4px) var(--ms-radius, 4px) 0 0;

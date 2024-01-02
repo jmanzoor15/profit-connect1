@@ -17,7 +17,7 @@ export default {
       ],
     }),
     multiselect: createInput(Multiselect, {
-      props: ["openDirection", "options", "mode", "placeholder", "searchable"],
+      props: ["openDirection", "options", "mode", "placeholder", "searchable","hideSelected"],
     }),
     switch: createInput(Switch, {
       props: [],

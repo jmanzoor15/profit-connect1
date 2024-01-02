@@ -1,7 +1,7 @@
 <template>
-  <div class="sidebar-box">
-   <FormKit class="formCreateMember" type="form" @submit="addMember"
-     :v-model="addNewMember"
+  <div class="sidebar-box"> 
+   <FormKit class="formCreateMember" type="form" #default="{value}"    @submit="addMember"
+   
     :actions="false">
         <FormKit
             type="uppy"
@@ -10,8 +10,17 @@
             :hideUploadButton="true" 
           />
         
-          <FormKit type="text" name="firstname" id="First name"  placeholder="First name"/>
-          <FormKit type="text" name="lastname" id="Last name"  placeholder="Last name"/>
+          <FormKit 
+          type="text" 
+          name="firstname"  
+          placeholder="First name"
+          />
+
+          <FormKit 
+          type="text" 
+          name="lastname"  
+          placeholder="Last name"
+          />
   
 
         <h3 class="small-title-bold">Personal</h3>
@@ -25,22 +34,33 @@
       />
       <FormKit
           type="date"
-          name="gender"
+          name="dob"
           value="2011-01-01"
           label="Birthday"
           validation="required|date_before:2010-01-01"
           validation-visibility="live"
         />
-      <FormKit
-        type="tel"
-        name="contactno"
-        label=""
-        placeholder="Phone number"
-        :validation-messages="{
-          required: 'Phone number is required',
-        }"
-        validation-visibility="dirty"
-      />
+        <div class="row g-2">
+          <div class="col-6"> 
+            <FormKit 
+              type="select"
+              label="select Country"
+              name="country_code"
+              :options="countryCodes"
+             />
+        </div>
+       <div class="col-6">
+          <FormKit
+          type="tel"
+          name="contactno"
+          placeholder="Phone number"
+          :validation-messages="{
+            required: 'Phone number is required',
+          }"
+          validation-visibility="dirty"
+        />
+      </div>
+    </div>
       <FormKit
         type="email"
         name="email"
@@ -67,22 +87,29 @@
       <FormKit
         type="text"
         placeholder="Facebook"
+        name="facebook"
       />
       <FormKit
         type="text"
         placeholder="Instagram"
+        name="instagram"
       />
       <FormKit
         type="text"
         placeholder="Linkedin"
+        name="linkedin"
       />
       <h3 class="small-title-bold">Tags</h3>
       <FormKit
-        type="text"
-        placeholder="Tags"
-      />
+            type="multiselect"
+            name="tags"
+            mode="tags"
+            openDirection="top"
+            :options="computedTags"
+            
+          />
       <FormKit type="submit" label="Save" class="EditSave" />
-
+      <pre>{{ value }}</pre>
     </FormKit>
   </div>
   </template>
@@ -91,6 +118,9 @@
 import { ref } from 'vue';
 import type { IAddMember } from "@/types/api/member/info";
 import { useAuthStore } from "@/store/auth";
+import { useTagStore } from "@/store/tag";
+import { storeToRefs } from "pinia";
+
   interface NodeProps {
   suffixIcon: string;
   type: string;
@@ -102,13 +132,15 @@ const handleIconClick = (node: { props: NodeProps }, e: Event) => {
 };
 
 const { currentUserType } = useAuthStore();
-const addNewMember = ref({});
-const emit = defineEmits(["reload", "add:addNewMember"]);
+const { tags } = storeToRefs(useTagStore());
+const emit = defineEmits(["reload"]);
+const countryCodes = ref([]);
+
+
 
 const addMember = async (addNewMember: IAddMember) => {
-  console.log(addNewMember);
   try {
-    const { data } = await useFetch("/api/member/update-member", {
+    const { data } = await useFetch("/api/member/add", {
       method: "POST",
       body: {
         ...addNewMember,
@@ -118,7 +150,7 @@ const addMember = async (addNewMember: IAddMember) => {
     });
     if (data.value.return) {
       emit("reload");
-      alert("Member edited successfully!");
+      alert("Member Added successfully!");
     } else {
       alert(data.value.message);
     }
@@ -127,8 +159,27 @@ const addMember = async (addNewMember: IAddMember) => {
   }
 };
 
-
+const computedTags = computed(()=>{
+  return tags.value? tags.value.map((item: any) => ({ label: item.name, value: item.id })) : []
+});
   
+onMounted(async () => {
+  try {
+     
+    const response = await fetch('https://gist.githubusercontent.com/anubhavshrimal/75f6183458db8c453306f93521e93d37/raw/CountryCodes.json');
+    if (response.ok) {
+      const data = await response.json();
+      countryCodes.value = data.map(country => ({
+        label: `${country.name} (${country.dial_code})`,
+        value: country.dial_code,
+      }));
+    } else {
+      console.error('Failed to fetch country codes');
+    }
+  } catch (error) {
+    console.error('Error fetching country codes:', error);
+  }
+});
   </script>
   <style lang="scss" scoped>
 .sidebar-box {

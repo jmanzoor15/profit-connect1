@@ -1,13 +1,20 @@
 import { useBreadcrumbStore } from "~/store/breadcrumb";
 
 export default () => {
-  const { setBreadcrumb, unsetBreadcrumb } = useBreadcrumbStore();
+  const {
+    setBreadcrumb,
+    unsetBreadcrumb,
+    setBreadcrumbTab,
+    unsetBreadcrumbTab,
+  } = useBreadcrumbStore();
 
-  onUnmounted(() => {
+  onBeforeRouteLeave(()=>{
     unsetBreadcrumb();
-  });
+    unsetBreadcrumbTab();
+  })
 
   return {
     setBreadcrumb,
+    setBreadcrumbTab,
   };
 };

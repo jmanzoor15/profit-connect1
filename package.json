@@ -22,7 +22,9 @@
     "@uppy/webcam": "^3.3.4",
     "@vueform/multiselect": "^2.6.6",
     "@vueform/toggle": "^2.1.4",
-    "bootstrap": "^5.3.0"
+    "apexcharts": "^3.45.1",
+    "bootstrap": "^5.3.0",
+    "vue3-apexcharts": "^1.4.4"
   },
   "devDependencies": {
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",

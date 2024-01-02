@@ -43,12 +43,10 @@
 </template>
 
 <script setup>
-import { useTagStore } from "@/store/tag";
 import { useAuthStore } from "@/store/auth";
-import { storeToRefs } from "pinia";
 import { useVModel } from "@vueuse/core";
 
-const emit = defineEmits(["reload", "update:categoryData"]);
+const emit = defineEmits(["reload", "update:packageData"]);
 
 const props = defineProps({
   packageData: {
@@ -60,12 +58,12 @@ const props = defineProps({
 const { currentUserType } = useAuthStore();
 const selectedPackage = useVModel(props, "packageData", emit);
 
-const createCategory = async (categoryData) => {
+const createCategory = async (packageData) => {
   try {
     const { data } = await useFetch("/api/package/add", {
       method: "POST",
       body: {
-        ...categoryData,
+        ...packageData,
         facility_id: currentUserType?.id,
       },
     });

@@ -1,6 +1,6 @@
 <template>
   <div class="tab disable-scorllbar">
-    <ul class="d-flex p-0 flex-nowrap text-nowrap">
+    <ul class="d-flex py-0 flex-nowrap text-nowrap">
       <li
         v-for="(item, key) in items"
         :key="key"
@@ -9,8 +9,9 @@
         @click="currentIndex = key"
       >
         {{ item }}
-        <NuxtImg v-if="key === currentIndex"
-          class="position-absolute end-0 "
+        <NuxtImg
+          v-if="key === currentIndex"
+          class="position-absolute end-0"
           src="/images/svg/edit-icon-white.svg"
           height="14"
           width="14"
@@ -36,17 +37,17 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue", "edit"]);
 const currentIndex = useVModel(props, "modelValue", emit);
 
-const onClickEdit = (tab:number) => {
-  emit("edit",tab);
+const onClickEdit = (tab: number) => {
+  emit("edit", tab);
 };
 </script>
-
-
 
 <style scoped lang="scss">
 .tab {
   overflow-x: scroll;
-  
+  border-top-right-radius: 22px;
+  border-top-left-radius: 22px;
+
   ul {
     background-color: $main-bg;
     height: 40px;
@@ -55,6 +56,8 @@ const onClickEdit = (tab:number) => {
     font-size: 14px;
     list-style: none;
     width: fit-content;
+    padding-left: 22px;
+    padding-right: 22px;
 
     li {
       cursor: pointer;
@@ -65,7 +68,7 @@ const onClickEdit = (tab:number) => {
         color: #fff;
         background-color: $main-blue;
         &:before {
-          content: '';
+          content: "";
           position: absolute;
           top: 0;
           left: -20px; // Adjust this value to move the left corner image outside the background color
@@ -76,7 +79,7 @@ const onClickEdit = (tab:number) => {
         }
 
         &:after {
-          content: '';
+          content: "";
           position: absolute;
           top: 0;
           right: -20px; // Adjust this value to move the right corner image outside the background color
@@ -86,10 +89,6 @@ const onClickEdit = (tab:number) => {
           background-position: right;
         }
       }
-
-      // &:hover {
-      //   background: $hover-blue;
-      // }
     }
   }
 }

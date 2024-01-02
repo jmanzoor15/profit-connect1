@@ -72,7 +72,7 @@ export const useMenuStore = defineStore("menu", () => {
           label: "Facility",
           description:
             "Manage facility specific features and settings including timing, forms, payments and taxes.",
-          link: "/",
+          link: "/facility",
         },
         {
           id: 9,

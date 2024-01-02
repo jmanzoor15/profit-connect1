@@ -1,22 +1,20 @@
 <template> 
 
 <div class="content-main-box">
-  <div class="content-box mb-3">
+  <div class="content-box mb-3" >
     <div class="content__title-box">
       <h1 class="content-title">Membership Overview</h1>
     </div>
-{{ membersData.member.memberships }}
-    <div class="pre-text activePlanName">Personal Training Session</div>
+    <div class="pre-text activePlanName"></div>
 
-    <div class="no-active-plan d-none">This member does not have a memberships</div>
+    
+    <div class="joined-title">Joined - {{ formatDate(membersData.member.data[0].start_date)}}</div>
 
-    <div class="joined-title">Joined - August 1, 2023</div>
-
-    <div class="memberhip-graph">
-      <div class="memberhip-graph__row1">
+    <div v-if=" membersData.member.data[0].membership_status"  class="memberhip-graph">
+      <div v-for="plan in  membersData.member.memberships" :key="plan.id" class="memberhip-graph__row1">
         <div class="graph-box" style="min-width: 276px; width: 276px; margin-left: initial">
-          Personal Training Session
-          <div class="end-date-text">Ends November 1</div>
+         {{plan.plan_name}}
+          <div class="end-date-text">{{formatDate(plan.end_date) }}</div>
         </div>
         </div>
 
@@ -27,8 +25,11 @@
         <div class="line"></div>
         <div class="text todayDatePreview">December 1</div>
       </div>
+      {{ plan }}
     </div>
+    <div v-else class="no-active-plan">This member does not have a memberships</div>
 
+    <!-- {{ membersData.member.memberships }} -->
   </div>
   <div class=" content-box">
     <div class="content__title-box">
@@ -42,28 +43,27 @@
       </div>
     </div>
 
-    <div class="membership-packages"  >   
-      <div class="mm-package purchaseBoxBtn" v-for="(plan, index) in computedPlanDetails" :key="index" >
-          <div class="mmPackageAdd"   @click="showCatrgoryForm = true">
-            <img src="../assets/images/svg/plus-icon.svg?timestamp=1701415748096" >
-
+    <div  class="membership-packages"  >   
+      <div  class="mm-package purchaseBoxBtn" 
+      v-for="(plan, index) in computedPlanDetails" :key="index"
+          @click="selectPlan(plan.id)" >
+          <div  class="mmPackageAdd"   @click="showCatrgoryForm = true">
+            <img src="~/assets/images/svg/plus-icon.svg?timestamp=1701415748096" >
           </div>
-
-          <div class="mm-package__title">{{plan.name}} </div>
-
+          <div class="mm-package__title">{{plan.name}}  </div>
           <div class="mm-package__data">
-            <img src="../assets/images/svg/tag-icon.svg?timestamp=1701415748096" >
-            AED {{plan.price}}
+            <img src="~/assets/images/svg/tag-icon.svg?timestamp=1701415748096" >
+            AED {{plan.price}} 
           </div>
         </div>
       </div>
   </div>
 </div>
-<Modal v-model="showCatrgoryForm" id="category-modal">
-      <template #title>
-        Purchase Item
-      </template>
-      <FormMemberAddplan />
+<Modal v-model="showPurchaseForm" id="purchase-modal">
+      <FormMemberAddplan 
+        :member-info="membersData"
+        :selected-plan-id="selectedPlanDetails"
+       />
     </Modal>
 
 </template>
@@ -77,7 +77,7 @@ const props = defineProps({
     default: ''
   },
 });
-const showCatrgoryForm = ref(false);
+
 const { setBreadcrumb } = useBreadcrumb();
 setBreadcrumb({
   items: [
@@ -86,13 +86,16 @@ setBreadcrumb({
   ],
 });
 
+const showPurchaseForm = ref(false);
+const selectedPlanId = ref('');
+const selectedPlanDetails = ref(null);
 
-
+defineEmits(["edit"]);
 
     const { data: membersData, pending: membersPending} = await useFetch("/api/member/info", {
   query: { facility_id: currentUserType?.id, member_id: props.memberId  },
 });
-
+ 
 
 const { data, pending } = await useFetch(`/api/member/overview`, {
       query: { facility_id: currentUserType?.id },
@@ -101,20 +104,65 @@ const { data, pending } = await useFetch(`/api/member/overview`, {
     const ComputedPackage = computed(() => {
   if (data.value && data.value.packages) {
     return data.value.packages
+      .filter(pkg => pkg.status === 'Active')
       .filter(pkg => pkg.plans && pkg.plans.length > 0) 
       .flatMap(pkg => pkg.plans);
   }
   return []; 
 });
 const computedPlanDetails = computed(() => {
- 
   return ComputedPackage.value
     .filter(plan => plan !== null) // Filter out null values
     .map(plan => ({
+      id: plan.id,
       name: plan.name,
-      price: plan.price
+      desc: plan.description,
+      private: plan.private,
+      price: plan.price,
+      card: plan.pay_with_card,
+      gift: plan.pay_with_gift_card,
+      type: plan.type,
+      duration: plan.duration,
+      period: plan.period,
+      category: plan.category,
+      creditCount: plan.credit_count,
+      paymentDuration: plan.payment_duration,
+      paymentPeriod: plan.payment_period,
+      paymentCycle: plan.payment_cycle,
+      chargeOnFirst: plan.charge_on_first,
+      autoRenew: plan.auto_renew,
+      firstClassFree: plan.first_class_free,
+      updatedDate: plan.updated_date,
+      promotionPrice: plan.promotion_price,
+      displayOriginalPrice: plan.display_original_price,
+      promotionStart: plan.promotion_start,
+      promotionEnd: plan.promotion_end,
+      joiningFee: plan.joining_fee,
+      featured: plan.featured,
+      classes: plan.classes,
+      room: plan.room,
+      availableTags: plan.available_tags,
+      exceptTags: plan.except_tags
+
     }));
 });
+
+const selectPlan = (planId) => {
+  selectedPlanId.value = planId;
+  selectedPlanDetails.value = computedPlanDetails?.value.find(plan => plan.id === planId);
+  showPurchaseForm.value = true;
+};
+
+const formatDate = (dateString :Date)=>{
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const date = new Date(dateString);
+
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+
+  return `${day} ${month} ${year}`;
+}
 
 </script>
 <style lang="scss" scoped>
