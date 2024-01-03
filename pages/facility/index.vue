@@ -1,23 +1,19 @@
 <template>
-    <section class="content-section mt-4">
+  <section class="content-section mt-4">
+    <FacilityUpdate />
+    <div class="content-box">
+      <!-- <button @click="SelectFacility('2')">select facility</button> -->
+      <FacilityGeneral v-if="generalInfo" :general-info="generalInfo" />
+    </div>
+  </section>
+</template>
 
-        <FacilityUpdate   />
-      <div class="content-box">
-        <!-- <button @click="SelectFacility('2')">select facility</button> -->
-         <FacilityGeneral />
-      </div>
-  
-      
-    </section>
-  </template>
-  
-  <script lang="ts" setup>
-  import { useAuthStore } from "~/store/auth";
+<script lang="ts" setup>
+import { useAuthStore } from "~/store/auth";
 
 const facilityData = ref(null);
 const memberInfoPending = ref(false);
 const { currentUserType } = useAuthStore();
-
 
 const SelectFacility = async (value) => {
   try {
@@ -28,12 +24,17 @@ const SelectFacility = async (value) => {
       },
     });
     facilityData.value = data;
-  }catch (err) {
-        console.error("Error fetching facility data:", err);
-      } finally {
-        memberInfoPending.value = false; // End loading
-      }
+  } catch (err) {
+    console.error("Error fetching facility data:", err);
+  } finally {
+    memberInfoPending.value = false; // End loading
+  }
 };
+
+const generalInfo = computed(() => {
+  if (!facilityData.value) return null;
+  return facilityData.value.value.facility[0].general[0];
+});
 
 onMounted(SelectFacility);
 
@@ -47,7 +48,7 @@ watch(
       try {
         const { data } = await useFetch("/api/franchise/current-facility", {
           method: "POST",
-          body:{ facility_id: facilityId },
+          body: { facility_id: facilityId },
         });
         facilityUpdateInfoData.value = data.value;
       } catch (err) {
@@ -59,34 +60,28 @@ watch(
   },
   { immediate: true }
 );
+</script>
 
-  
-  </script>
-  
-  <style lang="scss" scoped>
-  .content-section {
-    display: flex;
-    justify-content: center;
-    margin: 0 15px;
-  }
-  
-  .content-section {
-    display: flex;
-    justify-content: center;
-    margin: 0 15px;
-  }
-  
-  .content-box {
-    position: relative;
-    width: 70vw;
-    max-width: 950px;
-    margin: unset;
-    height: fit-content;
-    min-height: calc(100vh - 129px);
-    margin-bottom: 50px;
-  }
-  
-  
+<style lang="scss" scoped>
+.content-section {
+  display: flex;
+  justify-content: center;
+  margin: 0 15px;
+}
 
-  </style>
-  
+.content-section {
+  display: flex;
+  justify-content: center;
+  margin: 0 15px;
+}
+
+.content-box {
+  position: relative;
+  width: 70vw;
+  max-width: 950px;
+  margin: unset;
+  height: fit-content;
+  min-height: calc(100vh - 129px);
+  margin-bottom: 50px;
+}
+</style>
