@@ -17,12 +17,12 @@
         <template #title>
             Create Waiver
         </template>
-        <FormClass
+        <FormFacilityForm
           v-if="showFacilityForm"
         />
       </Modal>
       <h4 class="mt-4">Waivers</h4>
-         <FacilityForms/>
+         <CardForms/>
       </div>
   
     </section>

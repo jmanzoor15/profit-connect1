@@ -2,13 +2,16 @@
   <section class="content-section">
     <div class="content-box">
       <div class="content__title-box">
-        <h1>Member Search</h1>
+        <h1>Member Search</h1> 
         <div class="content-filters">
-          <FilterSort />
-          <FilterStatus />
-        </div>
-      </div>
-      <SearchBar />
+      <MixToggleBtn v-model="sortingOrder" left="A-Z" right="Z-A" />
+      <MixBtnGroup 
+        v-model="currentFilter"
+        :labels="['All', 'Active', 'Inactive']"
+      />
+    </div>
+      </div>  {{ memberId }}
+      <SearchBar @on-search="onSearch" />
       <div class="addNewMember" @click="handleAddSidebar()">
         <img
           class="plusIcon"
@@ -43,10 +46,13 @@ setBreadcrumb({
   ],
 });
 
-const memberId = ref("");
+const memberId = ref();
 const showAddSidebar = ref(false);
 const showEditSidebar = ref(false);
 const { currentUserType } = useAuthStore();
+const searchTerm = ref();
+const sortingOrder = ref("A-Z");
+const currentFilter = ref(1);
 
 const {
   data: membersData,
@@ -61,19 +67,54 @@ const handleAddSidebar = () => {
 };
 
 const handleEditSidebar = (tab: number) => {
-  (memberId.value = membersData.value.members[tab].id),
+  (memberId.value = tab),
     (showAddSidebar.value = false);
   showEditSidebar.value = true;
 };
+const filterPackages = (data: any) => {
+  
+  switch (currentFilter.value) {
+    case 1:
+      return data;
+    case 2:
+      return data.filter((item: any) => item.membership_status === "Active");
+    case 3:
+      return data.filter((item: any) => item.membership_status === null);
+    default:
+      return data;
+  }
+};;
 
 const getMembers = computed(() => {
-  return membersData.value && membersData.value.members
-    ? membersData.value.members
-    : [];
+  
+  const filteredData = searchTerm.value
+    ? membersData.value.members.filter(member => 
+        member.firstname.toLowerCase().includes(searchTerm.value.toLowerCase()) || 
+        member.lastname.toLowerCase().includes(searchTerm.value.toLowerCase()))
+    : membersData.value.members;
+
+  let sortedData;
+  if (sortingOrder.value === "A-Z") {
+    sortedData = filteredData.sort((a, b) => a.firstname.localeCompare(b.firstname));
+  } else if (sortingOrder.value === "Z-A") {
+    sortedData = filteredData.sort((a, b) => b.firstname.localeCompare(a.firstname));
+  } else {
+    sortedData = filteredData; 
+  }
+
+  return filterPackages(sortedData);
 });
+
+
+
+
 
 const refreshData = () => {
   refreshMembers();
+};
+
+const onSearch = (data: string) => {
+  searchTerm.value = data;
 };
 </script>
 
