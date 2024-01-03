@@ -346,9 +346,7 @@ const submitHandler = async (planData) => {
   for (let i = 0; i < totalSpaces; i++) {
     if (planData[`spaces[${i}]`])
       planData[`spaces[${i}]`].forEach((item) => {
-        spaces.push({
-          space_id: item,
-        });
+        spaces.push(item);
       });
   }
 

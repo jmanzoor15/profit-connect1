@@ -1,6 +1,6 @@
 <template>
      <h3 class="mt-2">Facility Timing</h3>
-       <div class="facility"> 
+       <div class="facility"> {{ generalInfo.always_open }}
         <FormKit
       type="form"
       :modelValue="selectedPlan"
@@ -10,34 +10,29 @@
         <div class="general-timimg">
         <FormKit
           type="checkbox"
-          name=""
+          name="always_open"
           outer-class="m-10"
           label="Always Open"
           :value="false"
         />
        </div>
-       <div class="schedule-container">
-      <div v-for="(day, index) in scheduleDays" :key="index" class="day-schedule">
-        <FormKit
-          type="checkbox"
-          :label="day.name"
-          v-model="day.checked"
-          :outer-class="{'day-checked': day.checked}"
-        />
+       <div class="schedule-container" v-if="generalInfo.always_open === 'No'">
+      <div v-for="(day, index) in generalTiming" :key="index" class="day-schedule">
+       
         <FormKit
           type="text"
           :placeholder="'From'"
-          v-model="day.from"
+          v-model="day.start_time"
           class="time-input"
-          :disabled="!day.checked"
+        
         />
         <span>to</span>
         <FormKit
           type="text"
           :placeholder="'To'"
-          v-model="day.to"
+          v-model="day.end_time"
           class="time-input"
-          :disabled="!day.checked"
+    
         />
       </div>
     </div>
@@ -50,20 +45,23 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
   
-  const scheduleDays = ref([
-  { name: 'Tuesday', checked: false, from: '', to: '' },
-    { name: 'Thursday', checked: false, from: '', to: '' },
-    { name: 'Saturday', checked: false, from: '', to: '' },
-    { name: 'Sunday', checked: false, from: '', to: '' },
-    { name: 'Monday', checked: false, from: '', to: '' },
-    { name: 'Tueday', checked: false, from: '', to: '' }
-    // ... other days
-  ]);
+  const props = defineProps({
+  generalInfo: {
+    type: Object,
+    default: ()=>{},
+  },
+  generalTiming: {
+    type: Array,
+    default: ()=>[],
+  }
+})
+
+
   
   // Add additional logic as needed
   </script>
+
   
   <style scoped>
   .general-timimg {
