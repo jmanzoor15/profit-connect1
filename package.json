@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
-    "@pinia/nuxt": "^0.4.11",
+    "@pinia/nuxt": "^0.5.1",
     "@types/bootstrap": "^5.2.6",
     "@vueuse/core": "^10.6.1",
     "@vueuse/nuxt": "^10.6.1",

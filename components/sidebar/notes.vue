@@ -44,80 +44,78 @@
           #default="{ value }"
         >
           <div class="textarea" v-for="note in getMemberInfo" :key="note.id">
-            
-            <div v-show="!isEditingNote(note.id) && !isEditingReply(note.id, null)">
-                <div
-                  class="d-flex align-items-center justify-content-between gap-3"
-                >
-                  <p
-                    style="
-                      font-size: 22px;
-                      font-weight: bold;
-                      margin-bottom: 10px;
-                    "
-                  >
-                    {{ note.title }}
-                  </p>
-                  <div class="d-flex align-items-center gap-2">
-                    <p style="font-size: 10px">Update today</p>
-                    <img
-                      @click="() => startEditNote(note.id)"
-                      class="editgetMemberInfo"
-                      src="~assets/images/svg/edit-icon-black.svg"
-                      style="margin-bottom: 15px"
-                    />
-                  </div>
-                </div>
-                <div class="notes">
-                  <h3 style="font-size: 14px; font-weight: bold">
-                    {{ note.user_name }} &nbsp;
-                    <span style="font-size: 8px">
-                      {{
-                        note.updated_date
-                          ? calculateTimeSince(
-                              note.updated_date,
-                              note.updated_time
-                            )
-                          : calculateTimeSince(note.created_date)
-                      }}</span
-                    >
-                  </h3>
-                  <div class="description">
-                    <p>{{ note.description }}</p>
-                  </div>
-                </div>
-              </div>
-              <div v-show="isEditingNote(note.id)">
-                <div
-                  class="goBackShowMode"
-                  data-show="personal-show"
-                 @click="cancelEdit"
-                >
-                  Cancel
-                </div>
-
-                <FormKit
-                  type="text"
-                  name="user_name"
-                  placeholder="Edit a note title "
-                  class="custom-input"
-                  style="background-color: white; padding-right: 80px"
-                />
-                <FormKit
-                  type="text"
-                  name="description"
-                  placeholder="Edit a note description "
-                  class="custom-input"
-                  style="background-color: white; padding-right: 80px"
-                />
-              </div>
-            
-
             <div
-              v-if="note.reply && note.reply.length"
+              v-show="!isEditingNote(note.id) && !isEditingReply(note.id, null)"
             >
-            <div v-show="!isEditingReply(note.id, response?.id)">
-              <div class="replies" v-for="response in note.reply">
+              <div
+                class="d-flex align-items-center justify-content-between gap-3"
+              >
+                <p
+                  style="
+                    font-size: 22px;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                  "
+                >
+                  {{ note.title }}
+                </p>
+                <div class="d-flex align-items-center gap-2">
+                  <p style="font-size: 10px">Update today</p>
+                  <img
+                    @click="() => startEditNote(note.id)"
+                    class="editgetMemberInfo"
+                    src="~assets/images/svg/edit-icon-black.svg"
+                    style="margin-bottom: 15px"
+                  />
+                </div>
+              </div>
+              <div class="notes">
+                <h3 style="font-size: 14px; font-weight: bold">
+                  {{ note.user_name }} &nbsp;
+                  <span style="font-size: 8px">
+                    {{
+                      note.updated_date
+                        ? calculateTimeSince(
+                            note.updated_date,
+                            note.updated_time
+                          )
+                        : calculateTimeSince(note.created_date)
+                    }}</span
+                  >
+                </h3>
+                <div class="description">
+                  <p>{{ note.description }}</p>
+                </div>
+              </div>
+            </div>
+            <div v-show="isEditingNote(note.id)">
+              <div
+                class="goBackShowMode"
+                data-show="personal-show"
+                @click="cancelEdit"
+              >
+                Cancel
+              </div>
+
+              <FormKit
+                type="text"
+                name="user_name"
+                placeholder="Edit a note title "
+                class="custom-input"
+                style="background-color: white; padding-right: 80px"
+              />
+              <FormKit
+                type="text"
+                name="description"
+                placeholder="Edit a note description "
+                class="custom-input"
+                style="background-color: white; padding-right: 80px"
+              />
+            </div>
+
+            <div v-if="note.reply && note.reply.length">
+              <div v-show="!isEditingReply(note.id, response?.id)">
+                <div class="replies" v-for="response in note.reply">
                   <h3 style="font-size: 14px; font-weight: bold">
                     {{ response.user_name }} &nbsp;
                     <span style="font-size: 8px">{{
@@ -131,57 +129,61 @@
                     <p>{{ response.reply }}</p>
                   </div>
                 </div>
-                <div class="d-flex align-items-center justify-content-end gap-2"
-             >
-                <img
+                <div
+                  class="d-flex align-items-center justify-content-end gap-2"
+                >
+                  <img
                     @click="startEditReply(note.id, response?.id)"
-                  class="editgetMemberInfo"
-                  src="~assets/images/svg/edit-icon-black.svg"
-                  style="margin-bottom: 15px"
-                />
-              </div>
-                <FormKit
-                type="form"
-                :modelValue="selectedPackage"
-                @submit="submitHandler"
-                :actions="false"
-                #default="{ value }"
-              >
-                <div style="position: relative">
-                  <FormKit
-                    type="text"
-                    name="reply"
-                    placeholder="write a reply "
-                    class="custom-input"
-                    style="background-color: white; padding-right: 80px"
+                    class="editgetMemberInfo"
+                    src="~assets/images/svg/edit-icon-black.svg"
+                    style="margin-bottom: 15px"
                   />
-                  <button
-                    type="submit"
-                    style="
-                      border: none;
-                      background: none;
-                      position: absolute;
-                      right: 10px;
-                      top: 50%;
-                      transform: translateY(-50%);
-                      z-index: 2;
-                    "
-                  >
-                    <svg
-                      width="20px"
-                      height="20px"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M2 2 L18 10 L2 18 Z" fill="skyblue" />
-                    </svg>
-                  </button>
                 </div>
-                <pre>{{ value }}</pre>
-              </FormKit>
+                <FormKit
+                  type="form"
+                  :modelValue="selectedPackage"
+                  @submit="submitReplayHandler"
+                  :actions="false"
+                  #default="{ value }"
+                >
+                  <div style="position: relative">
+                    <FormKit
+                      type="text"
+                      name="reply"
+                      placeholder="write a reply "
+                      class="custom-input"
+                      style="background-color: white; padding-right: 80px"
+                    />
+                    <FormKit name="notes_id" type="hidden" :value="note.id" />
+                    <FormKit
+                      name="user_id"
+                      type="hidden"
+                      :value="getCurrentMemberInfo.user_id"
+                    />
+                    <button
+                      type="submit"
+                      style="
+                        border: none;
+                        background: none;
+                        position: absolute;
+                        right: 10px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        z-index: 2;
+                      "
+                    >
+                      <svg
+                        width="20px"
+                        height="20px"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M2 2 L18 10 L2 18 Z" fill="skyblue" />
+                      </svg>
+                    </button>
+                  </div>
+                </FormKit>
               </div>
-            
-          
             </div>
 
             <div v-show="isEditingReply(note.id, response?.id)">
@@ -206,7 +208,11 @@
       <div class="add-notes">
         <Modal v-model="showStoreForm" id="store-modal">
           <template #title> New Note </template>
-          <FormMemberNotes v-if="showStoreForm" />
+          <FormMemberNotes
+            v-model="showStoreForm"
+            v-if="showStoreForm"
+            :getCurrentMemberInfo="getCurrentMemberInfo"
+          />
         </Modal>
       </div>
     </div>
@@ -228,12 +234,13 @@ const props = defineProps({
     default: "",
   },
 });
-const { data: memberInfoData, pending: membersPending } = await useFetch(
-  "/api/member/info",
-  {
-    query: { facility_id: currentUserType?.id, member_id: props.memberId },
-  }
-);
+const {
+  data: memberInfoData,
+  pending: membersPending,
+  refresh,
+} = await useFetch("/api/member/info", {
+  query: { facility_id: currentUserType?.id, member_id: props.memberId },
+});
 
 const getMemberInfo = computed(() => {
   if (
@@ -257,9 +264,14 @@ const getMemberInfo = computed(() => {
 
   return [];
 });
+
+const getCurrentMemberInfo = computed(() => {
+  return getMemberInfo.value.find((mem) => mem.id === props.memberId);
+});
+
 const editingState = ref({
   noteId: null,
-  replyId: null
+  replyId: null,
 });
 
 const startEditNote = (noteId) => {
@@ -275,13 +287,34 @@ const cancelEdit = () => {
 };
 
 const isEditingNote = (noteId) => {
-  return editingState.value.noteId === noteId && editingState.value.replyId === null;
+  return (
+    editingState.value.noteId === noteId && editingState.value.replyId === null
+  );
 };
 
 const isEditingReply = (noteId, replyId) => {
-  return editingState.value.noteId === noteId && editingState.value.replyId === replyId;
+  return (
+    editingState.value.noteId === noteId &&
+    editingState.value.replyId === replyId
+  );
 };
 
+const submitReplayHandler = async (packageData) => {
+  try {
+    const { data } = await useFetch("/api/member/add-reply", {
+      method: "POST",
+      body: {
+        ...packageData,
+        facility_id: +currentUserType?.id,
+      },
+    });
+    await refresh();
+    packageData.reply = "";
+    alert(data.value.message);
+  } catch (err) {
+    console.log("Error:/api/package/add", err);
+  }
+};
 
 // type ToggleStates = {
 //   isNotesEditMode: Ref<boolean>;

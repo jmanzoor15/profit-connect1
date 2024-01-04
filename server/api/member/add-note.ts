@@ -1,13 +1,12 @@
 import useApiFetch from "~/composables/useApi";
+import { cleanObjectL1 } from "@/utils/dataCleaner";
 
 export default defineEventHandler(async ($event) => {
-  alert("post");
-  const body = await readBody($event);
   const api = useApiFetch($event);
-  const resp = await api("/packages/update/package", {
+  const body = await readBody($event);
+  const resp = await api("/members/add/notes", {
     method: "POST",
-    body,
+    body: cleanObjectL1(body),
   });
-
   return resp;
 });
