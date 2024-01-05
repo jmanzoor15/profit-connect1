@@ -35,7 +35,11 @@
           />
         </div>
       </div>
-      <div class="update-notes">
+
+
+      <div v-if="getMemberInfo.length === 0" class="no-notes"><p style="font-size: 18px; font-weight: bold; position: absolute; top: 50%; margin-left: 100px;">No notes available. Click the button below to add a new note.</p></div>
+      
+   <div class="update-notes" v-else>
         <FormKit
           type="form"
           :modelValue="selectedPackage"
@@ -249,13 +253,13 @@ const {
 });
 
 const getMemberInfo = computed(() => {
-  if (
-    memberInfoData.value &&
-    memberInfoData.value.member &&
-    memberInfoData.value.member.notes &&
-    memberInfoData.value.member.notes.length > 0
-  ) {
-    return memberInfoData.value.member.notes.map((note) => ({
+  if (!memberInfoData.value?.member?.notes) {
+    return [];
+  }
+
+  return memberInfoData.value.member.notes
+    .filter(note => note != null) // Filter out null or undefined notes
+    .map((note) => ({
       id: note.id,
       title: note.header,
       description: note.description,
@@ -266,13 +270,15 @@ const getMemberInfo = computed(() => {
       updated_time: note.updated_time,
       reply: note.reply ? note.reply.filter((r) => r !== null) : [],
     }));
-  }
-
-  return [];
 });
 
+
+
 const getCurrentMemberInfo = computed(() => {
-  return getMemberInfo.value.find((mem) => mem.id === props.memberId);
+  if (!memberInfoData.value?.member?.data) {
+    return null;
+  }
+  return memberInfoData.value.member.data.find(member => member.id === props.memberId);
 });
 
 const editingState = ref({
@@ -385,7 +391,7 @@ const submitReplayHandler = async (packageData) => {
 }
 .textarea {
   position: relative;
-  width: 100%;
+  width: 800px;
   padding: 16px;
   color: #000;
   font-size: 0.875rem;
@@ -395,6 +401,21 @@ const submitReplayHandler = async (packageData) => {
   transition: all 0.2s ease;
   background: #f2faff;
   margin-bottom: 30px;
+}
+.no-notes {
+  position: relative;
+  width: 800px;
+  height: 400px;
+  padding: 16px;
+  color: #000;
+  font-size: 0.875rem;
+  line-height: 1.15;
+  border: 1px solid #f2faff;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+  background: #f2faff;
+  margin-bottom: 30px;
+
 }
 .replies {
   border-left: 5px solid rgb(122, 122, 226);

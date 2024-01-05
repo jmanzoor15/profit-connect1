@@ -1,5 +1,5 @@
 <template>
-  <div class="px-5">{{ loggedUser.id }}
+  <div class="px-5">
     <FormKit
       type="form"
       :modelValue="selectedPackage"
