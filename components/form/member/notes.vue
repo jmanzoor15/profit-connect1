@@ -1,11 +1,6 @@
 <template>
   <div class="px-5">
-    <FormKit
-      type="form"
-      :modelValue="selectedPackage"
-      @submit="submitHandler"
-      :actions="false"
-    >
+    <FormKit type="form" @submit="submitHandler" :actions="false">
       <FormKit
         type="text"
         name="heading"

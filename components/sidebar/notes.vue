@@ -62,7 +62,7 @@
                 <div class="d-flex align-items-center gap-2">
                   <p style="font-size: 10px">Update today</p>
                   <img
-                    @click="() => startEditNote(note.id)"
+                    @click="() => startEditNote(note)"
                     class="editgetMemberInfo"
                     src="~assets/images/svg/edit-icon-black.svg"
                     style="margin-bottom: 15px"
@@ -89,18 +89,28 @@
               </div>
             </div>
             <div v-show="isEditingNote(note.id)">
-              <div
-                class="goBackShowMode"
-                data-show="personal-show"
-                @click="cancelEdit"
-              >
-                Cancel
+              <div class="d-flex justify-content-end gap-2 mb-2">
+                <div
+                  class="goBackShowMode"
+                  data-show="personal-show"
+                  @click="handleEdit"
+                >
+                  Edit
+                </div>
+                <div
+                  class="goBackShowMode"
+                  data-show="personal-show"
+                  @click="cancelEdit"
+                >
+                  Cancel
+                </div>
               </div>
 
               <FormKit
                 type="text"
-                name="user_name"
+                name="heading"
                 placeholder="Edit a note title "
+                v-model="editingState.heading"
                 class="custom-input"
                 style="background-color: white; padding-right: 80px"
               />
@@ -108,6 +118,7 @@
                 type="text"
                 name="description"
                 placeholder="Edit a note description "
+                v-model="editingState.description"
                 class="custom-input"
                 style="background-color: white; padding-right: 80px"
               />
@@ -141,6 +152,7 @@
                 </div>
                 <FormKit
                   type="form"
+                  :id="`replyid-${note.id}`"
                   :modelValue="selectedPackage"
                   @submit="submitReplayHandler"
                   :actions="false"
@@ -185,14 +197,16 @@
                 </FormKit>
               </div>
             </div>
-
-            <div v-show="isEditingReply(note.id, response?.id)">
-              <div
-                class="goBackShowMode"
-                data-show="personal-show"
-                @click="cancelEdit"
-              >
-                Cancel
+            <!-- todo: Not getting this part, so will do it later -->
+            <template v-if="isEditingReply(note.id, response?.id)">
+              <div class="d-flex justify-content-end mb-2">
+                <div
+                  class="goBackShowMode"
+                  data-show="personal-show"
+                  @click="cancelEdit"
+                >
+                  Cancel
+                </div>
               </div>
               <FormKit
                 type="text"
@@ -200,7 +214,7 @@
                 placeholder="Edit a note title "
                 style="background-color: white; padding-right: 80px"
               />
-            </div>
+            </template>
           </div>
           <div class="px-5"></div>
         </FormKit>
@@ -209,6 +223,7 @@
         <Modal v-model="showStoreForm" id="store-modal">
           <template #title> New Note </template>
           <FormMemberNotes
+            @reload="refresh"
             v-model="showStoreForm"
             v-if="showStoreForm"
             :getCurrentMemberInfo="getCurrentMemberInfo"
@@ -222,7 +237,7 @@
 <script lang="ts" setup>
 import { useAuthStore } from "@/store/auth";
 import { useTimeSince } from "~/composables/useTime";
-
+import { reset } from "@formkit/core";
 const { calculateTimeSince } = useTimeSince();
 const { currentUserType } = useAuthStore();
 const showStoreForm = ref(false);
@@ -269,34 +284,60 @@ const getCurrentMemberInfo = computed(() => {
   return getMemberInfo.value.find((mem) => mem.id === props.memberId);
 });
 
-const editingState = ref({
-  noteId: null,
+const defaultValue = () => ({
+  notes_id: null,
   replyId: null,
+  heading: null,
+  description: null,
 });
+const editingState = ref(defaultValue());
 
-const startEditNote = (noteId) => {
-  editingState.value = { noteId, replyId: null };
+const startEditNote = (note) => {
+  const notes_id = note.id;
+  console.log(note, "note");
+  editingState.value = {
+    notes_id,
+    heading: note.title,
+    description: note.description,
+  };
 };
 
-const startEditReply = (noteId, replyId) => {
-  editingState.value = { noteId, replyId };
+const startEditReply = (notes_id, replyId) => {
+  editingState.value = { ...editingState.value, notes_id, replyId };
 };
 
 const cancelEdit = () => {
-  editingState.value = { noteId: null, replyId: null };
+  editingState.value = defaultValue();
 };
 
-const isEditingNote = (noteId) => {
+const isEditingNote = (notes_id) => {
   return (
-    editingState.value.noteId === noteId && editingState.value.replyId === null
+    editingState.value.notes_id === notes_id && !editingState.value.replyId
   );
 };
 
-const isEditingReply = (noteId, replyId) => {
+const isEditingReply = (notes_id, replyId) => {
   return (
-    editingState.value.noteId === noteId &&
+    editingState.value.notes_id === notes_id &&
     editingState.value.replyId === replyId
   );
+};
+
+const handleEdit = async () => {
+  try {
+    const { data } = await useFetch("/api/member/update-note", {
+      method: "POST",
+      body: {
+        ...editingState.value,
+        facility_id: currentUserType?.id,
+      },
+    });
+    await refresh();
+    cancelEdit();
+    alert(data.value.message);
+  } catch (err) {
+    console.log("Error:/api/package/add", err);
+  }
 };
 
 const submitReplayHandler = async (packageData) => {
@@ -305,11 +346,12 @@ const submitReplayHandler = async (packageData) => {
       method: "POST",
       body: {
         ...packageData,
-        facility_id: +currentUserType?.id,
+        facility_id: currentUserType?.id,
       },
     });
     await refresh();
     packageData.reply = "";
+    reset(`replyid-${packageData.notes_id}`);
     alert(data.value.message);
   } catch (err) {
     console.log("Error:/api/package/add", err);
@@ -414,8 +456,5 @@ const submitReplayHandler = async (packageData) => {
   background: 0 0;
   transition: 0.35s;
   width: 80px;
-  position: relative;
-  left: 85%;
-  bottom: 10px;
 }
 </style>
