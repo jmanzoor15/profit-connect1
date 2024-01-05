@@ -99,21 +99,20 @@
 
               <FormKit
                 type="text"
-                name="user_name"
+                v-model="note.title"
                 placeholder="Edit a note title "
                 class="custom-input"
                 style="background-color: white; padding-right: 80px"
               />
               <FormKit
                 type="text"
-                name="description"
+                v-model="note.description"
                 placeholder="Edit a note description "
                 class="custom-input"
                 style="background-color: white; padding-right: 80px"
               />
             </div>
-
-            <div v-if="note.reply && note.reply.length">
+            <div v-if="note.reply && note.reply.length" >
               <div v-show="!isEditingReply(note.id, response?.id)">
                 <div class="replies" v-for="response in note.reply">
                   <h3 style="font-size: 14px; font-weight: bold">
@@ -139,7 +138,27 @@
                     style="margin-bottom: 15px"
                   />
                 </div>
-                <FormKit
+         
+              </div>
+            </div>
+          
+
+            <div v-show="isEditingReply(note.id, response?.id)">
+              <div
+                class="goBackShowMode"
+                data-show="personal-show"
+                @click="cancelEdit"
+              >
+                Cancel
+              </div>
+              <FormKit
+                type="text"
+                name="user_name"
+                placeholder="Edit the Reply "
+                style="background-color: white; padding-right: 80px"
+              />
+            </div>
+            <FormKit
                   type="form"
                   :modelValue="selectedPackage"
                   @submit="submitReplayHandler"
@@ -152,13 +171,14 @@
                       name="reply"
                       placeholder="write a reply "
                       class="custom-input"
+                      :value="userReply"
                       style="background-color: white; padding-right: 80px"
                     />
                     <FormKit name="notes_id" type="hidden" :value="note.id" />
                     <FormKit
                       name="user_id"
                       type="hidden"
-                      :value="getCurrentMemberInfo.user_id"
+                      :value="loggedUser.id"
                     />
                     <button
                       type="submit"
@@ -183,24 +203,7 @@
                     </button>
                   </div>
                 </FormKit>
-              </div>
-            </div>
-
-            <div v-show="isEditingReply(note.id, response?.id)">
-              <div
-                class="goBackShowMode"
-                data-show="personal-show"
-                @click="cancelEdit"
-              >
-                Cancel
-              </div>
-              <FormKit
-                type="text"
-                name="user_name"
-                placeholder="Edit a note title "
-                style="background-color: white; padding-right: 80px"
-              />
-            </div>
+        
           </div>
           <div class="px-5"></div>
         </FormKit>
@@ -212,6 +215,7 @@
             v-model="showStoreForm"
             v-if="showStoreForm"
             :getCurrentMemberInfo="getCurrentMemberInfo"
+            :loggedUser="loggedUser"
           />
         </Modal>
       </div>
@@ -225,9 +229,11 @@ import { useTimeSince } from "~/composables/useTime";
 
 const { calculateTimeSince } = useTimeSince();
 const { currentUserType } = useAuthStore();
+const { loggedUser } = useAuthStore();
 const showStoreForm = ref(false);
 const currentFilter = ref(1);
 const sortingOrder = ref("A-Z");
+const userReply = ref("");
 const props = defineProps({
   memberId: {
     type: String,
@@ -300,6 +306,7 @@ const isEditingReply = (noteId, replyId) => {
 };
 
 const submitReplayHandler = async (packageData) => {
+  console.log(packageData)
   try {
     const { data } = await useFetch("/api/member/add-reply", {
       method: "POST",
