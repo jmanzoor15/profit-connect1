@@ -35,7 +35,22 @@
           />
         </div>
       </div>
-      <div class="update-notes">
+
+      <div v-if="getMemberInfo.length === 0" class="no-notes">
+        <p
+          style="
+            font-size: 18px;
+            font-weight: bold;
+            position: absolute;
+            top: 50%;
+            margin-left: 100px;
+          "
+        >
+          No notes available. Click the button below to add a new note.
+        </p>
+      </div>
+
+      <div class="update-notes" v-else>
         <FormKit
           type="form"
           :modelValue="selectedPackage"
@@ -108,7 +123,7 @@
 
               <FormKit
                 type="text"
-                name="heading"
+                v-model="note.title"
                 placeholder="Edit a note title "
                 v-model="editingState.heading"
                 class="custom-input"
@@ -116,14 +131,13 @@
               />
               <FormKit
                 type="text"
-                name="description"
+                v-model="note.description"
                 placeholder="Edit a note description "
                 v-model="editingState.description"
                 class="custom-input"
                 style="background-color: white; padding-right: 80px"
               />
             </div>
-
             <div v-if="note.reply && note.reply.length">
               <div v-show="!isEditingReply(note.id, response?.id)">
                 <div class="replies" v-for="response in note.reply">
@@ -150,71 +164,66 @@
                     style="margin-bottom: 15px"
                   />
                 </div>
-                <FormKit
-                  type="form"
-                  :id="`replyid-${note.id}`"
-                  :modelValue="selectedPackage"
-                  @submit="submitReplayHandler"
-                  :actions="false"
-                  #default="{ value }"
-                >
-                  <div style="position: relative">
-                    <FormKit
-                      type="text"
-                      name="reply"
-                      placeholder="write a reply "
-                      class="custom-input"
-                      style="background-color: white; padding-right: 80px"
-                    />
-                    <FormKit name="notes_id" type="hidden" :value="note.id" />
-                    <FormKit
-                      name="user_id"
-                      type="hidden"
-                      :value="getCurrentMemberInfo.user_id"
-                    />
-                    <button
-                      type="submit"
-                      style="
-                        border: none;
-                        background: none;
-                        position: absolute;
-                        right: 10px;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        z-index: 2;
-                      "
-                    >
-                      <svg
-                        width="20px"
-                        height="20px"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M2 2 L18 10 L2 18 Z" fill="skyblue" />
-                      </svg>
-                    </button>
-                  </div>
-                </FormKit>
               </div>
             </div>
-            <!-- todo: Not getting this part, so will do it later -->
-            <template v-if="isEditingReply(note.id, response?.id)">
-              <div class="d-flex justify-content-end mb-2">
-                <div
-                  class="goBackShowMode"
-                  data-show="personal-show"
-                  @click="cancelEdit"
-                >
-                  Cancel
-                </div>
+
+            <div v-show="isEditingReply(note.id, response?.id)">
+              <div
+                class="goBackShowMode"
+                data-show="personal-show"
+                @click="cancelEdit"
+              >
+                Cancel
               </div>
               <FormKit
                 type="text"
                 name="user_name"
-                placeholder="Edit a note title "
+                placeholder="Edit the Reply "
                 style="background-color: white; padding-right: 80px"
               />
-            </template>
+            </div>
+            <FormKit
+              type="form"
+              :id="`replyid-${note.id}`"
+              :modelValue="selectedPackage"
+              @submit="submitReplayHandler"
+              :actions="false"
+              #default="{ value }"
+            >
+              <div style="position: relative">
+                <FormKit
+                  type="text"
+                  name="reply"
+                  placeholder="write a reply "
+                  class="custom-input"
+                  :value="userReply"
+                  style="background-color: white; padding-right: 80px"
+                />
+                <FormKit name="notes_id" type="hidden" :value="note.id" />
+                <FormKit name="user_id" type="hidden" :value="loggedUser.id" />
+                <button
+                  type="submit"
+                  style="
+                    border: none;
+                    background: none;
+                    position: absolute;
+                    right: 10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    z-index: 2;
+                  "
+                >
+                  <svg
+                    width="20px"
+                    height="20px"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M2 2 L18 10 L2 18 Z" fill="skyblue" />
+                  </svg>
+                </button>
+              </div>
+            </FormKit>
           </div>
           <div class="px-5"></div>
         </FormKit>
@@ -227,6 +236,7 @@
             v-model="showStoreForm"
             v-if="showStoreForm"
             :getCurrentMemberInfo="getCurrentMemberInfo"
+            :loggedUser="loggedUser"
           />
         </Modal>
       </div>
@@ -240,9 +250,11 @@ import { useTimeSince } from "~/composables/useTime";
 import { reset } from "@formkit/core";
 const { calculateTimeSince } = useTimeSince();
 const { currentUserType } = useAuthStore();
+const { loggedUser } = useAuthStore();
 const showStoreForm = ref(false);
 const currentFilter = ref(1);
 const sortingOrder = ref("A-Z");
+const userReply = ref("");
 const props = defineProps({
   memberId: {
     type: String,
@@ -258,13 +270,13 @@ const {
 });
 
 const getMemberInfo = computed(() => {
-  if (
-    memberInfoData.value &&
-    memberInfoData.value.member &&
-    memberInfoData.value.member.notes &&
-    memberInfoData.value.member.notes.length > 0
-  ) {
-    return memberInfoData.value.member.notes.map((note) => ({
+  if (!memberInfoData.value?.member?.notes) {
+    return [];
+  }
+
+  return memberInfoData.value.member.notes
+    .filter((note) => note != null) // Filter out null or undefined notes
+    .map((note) => ({
       id: note.id,
       title: note.header,
       description: note.description,
@@ -275,13 +287,15 @@ const getMemberInfo = computed(() => {
       updated_time: note.updated_time,
       reply: note.reply ? note.reply.filter((r) => r !== null) : [],
     }));
-  }
-
-  return [];
 });
 
 const getCurrentMemberInfo = computed(() => {
-  return getMemberInfo.value.find((mem) => mem.id === props.memberId);
+  if (!memberInfoData.value?.member?.data) {
+    return null;
+  }
+  return memberInfoData.value.member.data.find(
+    (member) => member.id === props.memberId
+  );
 });
 
 const defaultValue = () => ({
@@ -341,6 +355,7 @@ const handleEdit = async () => {
 };
 
 const submitReplayHandler = async (packageData) => {
+  console.log(packageData);
   try {
     const { data } = await useFetch("/api/member/add-reply", {
       method: "POST",
@@ -420,7 +435,21 @@ const submitReplayHandler = async (packageData) => {
 }
 .textarea {
   position: relative;
-  width: 100%;
+  width: 800px;
+  padding: 16px;
+  color: #000;
+  font-size: 0.875rem;
+  line-height: 1.15;
+  border: 1px solid #f2faff;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+  background: #f2faff;
+  margin-bottom: 30px;
+}
+.no-notes {
+  position: relative;
+  width: 800px;
+  height: 400px;
   padding: 16px;
   color: #000;
   font-size: 0.875rem;

@@ -30,6 +30,10 @@ const props = defineProps({
     type: Object,
     default: () => {},
   },
+  loggedUser: {
+    type: Object,
+    default: () => {},
+  },
 });
 
 const { currentUserType } = useAuthStore();
@@ -43,7 +47,7 @@ const createNote = async (packageData) => {
         ...packageData,
         facility_id: currentUserType?.id,
         member_id: props.getCurrentMemberInfo.id,
-        user_id: props.getCurrentMemberInfo.user_id,
+        user_id: props.loggedUser.id
       },
     });
     if (data.value.return) {
