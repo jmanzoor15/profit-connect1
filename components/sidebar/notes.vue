@@ -123,7 +123,6 @@
 
               <FormKit
                 type="text"
-                v-model="note.title"
                 placeholder="Edit a note title "
                 v-model="editingState.heading"
                 class="custom-input"
@@ -131,7 +130,6 @@
               />
               <FormKit
                 type="text"
-                v-model="note.description"
                 placeholder="Edit a note description "
                 v-model="editingState.description"
                 class="custom-input"
