@@ -296,6 +296,19 @@ h6 {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.strikethrough{
-  text-decoration: line-through
+.strikethrough {
+  text-decoration: line-through;
+}
+
+.group-hover {
+  .hover-show {
+    visibility: hidden;
+    pointer-events: none;
+  }
+  &:hover {
+    .hover-show {
+      visibility: visible;
+      pointer-events: unset;
+    }
+  }
 }

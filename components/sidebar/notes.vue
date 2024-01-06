@@ -79,6 +79,7 @@
                   <img
                     @click="() => startEditNote(note)"
                     class="editgetMemberInfo"
+                    role="button"
                     src="~assets/images/svg/edit-icon-black.svg"
                     style="margin-bottom: 15px"
                   />
@@ -137,31 +138,17 @@
               />
             </div>
             <div v-if="note.reply && note.reply.length">
-              <div v-show="!isEditingReply(note.id, response?.id)">
-                <div class="replies" v-for="response in note.reply">
-                  <h3 style="font-size: 14px; font-weight: bold">
-                    {{ response.user_name }} &nbsp;
-                    <span style="font-size: 8px">{{
-                      calculateTimeSince(
-                        response.updated_date,
-                        response.updated_time
-                      )
-                    }}</span>
-                  </h3>
-                  <div class="description">
-                    <p>{{ response.reply }}</p>
-                  </div>
-                </div>
-                <div
-                  class="d-flex align-items-center justify-content-end gap-2"
-                >
-                  <img
-                    @click="startEditReply(note.id, response?.id)"
-                    class="editgetMemberInfo"
-                    src="~assets/images/svg/edit-icon-black.svg"
-                    style="margin-bottom: 15px"
-                  />
-                </div>
+              <div
+                v-show="!isEditingReply(note.id, response?.id)"
+                class="reply-container"
+              >
+                <MemberCommonReply
+                  class="replies group-hover"
+                  v-for="reply in note.reply"
+                  :reply="reply"
+                  :key="reply.id"
+                  @reload="refresh"
+                />
               </div>
             </div>
 
@@ -458,15 +445,7 @@ const submitReplayHandler = async (packageData) => {
   background: #f2faff;
   margin-bottom: 30px;
 }
-.replies {
-  border-left: 5px solid rgb(122, 122, 226);
-  width: auto;
-  padding: 10px;
-  box-sizing: border-box;
-}
-.replies:last-child {
-  margin-bottom: 30px;
-}
+
 .content-filters {
   display: flex;
   justify-content: right;
@@ -483,5 +462,11 @@ const submitReplayHandler = async (packageData) => {
   background: 0 0;
   transition: 0.35s;
   width: 80px;
+}
+
+.reply-container {
+  max-height: 300px;
+  overflow: auto;
+  margin: 30px 0;
 }
 </style>
