@@ -3,6 +3,7 @@ export default defineNuxtConfig({
     "assets/scss/global.scss",
     "assets/scss/formkit.scss",
     "assets/scss/app.scss",
+    "assets/scss/utility.scss",
   ],
   plugins: [{ src: "~/plugins/bootstrap.client", mode: "client" }],
   modules: [

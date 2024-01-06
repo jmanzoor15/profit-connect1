@@ -1,14 +1,11 @@
 <template>
-  <section class="content-section">
-    <FacilityUpdate />
-    <div class="content-box">
-      <FacilityTiming
-        v-if="generalInfo"
-        :general-info="generalInfo"
-        :general-timing="generalTiming"
-      />
-    </div>
-  </section>
+  <TemplatesFacility>
+    <FacilityTiming
+      v-if="generalInfo"
+      :general-info="generalInfo"
+      :general-timing="generalTiming"
+    />
+  </TemplatesFacility>
 </template>
 
 <script lang="ts" setup>

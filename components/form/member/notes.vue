@@ -8,6 +8,7 @@
         validation="required"
       />
       <FormKit type="textarea" name="description" placeholder="Notes" />
+
       <div class="mt-4 d-flex justify-content-center">
         <FormKit type="submit">Submit</FormKit>
       </div>
@@ -47,7 +48,7 @@ const createNote = async (packageData) => {
         ...packageData,
         facility_id: currentUserType?.id,
         member_id: props.getCurrentMemberInfo.id,
-        user_id: props.loggedUser.id
+        user_id: props.loggedUser.id,
       },
     });
     if (data.value.return) {

@@ -50,7 +50,7 @@
             class="custom-input flex-grow-1"
           />
 
-          <div class="d-flex gap-2 align-items-baseline">
+          <div class="d-flex gap-2 align-items-center">
             <FormKit
               variant="bg-primary text-white"
               size="sm"
@@ -59,7 +59,7 @@
             />
             <MixButton
               disableIcon
-              variant="bg-secondary text-white"
+              variant="bg-secondary text-white mb-2"
               @click="closeEditMode"
               size="sm"
               label="Cancel"
