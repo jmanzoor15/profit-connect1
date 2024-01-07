@@ -52,14 +52,14 @@
 
           <div class="d-flex gap-2 align-items-center">
             <FormKit
-              variant="bg-primary text-white"
-              size="sm"
+            style="background-color: transparent; font-size: 14px; border: 2px; border-style: solid; border-color: #84ceff;;"
               label="Update"
               type="submit"
             />
             <MixButton
+            style="background-color: transparent; font-size: 16px; height: 36px;" 
               disableIcon
-              variant="bg-secondary text-white mb-2"
+              variant="bg-secondary text-white mb-3"
               @click="closeEditMode"
               size="sm"
               label="Cancel"
@@ -114,5 +114,15 @@ const submitHandler = async () => {
   width: auto;
   padding: 10px;
   box-sizing: border-box;
+}
+.goBackShowMode {
+  font: 14px "Poppins Regular", sans-serif, Arial;
+  cursor: pointer;
+  padding: 5px 12px;
+  border: 1.5px solid #84ceff;
+  border-radius: 5px;
+  background: 0 0;
+  transition: 0.35s;
+  width: 80px;
 }
 </style>
