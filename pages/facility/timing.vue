@@ -9,6 +9,7 @@
 </template>
 
 <script lang="ts" setup>
+import { defaultTiming } from "~/constants/common";
 import { useAuthStore } from "~/store/auth";
 const { setBreadcrumb } = useBreadcrumb();
 setBreadcrumb({
@@ -40,7 +41,16 @@ const SelectFacility = async (value) => {
 
 const generalTiming = computed(() => {
   if (!facilityData.value) return null;
-  return facilityData.value.value.facility[0].general[0].timings;
+
+  const timing =
+    facilityData.value.value.facility[0].general[0].timings.filter(Boolean);
+  if (!timing.length) return defaultTiming();
+
+  return timing.map(({ day, start_time, end_time }) => ({
+    day,
+    start_time,
+    end_time,
+  }));
 });
 const generalInfo = computed(() => {
   if (!facilityData.value) return null;

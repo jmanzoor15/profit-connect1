@@ -5,6 +5,7 @@
       @submit="submitHandler"
       :actions="false"
       :modelValue="computedSelectedSpace"
+      #default="{ value }"
     >
       <div class="row">
         <div class="col-8">
@@ -80,8 +81,32 @@
           type="checkbox"
           name="follow_facility_timing"
           label="Follows Facility Timing"
-          :value="false"
+          :value="value.follow_facility_timing"
         />
+      </div>
+
+      <div class="schedule-container" v-if="!value.follow_facility_timing">
+        <div
+          v-for="(day, index) in value.timings"
+          :key="index"
+          class="day-schedule"
+        >
+          <FormKit
+            type="text"
+            :placeholder="'From'"
+            :ignore="true"
+            v-model="value.timings[index].start_time"
+            class="time-input"
+          />
+          <span>to</span>
+          <FormKit
+            type="text"
+            :ignore="true"
+            :placeholder="'To'"
+            v-model="value.timings[index].end_time"
+            class="time-input"
+          />
+        </div>
       </div>
 
       <div class="mt-4 d-flex justify-content-center">
@@ -94,6 +119,7 @@
 <script setup>
 import { useAuthStore } from "@/store/auth";
 import { removeObjectKeys } from "@/utils/dataCleaner";
+import { defaultTiming } from "~/constants/common";
 
 const props = defineProps({
   categories: {
@@ -116,15 +142,19 @@ const enableVirtualRoom = ref(false);
 const { currentUserType } = useAuthStore();
 
 const computedSelectedSpace = computed(() => {
+  const timing = props.spaceData?.timings?.filter(Boolean);
   return props.spaceData
     ? {
         ...props.spaceData,
-        timings: props.spaceData?.timings?.filter((item) => item),
+        timings: timing && timing.length ? timing : defaultTiming(),
         follow_facility_timing:
-          props.spaceData?.follow_facility_timing === "1" ? true : false,
+          props.spaceData?.follow_facility_timing === "1" ||
+          props.spaceData?.follow_facility_timing === "Yes"
+            ? true
+            : false,
         virtual_room: props.spaceData?.url ? true : false,
       }
-    : {};
+    : { timings: defaultTiming() };
 });
 
 const addSpace = async (spaceData) => {
@@ -155,6 +185,7 @@ const updateSpace = async (spaceData) => {
         ...spaceData,
         facility_id: currentUserType?.id,
         room_id: computedSelectedSpace.value?.id,
+        follow_facility_timing: spaceData.follow_facility_timing ? "Yes" : "No",
       },
     });
     if (data.value.return) {
@@ -179,4 +210,15 @@ const submitHandler = async (spaceData) => {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.schedule-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.day-schedule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+</style>

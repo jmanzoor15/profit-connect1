@@ -75,7 +75,11 @@ const form = ref({
 });
 
 const submitHandler = async () => {
-  const payload = { facility_id: currentUserType?.id, ...form.value };
+  const payload = {
+    facility_id: currentUserType?.id,
+    always_open: form.value.always_open,
+    timings: form.value.generalTiming,
+  };
   convertBooleanToYesNo(payload);
 
   try {
@@ -84,7 +88,7 @@ const submitHandler = async () => {
       body: payload,
     });
     // facilityData.value = data.value.facility;
-    alert("Data updated");
+    alert(data.value.message);
   } catch (err) {
     console.error("Error fetching facility data:", err);
   } finally {
