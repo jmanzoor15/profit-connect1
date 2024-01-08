@@ -5,6 +5,7 @@
       :modelValue="selectedPlan"
       @submit="submitHandler"
       :actions="false"
+      #default="{ value }"
     >
       <div class="d-flex justify-content-end align-items-center gap-4 mb-3">
         <span> Can be paid with </span>
@@ -251,7 +252,9 @@
             outer-class="m-0 date-width"
             label="Start date"
             placeholder="End date"
+            :validation="`date_after:${value.promotion_start}`"
             name="promotion_end"
+            validation-visibility="dirty"
             help="Promotion end date"
           />
         </div>
