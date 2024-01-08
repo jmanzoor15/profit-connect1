@@ -8,7 +8,7 @@
             style="background-color: #f2faff"
             size="sm"
             label="New tags"
-            @Click="showTagModal = true"
+            @Click="closeEditMode(), (showTagModal = true)"
           />
         </div>
         <div class="search ml-auto">
@@ -35,7 +35,7 @@
           <th class="w-125px">Date created</th>
         </thead>
         <tbody>
-          <tr v-for="tag in tags" :key="tag.id">
+          <tr v-for="tag in tags" :key="tag.id" @click="setEditId(tag.id)">
             <td>{{ tag.name }}</td>
             <td>{{ tag.count }}</td>
             <td>{{ tag.created_by }}</td>
@@ -47,8 +47,9 @@
       </table>
 
       <Modal v-model="showTagModal">
-        <template #title> New Tag </template>
-        <h1>Hello world</h1>
+        <template #title> {{ !currentTag ? "New Tag" : "Edit Tag" }}</template>
+
+        <FormFacilityTag v-if="showTagModal" :tagData="currentTag" />
       </Modal>
     </div>
   </TemplatesFacility>
@@ -65,13 +66,22 @@ setBreadcrumb({
   ],
 });
 const { tags } = storeToRefs(useTagStore());
-
+const {
+  isActivated: showTagModal,
+  setEditId,
+  closeEditMode,
+  activetedId: tagId,
+} = useEditMode();
 const sortingOrder = ref("A-Z");
 const showFacilityForm = ref(false);
 const memberId = ref("");
-const showTagModal = ref(false);
 const currentFilter = ref(1);
 const { currentUserType } = useAuthStore();
+
+const currentTag = computed(() => {
+  if (!tagId.value) return null;
+  return tags.value.find((tag) => tag.id === tagId.value);
+});
 
 function formatDate(dateString) {
   const options = { year: "numeric", month: "short", day: "numeric" };
