@@ -111,7 +111,7 @@
                   data-show="personal-show"
                   @click="handleEdit"
                 >
-                  Edit
+                  Update
                 </div>
                 <div
                   class="goBackShowMode"
@@ -153,19 +153,6 @@
             </div>
 
             <div v-show="isEditingReply(note.id, response?.id)">
-              <div
-                class="goBackShowMode"
-                data-show="personal-show"
-                @click="cancelEdit"
-              >
-                Cancel
-              </div>
-              <FormKit
-                type="text"
-                name="user_name"
-                placeholder="Edit the Reply "
-                style="background-color: white; padding-right: 80px"
-              />
             </div>
             <FormKit
               type="form"
