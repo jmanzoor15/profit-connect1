@@ -32,10 +32,33 @@
       </div>
     </div>
     <div class="text-end">
-      <div>AED {{ price }}</div>
-      <div v-if="promotion_price" style="font-size: 12px">
-        AED {{ promotion_price }}
-      </div>
+      <template v-if="!promotion_price && display_original_price !== 'Yes'">
+        <div class="price-only">
+          AED <span>{{ price }} </span>
+        </div>
+      </template>
+
+      <template
+        v-else-if="promotion_price !== null && display_original_price === 'Yes'"
+      >
+        <div class="">
+          <div class="price-only">AED {{ promotion_price }}</div>
+          <div class="gap-1 d-flex align-items-center justify-content-end">
+            <div class="custom-badge">
+              {{ `${discountInPercent}% off ` }}
+            </div>
+            <div class="line-though">
+              AED <span>{{ price }} </span>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template v-else>
+        <div class="price-only">
+          AED <span>{{ promotion_price || price }} </span>
+        </div>
+      </template>
     </div>
     <div class="d-flex justify-content-between">
       <div
@@ -97,6 +120,14 @@ const props = defineProps({
     type: String,
     default: "No",
   },
+  display_original_price: {
+    type: String,
+    default: "No",
+  },
+  promotion_price: {
+    type: String,
+    default: null,
+  },
 });
 const isPublic = ref(props.private === "No" ?? false);
 const isFeatured = ref(props.featured === "Yes" ?? false);
@@ -105,6 +136,13 @@ const emit = defineEmits([
   "on-featured-change",
   "on-plan-select",
 ]);
+
+const discountInPercent = computed(() => {
+  if (!props.promotion_price) return 0;
+  return Math.ceil(
+    ((+props.price - +props.promotion_price) * 100) / +props.price
+  );
+});
 
 const onFeaturedChange = (val: boolean) => {
   emit("on-featured-change", {
@@ -124,6 +162,25 @@ const onFeaturedChange = (val: boolean) => {
     position: absolute;
     top: -8px;
     left: -8px;
+  }
+
+  .price-only {
+    font-size: 20px;
+    span {
+      font-weight: 900;
+    }
+  }
+  .custom-badge {
+    background: red;
+    display: inline-block;
+    color: #fff;
+    font-size: 10px;
+    padding: 0 6px;
+    height: 18px;
+    align-items: center;
+  }
+  .line-though {
+    text-decoration: line-through;
   }
 }
 </style>

@@ -17,24 +17,29 @@
         />
       </div>
       <div class="schedule-container" v-if="!form.always_open">
-        <div
-          v-for="(day, index) in form.generalTiming"
-          :key="index"
-          class="day-schedule"
-        >
-          <FormKit
-            type="text"
-            :placeholder="'From'"
-            v-model="day.start_time"
-            class="time-input"
-          />
-          <span>to</span>
-          <FormKit
-            type="text"
-            :placeholder="'To'"
-            v-model="day.end_time"
-            class="time-input"
-          />
+        <div v-for="(day, index) in form.generalTiming" :key="index">
+          <div class="day-schedule">
+            <FormKit
+              type="text"
+              :placeholder="'From'"
+              v-model="day.start_time"
+              class="time-input"
+            />
+            <span>to</span>
+            <FormKit
+              type="text"
+              :placeholder="'To'"
+              v-model="day.end_time"
+              class="time-input"
+            />
+          </div>
+          <p
+            ref="error"
+            v-if="day.start_time > day.end_time"
+            class="custom-formkit-message"
+          >
+            End time should be more than start time
+          </p>
         </div>
       </div>
       <div class="mt-4 d-flex justify-content-center">
@@ -58,6 +63,7 @@ const { generalInfo, generalTiming } = defineProps({
   },
 });
 const { currentUserType } = useAuthStore();
+const error = ref(null);
 
 const convertYesNoToBoolean = (key: string) => key === "Yes";
 function convertBooleanToYesNo(obj) {
@@ -81,6 +87,8 @@ const submitHandler = async () => {
     timings: form.value.generalTiming,
   };
   convertBooleanToYesNo(payload);
+
+  if (error.value && error.value.length) return;
 
   try {
     const { data } = await useFetch("/api/franchise/update-facility", {
@@ -114,6 +122,9 @@ const submitHandler = async () => {
   display: flex;
   align-items: center;
   gap: 10px;
+  span {
+    align-self: center;
+  }
 }
 
 .day-checked label {
@@ -127,5 +138,11 @@ const submitHandler = async () => {
   padding: 0.375rem 0.75rem;
 }
 
+.custom-formkit-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 0px;
+  margin-top: -10px;
+}
 /* You will need to adjust the colors and sizes to match your design exactly */
 </style>
