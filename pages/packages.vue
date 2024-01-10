@@ -55,7 +55,7 @@
         v-if="showPlanForm"
         v-model:planData="selectedPlan"
         :selectedPackage="selectedPackageForPlan"
-        @reload="refresh"
+        @reload="refresh(), (showPlanForm = false)"
         :accessData="accessData ?? {}"
       />
     </Modal>
@@ -217,18 +217,30 @@ const onPlanSelect = (plan: any) => {
     first_class_free: stringToBoolean(plan.first_class_free),
     display_original_price: stringToBoolean(plan.display_original_price),
     featured: stringToBoolean(plan.featured),
+    promotion_price: parseFloat(plan.promotion_price) || "",
     plan_id: plan.id,
     ...spacesData,
     roomse: rooms,
-    classes: plan.classes.map((item: any) => item?.id),
-    available_tags: plan.available_tags.map((item: any) => item?.id),
-    except_tags: plan.except_tags.map((item: any) => item?.id),
+    classes: plan.classes.filter(Boolean).map((item: any) => item?.id),
+    available_tags: plan.available_tags
+      .filter(Boolean)
+      .map((item: any) => item?.id),
+    except_tags: plan.except_tags.filter(Boolean).map((item: any) => item?.id),
+    promotion_start: isNonZeroDate(plan.promotion_start)
+      ? plan.promotion_start
+      : "",
+    promotion_end: isNonZeroDate(plan.promotion_start)
+      ? plan.promotion_end
+      : "",
   };
   showPlanForm.value = true;
 };
 const onSearch = (data: string) => {
   searchTerm.value = data;
 };
+function isNonZeroDate(dateString: string) {
+  return dateString !== "0000-00-00";
+}
 </script>
 
 <style lang="scss" scoped>

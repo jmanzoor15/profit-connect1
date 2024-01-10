@@ -32,14 +32,16 @@
       </div>
     </div>
     <div class="text-end">
-      <template v-if="!promotion_price && display_original_price !== 'Yes'">
+      <template
+        v-if="promotion_price == '0' && display_original_price !== 'Yes'"
+      >
         <div class="price-only">
           AED <span>{{ price }} </span>
         </div>
       </template>
 
       <template
-        v-else-if="promotion_price !== null && display_original_price === 'Yes'"
+        v-else-if="promotion_price !== '0' && display_original_price === 'Yes'"
       >
         <div class="">
           <div class="price-only">AED {{ promotion_price }}</div>
@@ -56,7 +58,8 @@
 
       <template v-else>
         <div class="price-only">
-          AED <span>{{ promotion_price || price }} </span>
+          AED
+          <span>{{ promotion_price !== "0" ? promotion_price : price }} </span>
         </div>
       </template>
     </div>
@@ -106,7 +109,7 @@ const props = defineProps({
   },
   promotion_price: {
     type: Number,
-    default: 0,
+    default: "",
   },
   category: {
     type: String,
@@ -124,9 +127,9 @@ const props = defineProps({
     type: String,
     default: "Active",
   },
-  promotion_price: {
+  display_original_price: {
     type: String,
-    default: null,
+    default: "No",
   },
 });
 const isPublic = ref(props.private === "No" ?? false);
@@ -149,8 +152,6 @@ const onFeaturedChange = (val: boolean) => {
     featured: val ? "Yes" : "No",
   });
 };
-
-
 </script>
 
 <style scoped lang="scss">

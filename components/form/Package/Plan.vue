@@ -5,6 +5,7 @@
       :modelValue="selectedPlan"
       @submit="submitHandler"
       :actions="false"
+      #default="{ state: { valid } }"
     >
       <div class="d-flex justify-content-end align-items-center gap-4 mb-3">
         <span> Can be paid with </span>
@@ -249,6 +250,7 @@
             type="number"
             outer-class="m-0"
             name="promotion_price"
+            v-model="promotion_price"
             label="Promotion price"
             placeholder="Promotion price"
             :disabled="!isPromotionPriceActive"
@@ -276,7 +278,7 @@
           <FormKit
             type="date"
             outer-class="m-0 date-width"
-            label="Start date"
+            label="End date"
             placeholder="End date"
             name="promotion_end"
             help="Promotion end date"
@@ -322,13 +324,21 @@ const selectedPlan = useVModel(props, "planData", emit);
 const promotionStartDate = ref(selectedPlan.value?.promotion_start);
 const { $toast } = useNuxtApp();
 
-const isPromotionPriceActive = ref(false);
+const isPromotionPriceActive = ref(!!selectedPlan.value?.promotion_price);
 const activeTab = ref(0);
 const { tags } = storeToRefs(useTagStore());
 const availableTagsSelected = ref([]);
 const exceptTagsSelected = ref([]);
 const planTypeData = ref();
 const paymentCategoryData = ref();
+
+const promotion_price = ref(selectedPlan.promotion_price || "");
+watch(isPromotionPriceActive, (newVal) => {
+  console.log({ isPromotionPriceActive });
+  if (!newVal) {
+    // promotion_price.value = null;
+  }
+});
 
 const createPlan = async (planData) => {
   try {
@@ -397,7 +407,9 @@ const submitHandler = async (planData) => {
     except_tags: planData.except_tags,
     display_original_price: planData.display_original_price ? "Yes" : "No",
     promotion_end: planData.promotion_end ?? null,
-    promotion_price: planData.promotion_price ?? null,
+    promotion_price: isPromotionPriceActive.value
+      ? planData.promotion_price ?? ""
+      : "",
     promotion_start: planData.promotion_start ?? null,
     classes: planData.classes,
     spaces,

@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar-box"> 
+  <div class="sidebar-box">
     <div class="update-image">
       <div
         v-show="!toggleStates.isImageEditMode.value"
@@ -17,17 +17,17 @@
         </h3>
       </div>
       <div>
-      <a
-      :href="`/members/${getMemberImage.id}/membership-overview`"
-      class="sidebar-box__title text-center"
-      title="View membership"
-    >     
-      <img :src="getImageUrl(getMemberImage.image)" />
-      <h2 class="content-title-bold editUserName">
-        {{ getMemberInfo.firstname }} {{ getMemberInfo.lastname }}
-      </h2>
-    </a>
-  </div>
+        <a
+          :href="`/members/${getMemberImage.id}/membership-overview`"
+          class="sidebar-box__title text-center"
+          title="View membership"
+        >
+          <img :src="getImageUrl(getMemberInfo.image)" />
+          <h2 class="content-title-bold editUserName">
+            {{ getMemberInfo.firstname }} {{ getMemberInfo.lastname }}
+          </h2>
+        </a>
+      </div>
       <div
         v-show="toggleStates.isImageEditMode.value"
         class="personal-edit data-block-edit"
@@ -62,7 +62,6 @@
         </FormKit>
       </div>
     </div>
-
 
     <div class="update-member">
       <FormKit
@@ -139,7 +138,7 @@
               Cancel
             </div>
           </h3>
-         
+
           <FormKit type="select" name="gender" :options="['Male', 'Female']" />
           <FormKit
             type="date"
@@ -578,9 +577,8 @@ const getMemberInfo = computed(() => {
     const socialData = memberInfoData.value.member.social || {};
     const aboutData = memberInfoData.value.member.about || {};
     const emergencyContactData =
-     memberInfoData.value.member.emergency_contact || {};
+      memberInfoData.value.member.emergency_contact || {};
     const tags = memberInfoData.value.member?.tags || [];
-
 
     return {
       id: memberData.id,
@@ -591,7 +589,7 @@ const getMemberInfo = computed(() => {
       country_code: memberData.country_code,
       contactno: memberData.contactno,
       email: memberData.email,
-      image: "",
+      image: memberData.img_src,
       // membership_status: memberData.membership_status,
       facebook: socialData.facebook,
       instagram: socialData.instagram,
