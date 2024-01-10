@@ -3,7 +3,6 @@
     <FormKit
       class="formCreateMember"
       type="form"
-      #default="{ value }"
       @submit="addMember"
       :actions="false"
     >
@@ -42,10 +41,12 @@
             type="tel"
             name="contactno"
             placeholder="Phone number"
+            validation="required|number|"
             :validation-messages="{
-              required: 'Phone number is required',
+              required: 'Phone number is required.',
+              number: 'Phone number must be numeric.',
+            
             }"
-            validation-visibility="dirty"
           />
         </div>
       </div>
@@ -86,7 +87,6 @@
         :options="computedTags"
       />
       <FormKit type="submit" label="Save" class="EditSave" />
-      <pre>{{ value }}</pre>
     </FormKit>
   </div>
 </template>
@@ -97,6 +97,7 @@ import type { IAddMember } from "@/types/api/member/info";
 import { useAuthStore } from "@/store/auth";
 import { useTagStore } from "@/store/tag";
 import { storeToRefs } from "pinia";
+const { $toast } = useNuxtApp();
 
 interface NodeProps {
   suffixIcon: string;
@@ -131,9 +132,9 @@ const addMember = async (addNewMember: IAddMember) => {
     });
     if (data.value.return) {
       emit("reload");
-      alert("Member Added successfully!");
+      $toast.success("Member Added successfully!");
     } else {
-      alert(data.value.message);
+      $toast.error(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/Member/add", err);

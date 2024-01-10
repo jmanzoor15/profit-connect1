@@ -51,10 +51,8 @@
           >
             <div class="row align-items-center">
               <div class="col-2 p-0 rounded overflow-hidden">
-                <NuxtImg
-                  :src="category.image"
-                  provider="backend"
-                  width="120px"
+                <img 
+                :src="getImageUrl(category.image)"
                 />
               </div>
               <div class="col-10">
@@ -78,7 +76,8 @@ import { useTagStore } from "@/store/tag";
 import { useAuthStore } from "@/store/auth";
 import { storeToRefs } from "pinia";
 import { useVModel } from "@vueuse/core";
-
+const  { $toast } = useNuxtApp();
+const { getUrl: getImageUrl } = useBoImage();
 const emit = defineEmits(["reload", "update:categoryData"]);
 
 const props = defineProps({
@@ -106,9 +105,9 @@ const createCategory = async (categoryData) => {
     });
     if (data.value.return) {
       emit("reload");
-      alert("Category added successfully!");
+     $toast("Category added successfully!");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/class/add", err);
@@ -126,9 +125,9 @@ const editCategory = async (categoryData) => {
     });
     if (data.value.return) {
       emit("reload");
-      alert("Category edited successfully!");
+      $toast("Category edited successfully!");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/class/add", err);

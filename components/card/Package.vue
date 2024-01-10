@@ -120,9 +120,9 @@ const props = defineProps({
     type: String,
     default: "No",
   },
-  display_original_price: {
+  status: {
     type: String,
-    default: "No",
+    default: "Active",
   },
   promotion_price: {
     type: String,
@@ -143,13 +143,14 @@ const discountInPercent = computed(() => {
     ((+props.price - +props.promotion_price) * 100) / +props.price
   );
 });
-
 const onFeaturedChange = (val: boolean) => {
   emit("on-featured-change", {
     plan_id: props.id,
     featured: val ? "Yes" : "No",
   });
 };
+
+
 </script>
 
 <style scoped lang="scss">
@@ -184,3 +185,13 @@ const onFeaturedChange = (val: boolean) => {
   }
 }
 </style>
+<!-- <style lang="scss">
+.card-package {
+  .toggle-off {
+    background: #dcdcdc;
+  }
+  .star-toggle {
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.1215686275));
+  }
+}
+</style> -->

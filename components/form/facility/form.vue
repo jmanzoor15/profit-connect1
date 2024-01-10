@@ -1,11 +1,3 @@
-
-import type { bottom } from '@popperjs/core';
-
-import type { left } from '@popperjs/core';
-
-import type { right } from '@popperjs/core';
-
-import type { Style } from '#build/components';
 <template>
     <div class="px-5">
       <FormKit

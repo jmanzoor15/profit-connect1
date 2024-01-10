@@ -13,13 +13,14 @@
           name="start_date"
           validation="required"
           help="Start date"
+          v-model="startDate"
         />
         <FormKit
           type="date"
           label="End date"
           name="end_date"
-          validation="required"
           help="End date"
+          :validation="`required|date_after:${startDate}`"
         />
       </div>
       <FormKit
@@ -45,6 +46,7 @@
 <script setup>
 import { useAuthStore } from "@/store/auth";
 import { useVModel } from "@vueuse/core";
+const { $toast } = useNuxtApp();
 
 const emit = defineEmits(["reload", "update:packageData"]);
 
@@ -57,6 +59,7 @@ const props = defineProps({
 
 const { currentUserType } = useAuthStore();
 const selectedPackage = useVModel(props, "packageData", emit);
+const startDate = ref(selectedPackage.value?.start_date);
 
 const createCategory = async (packageData) => {
   try {
@@ -69,9 +72,9 @@ const createCategory = async (packageData) => {
     });
     if (data.value.return) {
       emit("reload");
-      alert("Package added successfully!");
+      $toast.success("Package added successfully!");
     } else {
-      alert(data.value.message);
+      $toast.error(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/package/add", err);
@@ -89,9 +92,9 @@ const editCategory = async (packageData) => {
     });
     if (data.value.return) {
       emit("reload");
-      alert("Package edited successfully!");
+      $toast.success("Package edited successfully!");
     } else {
-      alert(data.value.message);
+      $toast.error(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/package/update", err);

@@ -2,15 +2,15 @@
   <section class="content-section">
     <div class="content-box">
       <div class="content__title-box">
-        <h1>Member Search</h1> 
+        <h1>Member Search</h1>
         <div class="content-filters">
-      <MixToggleBtn v-model="sortingOrder" left="A-Z" right="Z-A" />
-      <MixBtnGroup 
-        v-model="currentFilter"
-        :labels="['All', 'Active', 'Inactive']"
-      />
-    </div>
-      </div>  {{ memberId }}
+          <MixToggleBtn v-model="sortingOrder" left="A-Z" right="Z-A" />
+          <MixBtnGroup
+            v-model="currentFilter"
+            :labels="['All', 'Active', 'Inactive']"
+          />
+        </div>
+      </div>
       <SearchBar @on-search="onSearch" />
       <div class="addNewMember" @click="handleAddSidebar()">
         <img
@@ -26,7 +26,6 @@
         @edit="handleEditSidebar"
       />
     </div>
-
     <SidebarAddMember v-if="showAddSidebar" />
     <SidebarUpdateMember
       v-if="showEditSidebar"
@@ -67,12 +66,10 @@ const handleAddSidebar = () => {
 };
 
 const handleEditSidebar = (tab: number) => {
-  (memberId.value = tab),
-    (showAddSidebar.value = false);
+  (memberId.value = tab), (showAddSidebar.value = false);
   showEditSidebar.value = true;
 };
 const filterPackages = (data: any) => {
-  
   switch (currentFilter.value) {
     case 1:
       return data;
@@ -83,31 +80,34 @@ const filterPackages = (data: any) => {
     default:
       return data;
   }
-};;
+};
 
 const getMembers = computed(() => {
-  
   const filteredData = searchTerm.value
-    ? membersData.value.members.filter(member => 
-        member.firstname.toLowerCase().includes(searchTerm.value.toLowerCase()) || 
-        member.lastname.toLowerCase().includes(searchTerm.value.toLowerCase()))
+    ? membersData.value.members.filter(
+        (member) =>
+          member.firstname
+            .toLowerCase()
+            .includes(searchTerm.value.toLowerCase()) ||
+          member.lastname.toLowerCase().includes(searchTerm.value.toLowerCase())
+      )
     : membersData.value.members;
 
   let sortedData;
   if (sortingOrder.value === "A-Z") {
-    sortedData = filteredData.sort((a, b) => a.firstname.localeCompare(b.firstname));
+    sortedData = filteredData.sort((a, b) =>
+      a.firstname.localeCompare(b.firstname)
+    );
   } else if (sortingOrder.value === "Z-A") {
-    sortedData = filteredData.sort((a, b) => b.firstname.localeCompare(a.firstname));
+    sortedData = filteredData.sort((a, b) =>
+      b.firstname.localeCompare(a.firstname)
+    );
   } else {
-    sortedData = filteredData; 
+    sortedData = filteredData;
   }
 
   return filterPackages(sortedData);
 });
-
-
-
-
 
 const refreshData = () => {
   refreshMembers();

@@ -27,22 +27,22 @@ const props = defineProps({
   front: {
     type: Object as PropType<IImage>,
     default: () => ({
-      new: "https://source.unsplash.com/random/330x730/?hot-women",
-      old: "https://source.unsplash.com/random/330x730/?hot-women",
+      new: "https://source.unsplash.com/random/330x730/?gym",
+      old: "https://source.unsplash.com/random/330x730/?gym",
     }),
   },
   side: {
     type: Object as PropType<IImage>,
     default: () => ({
-      new: "https://source.unsplash.com/random/330x730/?hot-women,workout",
-      old: "https://source.unsplash.com/random/330x730/?hot-women,workout",
+      new: "https://source.unsplash.com/random/330x730/?workout",
+      old: "https://source.unsplash.com/random/330x730/?workout",
     }),
   },
   back: {
     type: Object as PropType<IImage>,
     default: () => ({
-      new: "https://source.unsplash.com/random/330x730/?hot-women,sexy",
-      old: "https://source.unsplash.com/random/330x730/?hot-women,sexy",
+      new: "https://source.unsplash.com/random/330x730/?workout",
+      old: "https://source.unsplash.com/random/330x730/?workout",
     }),
   },
 });

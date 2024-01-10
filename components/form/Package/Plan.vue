@@ -5,7 +5,6 @@
       :modelValue="selectedPlan"
       @submit="submitHandler"
       :actions="false"
-      #default="{ value }"
     >
       <div class="d-flex justify-content-end align-items-center gap-4 mb-3">
         <span> Can be paid with </span>
@@ -38,6 +37,7 @@
         label="Description"
         placeholder="Short description"
         help="Recommended 35 charector"
+        validation="required"
       />
       <div class="plan-tab my-4">
         <MixTab v-model="activeTab" :items="['General', 'Access', 'Other']" />
@@ -51,6 +51,7 @@
                     name="credit_count"
                     v-if="planTypeData === 'credits'"
                     placeholder="Count"
+                    validation="required"
                   />
                   <FormKit
                     :classes="{
@@ -60,6 +61,7 @@
                     v-model="planTypeData"
                     name="type"
                     mode="single"
+                    validation="required"
                     :options="planType"
                   />
                 </div>
@@ -68,7 +70,11 @@
             <div class="col-6">
               <MixInputBox title="Duration">
                 <div class="d-flex align-items-center gap-2">
-                  <FormKit type="number" name="duration" />
+                  <FormKit
+                    type="number"
+                    name="duration"
+                    validation="required"
+                  />
                   <FormKit
                     :classes="{
                       outer: 'w-100',
@@ -77,6 +83,7 @@
                     name="period"
                     mode="single"
                     :options="periodType"
+                    validation="required"
                   />
                 </div>
               </MixInputBox>
@@ -95,8 +102,14 @@
                   }"
                   :options="paymentCategory"
                   v-model="paymentCategoryData"
+                  validation="required"
                 />
-                <FormKit type="number" name="price" placeholder="Price" />
+                <FormKit
+                  type="number"
+                  name="price"
+                  placeholder="Price"
+                  validation="required"
+                />
               </div>
               <div
                 class="col-7 d-flex align-items-center gap-2"
@@ -106,6 +119,9 @@
                 <FormKit
                   type="number"
                   name="payment_duration"
+                  :validation="
+                    paymentCategoryData === 'Recurring' ? 'required' : ''
+                  "
                   placeholder="Dration"
                 />
                 <FormKit
@@ -115,12 +131,18 @@
                   :classes="{
                     outer: 'plan-input-min-width',
                   }"
+                  :validation="
+                    paymentCategoryData === 'Recurring' ? 'required' : ''
+                  "
                   :options="periodType"
                 />
                 <span class="mb-3"> for </span>
                 <FormKit
                   type="number"
                   name="payment_cycle"
+                  :validation="
+                    paymentCategoryData === 'Recurring' ? 'required' : ''
+                  "
                   placeholder="Cycle"
                 />
               </div>
@@ -141,13 +163,13 @@
           </div>
           <div
             class="col-4"
-            v-for="(space, key) in accessData.spaces"
+            v-for="space in accessData.spaces"
             :key="space.value"
           >
             <MixInputBox :title="space.label">
               <FormKit
                 type="multiselect"
-                :name="`spaces[${key}]`"
+                :name="`spaces[${space.label}]`"
                 mode="multiple"
                 :options="space.rooms"
                 :hideSelected="false"
@@ -230,6 +252,7 @@
             label="Promotion price"
             placeholder="Promotion price"
             :disabled="!isPromotionPriceActive"
+            :validation="isPromotionPriceActive ? 'required' : ''"
           />
           <FormKit
             type="checkbox"
@@ -237,6 +260,7 @@
             label="Display original price"
             name="display_original_price"
             :value="false"
+            :validation="isPromotionPriceActive ? 'required' : ''"
           />
         </div>
         <div class="d-flex gap-2">
@@ -246,16 +270,19 @@
             label="Start date"
             name="promotion_start"
             help="Promotion start date"
+            v-model="promotionStartDate"
+            :validation="isPromotionPriceActive ? 'required' : ''"
           />
           <FormKit
             type="date"
             outer-class="m-0 date-width"
             label="Start date"
             placeholder="End date"
-            :validation="`date_after:${value.promotion_start}`"
             name="promotion_end"
-            validation-visibility="dirty"
             help="Promotion end date"
+            :validation="`${
+              isPromotionPriceActive ? 'required|' : ''
+            }date_after:${promotionStartDate}`"
           />
         </div>
       </div>
@@ -292,6 +319,8 @@ const props = defineProps({
 
 const { currentUserType } = useAuthStore();
 const selectedPlan = useVModel(props, "planData", emit);
+const promotionStartDate = ref(selectedPlan.value?.promotion_start);
+const { $toast } = useNuxtApp();
 
 const isPromotionPriceActive = ref(false);
 const activeTab = ref(0);
@@ -313,9 +342,9 @@ const createPlan = async (planData) => {
     });
     if (data.value.return) {
       emit("reload");
-      alert("Plan added successfully!");
+      $toast.success("Plan added successfully!");
     } else {
-      alert(data.value.message);
+      $toast.error(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/package/addplan", err);
@@ -334,9 +363,9 @@ const editPlan = async (planData) => {
     });
     if (data.value.return) {
       emit("reload");
-      alert("Plan edited successfully!");
+      $toast.success("Plan edited successfully!");
     } else {
-      alert(data.value.message);
+      $toast.error(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/package/updateplan", err);
@@ -347,10 +376,12 @@ const submitHandler = async (planData) => {
   const totalSpaces = props.accessData.spaces.length;
   const spaces = [];
   for (let i = 0; i < totalSpaces; i++) {
-    if (planData[`spaces[${i}]`])
-      planData[`spaces[${i}]`].forEach((item) => {
-        spaces.push(item);
-      });
+    if (planData[`spaces[${props.accessData.spaces[i].label}]`])
+      planData[`spaces[${props.accessData.spaces[i].label}]`].forEach(
+        (item) => {
+          spaces.push(item);
+        }
+      );
   }
 
   const postData = {

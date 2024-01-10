@@ -87,11 +87,6 @@
         </div>
       </div>
 
-      
-
-     
-
-  
 
     </div>
 
@@ -100,6 +95,7 @@
  
  <script setup>
  import { ref } from 'vue';
+
  
  const scheduleDays = ref([
  { name: 'Tuesday', checked: false, from: '', to: '' },

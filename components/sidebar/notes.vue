@@ -12,10 +12,10 @@
           />
         </div>
         <div class="search">
-          <SearchBar />
+          <SearchBar @on-search="onSearch" />
         </div>
       </div>
-      <div class="content-filters">
+      <!-- <div class="content-filters">
         <div class="d-flex align-items-center">
           <p style="font-size: 12px; font-weight: bold">Updated</p>
           <MixBtnGroup
@@ -34,7 +34,7 @@
             :labels="['Newest', 'Oldest']"
           />
         </div>
-      </div>
+      </div> -->
 
       <div v-if="getMemberInfo.length === 0" class="no-notes">
         <p
@@ -220,6 +220,7 @@
 import { useAuthStore } from "@/store/auth";
 import { useTimeSince } from "~/composables/useTime";
 import { reset } from "@formkit/core";
+const { $toast } = useNuxtApp();
 const { calculateTimeSince } = useTimeSince();
 const { currentUserType } = useAuthStore();
 const { loggedUser } = useAuthStore();
@@ -227,12 +228,52 @@ const showStoreForm = ref(false);
 const currentFilter = ref(1);
 const sortingOrder = ref("A-Z");
 const userReply = ref("");
+const searchTerm = ref();
 const props = defineProps({
   memberId: {
     type: String,
     default: "",
   },
 });
+const { memberId } = toRefs(props);
+const route = useRoute();
+const { setBreadcrumb, setBreadcrumbTab } = useBreadcrumb();
+
+  
+      setBreadcrumb({
+        items: [
+          { label: "Manage", link: "/" },
+          { label: "Members", link: "/" },
+        ],
+      });
+ 
+      setBreadcrumbTab({
+        items: [
+          {
+            label: "Membership",
+            link: `/members/${memberId.value}/membership-overview`,
+          },
+          { label: "Payment", link: `/members/${memberId.value}/payment` },
+          {
+            label: "Attendance",
+            link: `/members/${memberId.value}/attendance`,
+          },
+          { label: "Wellness", link: `/members/${memberId.value}/wellness` },
+          {
+            label: "Assessments",
+            link: `/members/${memberId.value}/assessments`,
+          },
+          { label: "Nutrition", link: `/members/${memberId.value}/nutrition` },
+          {
+            label: "Transformation",
+            link: `/members/${memberId.value}/transformations`,
+          },
+          { label: "Friends", link: `/members/${memberId.value}/friends` },
+          { label: "Badges", link: `/members/${memberId.value}/badges` },
+          { label: "Notes", link: `/members/${memberId.value}/notes` },
+          { label: "Activity", link: `/members/${memberId.value}/activity` },
+        ],
+      });
 const {
   data: memberInfoData,
   pending: membersPending,
@@ -246,8 +287,15 @@ const getMemberInfo = computed(() => {
     return [];
   }
 
+  // Filter notes based on the search term
   return memberInfoData.value.member.notes
-    .filter((note) => note != null) // Filter out null or undefined notes
+    .filter((note) => note != null) 
+    .filter((note) => {
+      if (!searchTerm.value || searchTerm.value.trim() === '') {
+        return true;
+      }
+      return note.header.toLowerCase().includes(searchTerm.value.toLowerCase());
+    })
     .map((note) => ({
       id: note.id,
       title: note.header,
@@ -260,6 +308,7 @@ const getMemberInfo = computed(() => {
       reply: note.reply ? note.reply.filter((r) => r !== null) : [],
     }));
 });
+
 
 const getCurrentMemberInfo = computed(() => {
   if (!memberInfoData.value?.member?.data) {
@@ -320,7 +369,7 @@ const handleEdit = async () => {
     });
     await refresh();
     cancelEdit();
-    alert(data.value.message);
+    $toast(data.value.message);
   } catch (err) {
     console.log("Error:/api/package/add", err);
   }
@@ -339,53 +388,15 @@ const submitReplayHandler = async (packageData) => {
     await refresh();
     packageData.reply = "";
     reset(`replyid-${packageData.notes_id}`);
-    alert(data.value.message);
+    $toast(data.value.message);
   } catch (err) {
     console.log("Error:/api/package/add", err);
   }
 };
 
-// type ToggleStates = {
-//   isNotesEditMode: Ref<boolean>;
-//   isReplyEditMode: Ref<boolean>;
-// };
-
-// const toggleStates: ToggleStates = {
-//   isNotesEditMode: ref(false),
-//   isReplyEditMode: ref(false),
-// };
-
-// const startEdit = (toggleKey: keyof ToggleStates) => {
-//   toggleStates[toggleKey].value = true;
-// };
-
-// const cancelEdit = (toggleKey: keyof ToggleStates) => {
-//   toggleStates[toggleKey].value = false;
-// };
-// const filterPackages = (data: any) => {
-//   switch (currentFilter.value) {
-//     case 1:
-//       return data;
-//     case 2:
-//       return data.filter((item: any) => item.status === "Active");
-//     case 3:
-//       return data.filter((item: any) => item.status === "Inactive");
-//     default:
-//       return data;
-//   }
-// // };
-// const computedData = computed(() => {
-//   if (sortingOrder.value === "A-Z") {
-//     return filterPackages(data.value.packages);
-//   } else {
-//     return filterPackages(
-//       useOrderBy(
-//         data.value.packages,
-//         [(item) => item.name.toLowerCase()],
-//         ["desc"]
-//       )
-//     );
-//   }
+const onSearch = (data: string) => {
+  searchTerm.value = data;
+};
 </script>
 <style lang="scss" scoped>
 .content-box1 {

@@ -10,7 +10,7 @@
           label="New Class"
         />
       </div>
-      <div class="d-flex align-items-baseline">
+      <div class="d-flex align-items-baseline mt-4">
         <MixTab
           v-model="activeTab"
           :items="getCategories"
@@ -19,16 +19,19 @@
         <MixButton
           @click="showCatrgoryForm = true"
           size="sm"
-          label="New Category"
+          label="New category"
+          style="min-width: 180px"
         />
       </div>
-      <div class="row g-3">
-        <div
-          class="col-6 col-lg-4"
-          v-for="category in computedClasses"
-          :key="category.id"
-        >
-          <CardClass v-bind="category" @click="onClassSelect(category.id)" />
+      <div style="min-height: calc(100vh - 284px)">
+        <div class="row g-3">
+          <div
+            class="col-6 col-lg-4"
+            v-for="category in computedClasses"
+            :key="category.id"
+          >
+            <CardClass v-bind="category" @click="onClassSelect(category.id)" />
+          </div>
         </div>
       </div>
     </div>

@@ -73,7 +73,7 @@
 
 <script setup lang="ts">
 import { useAuthStore } from "~/store/auth";
-
+const { $toast } = useNuxtApp();
 const props = defineProps({
   reply: {
     type: Object,
@@ -99,7 +99,7 @@ const submitHandler = async () => {
       },
     });
 
-    alert(data.value.message);
+    $toast(data.value.message);
     await emit("reload");
     closeEditMode();
   } catch (err) {

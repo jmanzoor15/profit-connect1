@@ -3,7 +3,8 @@ export default () => {
   const imageUrl = config.public.imageUrl;
 
   const getUrl = (url: string) => {
-    return `${imageUrl}/${url}`;
+    const timestamp = new Date().getTime();
+    return `${imageUrl}/${url}?timestamp=${timestamp}`;
   };
 
   return {

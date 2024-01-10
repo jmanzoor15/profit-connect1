@@ -61,6 +61,7 @@ import { useTagStore } from "@/store/tag";
 import { useAuthStore } from "@/store/auth";
 import { storeToRefs } from "pinia";
 import { useVModel } from "@vueuse/core";
+const { $toast } = useNuxtApp();
 
 const emit = defineEmits(["reload", "update:categoryData"]);
 
@@ -89,9 +90,9 @@ const createCategory = async (categoryData) => {
     });
     if (data.value.return) {
       emit("reload");
-      alert("Category added successfully!");
+      $toast("Category added successfully!");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/store/add-category", err);
@@ -109,9 +110,9 @@ const editCategory = async (categoryData) => {
     });
     if (data.value.return) {
       emit("reload");
-      alert("Category edited successfully!");
+      $toast("Category edited successfully!");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/store/update-category", err);

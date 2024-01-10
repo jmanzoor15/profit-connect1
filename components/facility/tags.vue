@@ -1,0 +1,174 @@
+<template>
+  <TemplatesFacility>
+    <div>
+      <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
+        <div class="d-flex align-items-center gap-4">
+          <h1 style="font-size: 22px; margin-bottom: 0px">Tags</h1>
+          <MixButton
+            style="background-color: #f2faff"
+            size="sm"
+            label="New tags"
+            @Click="closeEditMode(), (showTagModal = true)"
+          />
+        </div>
+        <div class="search ml-auto">
+          <SearchBar @on-search="onSearch" />
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between mb-5">
+        <MixToggleBtn v-model="sortingOrder" left="A-Z" right="Z-A" />
+        <div class="d-flex align-items-center gap-2">
+          <p style="font-size: 12px; font-weight: bold">Created</p>
+          <MixToggleBtn
+            style="font-size: 12px; font-weight: bold"
+            v-model="currentFilter" left="Recently" right="Oldest"
+           
+          />
+        </div>
+      </div>
+      <table class="tags-table w-full">
+        <thead>
+          <th>Name</th>
+          <th>Count</th>
+          <th>Created by</th>
+          <th class="w-125px">Date created</th>
+        </thead>
+        <tbody>
+          <tr v-for="tag in getFilteredTags" :key="tag.id" @click="setEditId(tag.id)">
+            <td>{{ tag.name }}</td>
+            <td>{{ tag.count }}</td>
+            <td>{{ tag.created_by }}</td>
+            <td>
+              {{ formatDate(tag.updated_date) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <Modal v-model="showTagModal">
+        <template #title> {{ !currentTag ? "New Tag" : "Edit Tag" }}</template>
+
+        <FormFacilityTag v-if="showTagModal" :tagData="currentTag" />
+      </Modal>
+    </div>
+  </TemplatesFacility>
+</template>
+
+<script lang="ts" setup>
+import { useAuthStore } from "~/store/auth";
+import { useTagStore } from "~/store/tag";
+const { setBreadcrumb } = useBreadcrumb();
+import { storeToRefs } from "pinia";
+
+setBreadcrumb({
+  items: [
+    { label: "Control Panel", link: "/" },
+    { label: "Facilities", link: "/" },
+  ],
+});
+const { tags } = storeToRefs(useTagStore());
+
+
+
+const {
+  isActivated: showTagModal,
+  setEditId,
+  closeEditMode,
+  activetedId: tagId,
+} = useEditMode();
+const searchTerm = ref();
+const sortingOrder = ref("A-Z");
+const showFacilityForm = ref(false);
+const memberId = ref("");
+const currentFilter = ref("Recently");
+const { currentUserType } = useAuthStore();
+
+const currentTag = computed(() => {
+  if (!tagId.value) return null;
+  return tags.value.find((tag) => tag.id === tagId.value);
+});
+
+function formatDate(dateString) {
+  const options = { year: "numeric", month: "short", day: "numeric" };
+  const formattedDate = new Date(dateString).toLocaleDateString(
+    "en-US",
+    options
+  );
+  return formattedDate;
+}
+const getFilteredTags = computed(() => {
+  if (!Array.isArray(tags.value)) {
+    console.error('tags.value is not an array:', tags.value);
+    return [];
+  }
+
+  let filteredTags = searchTerm.value
+    ? tags.value.filter(tag =>
+        tag.name.toLowerCase().includes(searchTerm.value.toLowerCase())
+      )
+    : tags.value;
+
+  if (sortingOrder.value !== "None") {
+    // Sort by name
+    filteredTags = filteredTags.sort((a, b) => 
+      sortingOrder.value === "A-Z" 
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name)
+    );
+  } else {
+    // Sort by date
+    console.log("ksbdkjfbsd")
+    if (currentFilter.value === 'Recently') {
+      filteredTags = filteredTags.sort((a, b) => 
+        new Date(b.updated_date) - new Date(a.updated_date)
+      );
+    } else if (currentFilter.value === 'Oldest') {
+      filteredTags = filteredTags.sort((a, b) => 
+        new Date(a.updated_date) - new Date(b.updated_date)
+      );
+    }
+  }
+
+  return filteredTags;
+});
+
+
+
+
+const onSearch = (data: string) => {
+  searchTerm.value = data;
+};
+</script>
+
+<style scoped>
+.w-125px {
+  width: 125px;
+}
+.tags-table {
+  margin-top: 30px;
+  color: #000000;
+
+  tr {
+    td,
+    th {
+      padding: 7px;
+    }
+
+    th {
+      &:first-child {
+        padding-left: 42px;
+      }
+    }
+  }
+
+  .cardIcon {
+    height: 22px;
+  }
+
+  .downloadIcon {
+    height: 22px;
+    margin-bottom: 5px;
+    cursor: pointer;
+  }
+}
+</style>

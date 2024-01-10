@@ -3,7 +3,6 @@ import useApiFetch from "~/composables/useApi";
 export default defineEventHandler(async ($event) => {
     const api = useApiFetch($event);
     const { facility_id  } = getQuery($event);
-    console.log(getQuery($event))
     const resp = await api("/packages/get/packages", {
       method: "POST",
       body: {

@@ -41,22 +41,22 @@
           />
         </div>
       </div>
-      <div class="row justify-content-end">
-        <div class="col-8 row">
-          <div class="col-6 d-flex align-items-center">
-            <div style="padding-bottom: 16px; padding-right: 4px">
-              Space Capacity
+      <div class="d-flex align-items-center-end gap-3 justify-content-end">
+          <div class="d-flex align-items-center gap-2">
+            <div class="">
+             <p>Space Capacity</p> 
             </div>
-            <div style="width: 68px">
+              <div>
               <FormKit
-                type="number"
+              style="width: 50px;"
+                type="text"
                 name="capacity"
                 label="Capacity"
                 validation="required"
               />
             </div>
           </div>
-          <div class="col-6">
+          <div class="d-flex align-items-center gap-2">
             <FormKit
               type="checkbox"
               name="virtual_room"
@@ -65,15 +65,15 @@
               v-model="enableVirtualRoom"
             />
             <FormKit
+            style="width: 120px;"
               type="text"
               name="url"
-              placeholder="Url"
+              placeholder="Add Url"
               label="Url"
-              :value="false"
               :disabled="!enableVirtualRoom"
             />
           </div>
-        </div>
+      
       </div>
       <div class="room-availabilty my-4">
         <h6 class="text-center">Availability</h6>
@@ -91,8 +91,9 @@
           :key="index"
           class="day-schedule"
         >
+        <div style="width: 100px;">{{ day.day }}</div>
           <FormKit
-            type="text"
+            type="time"
             :placeholder="'From'"
             :ignore="true"
             v-model="value.timings[index].start_time"
@@ -100,7 +101,7 @@
           />
           <span>to</span>
           <FormKit
-            type="text"
+            type="time"
             :ignore="true"
             :placeholder="'To'"
             v-model="value.timings[index].end_time"
@@ -120,7 +121,7 @@
 import { useAuthStore } from "@/store/auth";
 import { removeObjectKeys } from "@/utils/dataCleaner";
 import { defaultTiming } from "~/constants/common";
-
+const { $toast } = useNuxtApp();
 const props = defineProps({
   categories: {
     type: Array,
@@ -167,10 +168,10 @@ const addSpace = async (spaceData) => {
       },
     });
     if (data.value.return) {
-      alert("Space added successfully!");
+      $toast("Space added successfully!");
       emit("reload");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/space/add", err);
@@ -189,10 +190,10 @@ const updateSpace = async (spaceData) => {
       },
     });
     if (data.value.return) {
-      alert("Space edited successfully!");
+      $toast("Space edited successfully!");
       emit("reload");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/space/edit", err);

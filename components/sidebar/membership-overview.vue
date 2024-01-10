@@ -36,10 +36,10 @@
       <h1 class="content-title">Membership Packages</h1>
 
       <div class="filter-box packagesByStatus">
-        <a href="#" class="filter-option is-active" data-text="All">All</a>
-        <a href="#" class="filter-option" data-text="Unlimited">Unlimited</a>
-        <a href="#" class="filter-option" data-text="Credits">Credits</a>
-        <a href="#" class="filter-option" data-text="Add-on">Add-on</a>
+        <a href="#" class="filter-option" :class="{ 'is-active': selectedFilter === 'All' }" @click="selectFilter('All')">All</a>
+        <a href="#" class="filter-option" :class="{ 'is-active': selectedFilter === 'Unlimited' }" @click="selectFilter('Unlimited')">Unlimited</a>
+        <a href="#" class="filter-option" :class="{ 'is-active': selectedFilter === 'Credits' }" @click="selectFilter('Credits')">Credits</a>
+        <a href="#" class="filter-option" :class="{ 'is-active': selectedFilter === 'add-on' }" @click="selectFilter('add-on')">Add-on</a>
       </div>
     </div>
 
@@ -77,18 +77,51 @@ const props = defineProps({
     default: ''
   },
 });
+const { memberId } = toRefs(props);
+const route = useRoute();
+const { setBreadcrumb, setBreadcrumbTab } = useBreadcrumb();
 
-const { setBreadcrumb } = useBreadcrumb();
-setBreadcrumb({
-  items: [
-    { label: "Manage", link: "/" },
-    { label: "Members", link: "/" },
-  ],
-});
+  
+      setBreadcrumb({
+        items: [
+          { label: "Manage", link: "/" },
+          { label: "Members", link: "/" },
+        ],
+      });
+ 
+      setBreadcrumbTab({
+        items: [
+          {
+            label: "Membership",
+            link: `/members/${memberId.value}/membership-overview`,
+          },
+          { label: "Payment", link: `/members/${memberId.value}/payment` },
+          {
+            label: "Attendance",
+            link: `/members/${memberId.value}/attendance`,
+          },
+          { label: "Wellness", link: `/members/${memberId.value}/wellness` },
+          {
+            label: "Assessments",
+            link: `/members/${memberId.value}/assessments`,
+          },
+          { label: "Nutrition", link: `/members/${memberId.value}/nutrition` },
+          {
+            label: "Transformation",
+            link: `/members/${memberId.value}/transformations`,
+          },
+          { label: "Friends", link: `/members/${memberId.value}/friends` },
+          { label: "Badges", link: `/members/${memberId.value}/badges` },
+          { label: "Notes", link: `/members/${memberId.value}/notes` },
+          { label: "Activity", link: `/members/${memberId.value}/activity` },
+        ],
+      });
+    
 
 const showPurchaseForm = ref(false);
 const selectedPlanId = ref('');
 const selectedPlanDetails = ref(null);
+const selectedFilter = ref('All');
 
 defineEmits(["edit"]);
 
@@ -111,41 +144,47 @@ const { data, pending } = await useFetch(`/api/member/overview`, {
   return []; 
 });
 const computedPlanDetails = computed(() => {
-  return ComputedPackage.value
-    .filter(plan => plan !== null) // Filter out null values
-    .map(plan => ({
-      id: plan.id,
-      name: plan.name,
-      desc: plan.description,
-      private: plan.private,
-      price: plan.price,
-      card: plan.pay_with_card,
-      gift: plan.pay_with_gift_card,
-      type: plan.type,
-      duration: plan.duration,
-      period: plan.period,
-      category: plan.category,
-      creditCount: plan.credit_count,
-      paymentDuration: plan.payment_duration,
-      paymentPeriod: plan.payment_period,
-      paymentCycle: plan.payment_cycle,
-      chargeOnFirst: plan.charge_on_first,
-      autoRenew: plan.auto_renew,
-      firstClassFree: plan.first_class_free,
-      updatedDate: plan.updated_date,
-      promotionPrice: plan.promotion_price,
-      displayOriginalPrice: plan.display_original_price,
-      promotionStart: plan.promotion_start,
-      promotionEnd: plan.promotion_end,
-      joiningFee: plan.joining_fee,
-      featured: plan.featured,
-      classes: plan.classes,
-      room: plan.room,
-      availableTags: plan.available_tags,
-      exceptTags: plan.except_tags
-
-    }));
+  return ComputedPackage.value.reduce((acc, plan) => {
+    if (plan !== null && (selectedFilter.value === 'All' || plan.type === selectedFilter.value)) {
+      acc.push({
+        id: plan.id,
+        name: plan.name,
+        description: plan.desc,
+        private: plan.private,
+        price: plan.price,
+        card: plan.card,
+        gift: plan.gift,
+        type: plan.type,
+        duration: plan.duration,
+        period: plan.period,
+        category: plan.category,
+        creditCount: plan.creditCount,
+        paymentDuration: plan.paymentDuration,
+        paymentPeriod: plan.paymentPeriod,
+        paymentCycle: plan.paymentCycle,
+        chargeOnFirst: plan.chargeOnFirst,
+        autoRenew: plan.autoRenew,
+        firstClassFree: plan.firstClassFree,
+        updatedDate: plan.updatedDate,
+        promotionPrice: plan.promotionPrice,
+        displayOriginalPrice: plan.displayOriginalPrice,
+        promotionStart: plan.promotionStart,
+        promotionEnd: plan.promotionEnd,
+        joiningFee: plan.joiningFee,
+        featured: plan.featured,
+        classes: plan.classes,
+        room: plan.room,
+        availableTags: plan.availableTags,
+        exceptTags: plan.exceptTags
+      });
+    }
+    return acc;
+  }, []);
 });
+
+const selectFilter = (filterType) => {
+  selectedFilter.value = filterType;
+};
 
 const selectPlan = (planId) => {
   selectedPlanId.value = planId;

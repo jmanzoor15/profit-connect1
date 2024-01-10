@@ -76,6 +76,7 @@ const showPlanForm = ref(false);
 const selectedPlan = ref();
 const selectedPackageForPlan = ref();
 const searchTerm = ref();
+const { $toast } = useNuxtApp();
 setBreadcrumb({
   items: [
     { label: "Control Panel", link: "/" },
@@ -126,9 +127,9 @@ const onChangePackageStatus = async (selectedPackage: any) => {
     });
     if (data.value.return) {
       refresh();
-      alert("Package status edited successfully!");
+      $toast("Package status edited successfully!");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/package/packagestatus", err);
@@ -159,9 +160,9 @@ const onPlanstatusChange = async (newData: any) => {
     });
     if (data.value.return) {
       refresh();
-      alert("Plan status edited successfully!");
+      $toast("Plan status edited successfully!");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/package/planstatus", err);
@@ -179,9 +180,9 @@ const onFeaturedChange = async (newData: any) => {
     });
     if (data.value.return) {
       refresh();
-      alert("Plan featured status edited successfully!");
+      $toast("Plan featured status edited successfully!");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/package/planfeatured", err);
@@ -196,6 +197,16 @@ const onAddPlan = (data: any) => {
 };
 
 const onPlanSelect = (plan: any) => {
+  const spacesData: any = {};
+  const rooms = plan.room.map((item: any) => item?.id);
+  accessData.value?.spaces.forEach((item: any) => {
+    const roomsInsideSpaces = item.rooms.map((ele: any) => ele.value);
+    spacesData[`spaces[${item.label}]`] = [];
+    rooms.forEach((ele) => {
+      if (roomsInsideSpaces.includes(ele))
+        spacesData[`spaces[${item.label}]`].push(ele);
+    });
+  });
   selectedPlan.value = {
     ...plan,
     private: stringToBoolean(plan.private),
@@ -207,6 +218,11 @@ const onPlanSelect = (plan: any) => {
     display_original_price: stringToBoolean(plan.display_original_price),
     featured: stringToBoolean(plan.featured),
     plan_id: plan.id,
+    ...spacesData,
+    roomse: rooms,
+    classes: plan.classes.map((item: any) => item?.id),
+    available_tags: plan.available_tags.map((item: any) => item?.id),
+    except_tags: plan.except_tags.map((item: any) => item?.id),
   };
   showPlanForm.value = true;
 };

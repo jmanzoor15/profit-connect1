@@ -1,79 +1,35 @@
 <template>
-  <div class="sidebar-box">
-    <a
-      :href="`/members/${getMemberInfo.id}/membership-overview`"
-      class="sidebar-box__title text-center"
-      title="View membership"
-    >
-    <!-- {{ getMemberInfo.image }} -->
-    <!-- <img :src="`https://app.ihitreset.com/resetcrm/${getMemberInfo.image}`" /> -->
-      <img :src="getImageUrl(getMemberInfo.image)" />
-      <h2 class="content-title-bold editUserName">
-        {{ getMemberInfo.firstname }} {{ getMemberInfo.lastname }}
-      </h2>
-    </a>
-    <FormKit
-      class="formEditMember"
-      type="form"
-      :modelValue="getMemberInfo"
-      @submit="editMember"
-      :actions="false"
-      #default="{ value }"
-    >
+  <div class="sidebar-box"> 
+    <div class="update-image">
       <div
-        v-show="!toggleStates.isPersonalEditMode.value"
+        v-show="!toggleStates.isImageEditMode.value"
         class="personal-show data-block-show"
       >
         <h3 class="small-title-bold">
-          Personal
+          Image
           <img
-            @click="() => startEdit('isPersonalEditMode')"
+            @click="() => startEdit('isImageEditMode')"
             class="editgetMemberInfo"
             data-edit="personal-edit"
             src="~assets/images/svg/edit-icon-black.svg"
             alt="Edit icon"
           />
         </h3>
-        <div>
-          <div class="icon-text">
-            <img
-              src="~assets/images/svg/members-info/female.svg"
-              alt="Female icon"
-            />
-            <span class="showUserGender">{{ getMemberInfo.gender }} </span>
-          </div>
-
-          <div class="icon-text">
-            <img
-              src="~assets/images/svg/members-info/birthday.svg"
-              alt="Birthday icon"
-            />
-            <span class="showUserBirthday">{{ getMemberInfo.dob }}</span>
-          </div>
-
-          <div class="icon-text">
-            <img
-              src="~assets/images/svg/members-info/phone.svg"
-              alt="Phone icon"
-            />
-            <span class="showPhoneNumber"
-              >{{ getMemberInfo.country_code }}
-              {{ getMemberInfo.contactno }}</span
-            >
-          </div>
-
-          <div class="icon-text">
-            <img
-              src="~assets/images/svg/members-info/email.svg"
-              alt="Email icon"
-            />
-            <span class="showUserEmail">{{ getMemberInfo.email }}</span>
-          </div>
-        </div>
       </div>
-
+      <div>
+      <a
+      :href="`/members/${getMemberImage.id}/membership-overview`"
+      class="sidebar-box__title text-center"
+      title="View membership"
+    >     
+      <img :src="getImageUrl(getMemberImage.image)" />
+      <h2 class="content-title-bold editUserName">
+        {{ getMemberInfo.firstname }} {{ getMemberInfo.lastname }}
+      </h2>
+    </a>
+  </div>
       <div
-        v-show="toggleStates.isPersonalEditMode.value"
+        v-show="toggleStates.isImageEditMode.value"
         class="personal-edit data-block-edit"
       >
         <h3 class="small-title-bold">
@@ -81,7 +37,7 @@
           <div
             class="goBackShowMode"
             data-show="personal-show"
-            @click="() => cancelEdit('isPersonalEditMode')"
+            @click="() => cancelEdit('isImageEditMode')"
           >
             Cancel
           </div>
@@ -90,237 +46,347 @@
           <div id="uploadEditAvatar"></div>
         </div>
         <FormKit
-          type="uppy"
-          label="Upload"
-          name="image"
-          :hideUploadButton="true"
-        />
-        <FormKit type="select" name="gender" :options="['Male', 'Female']" />
-        <FormKit
-          type="date"
-          name="dob"
-          label="Birthday"
-          validation="required|date_before:2010-01-01"
-          validation-visibility="live"
-        />
+          class="formEditMember"
+          type="form"
+          :modelValue="getMemberImage"
+          @submit="editMemberImage"
+          :actions="false"
+        >
+          <FormKit
+            type="uppy"
+            label="Upload"
+            name="image"
+            :hideUploadButton="true"
+          />
+          <FormKit type="submit" label="Save" class="EditSave" />
+        </FormKit>
+      </div>
+    </div>
 
-        <div class="row g-2">
-          <div class="col-6">
-            <FormKit
-              type="select"
-              name="country_code"
-              :options="countryCodes"
+
+    <div class="update-member">
+      <FormKit
+        class="formEditMember"
+        type="form"
+        :modelValue="getMemberInfo"
+        @submit="editMember"
+        :actions="false"
+      >
+        <div
+          v-show="!toggleStates.isPersonalEditMode.value"
+          class="personal-show data-block-show"
+        >
+          <h3 class="small-title-bold">
+            Personal
+            <img
+              @click="() => startEdit('isPersonalEditMode')"
+              class="editgetMemberInfo"
+              data-edit="personal-edit"
+              src="~assets/images/svg/edit-icon-black.svg"
+              alt="Edit icon"
             />
+          </h3>
+          <div>
+            <div class="icon-text">
+              <img
+                src="~assets/images/svg/members-info/female.svg"
+                alt="Female icon"
+              />
+              <span class="showUserGender">{{ getMemberInfo.gender }} </span>
+            </div>
+
+            <div class="icon-text">
+              <img
+                src="~assets/images/svg/members-info/birthday.svg"
+                alt="Birthday icon"
+              />
+              <span class="showUserBirthday">{{ getMemberInfo.dob }}</span>
+            </div>
+
+            <div class="icon-text">
+              <img
+                src="~assets/images/svg/members-info/phone.svg"
+                alt="Phone icon"
+              />
+              <span class="showPhoneNumber"
+                >{{ getMemberInfo.country_code }} ({{
+                  getMemberInfo.contactno
+                }})</span
+              >
+            </div>
+
+            <div class="icon-text">
+              <img
+                src="~assets/images/svg/members-info/email.svg"
+                alt="Email icon"
+              />
+              <span class="showUserEmail">{{ getMemberInfo.email }}</span>
+            </div>
           </div>
-          <div class="col-6">
-            <FormKit
-              type="tel"
-              name="contactno"
-              placeholder="Phone number"
-              :validation-messages="{
-                required: 'Phone number is required',
-              }"
-              validation-visibility="dirty"
+        </div>
+
+        <div
+          v-show="toggleStates.isPersonalEditMode.value"
+          class="personal-edit data-block-edit"
+        >
+          <h3 class="small-title-bold">
+            Personal
+            <div
+              class="goBackShowMode"
+              data-show="personal-show"
+              @click="() => cancelEdit('isPersonalEditMode')"
+            >
+              Cancel
+            </div>
+          </h3>
+         
+          <FormKit type="select" name="gender" :options="['Male', 'Female']" />
+          <FormKit
+            type="date"
+            name="dob"
+            label="Birthday"
+            validation="required|date_before:2010-01-01"
+            validation-visibility="live"
+          />
+
+          <div class="row g-2">
+            <div class="col-6">
+              <FormKit
+                type="select"
+                name="country_code"
+                :options="countryCodes"
+              />
+            </div>
+            <div class="col-6">
+              <FormKit
+                type="tel"
+                name="contactno"
+                placeholder="Phone number"
+                :validation-messages="{
+                  required: 'Phone number is required',
+                }"
+                validation-visibility="dirty"
+              />
+            </div>
+          </div>
+          <FormKit
+            type="email"
+            name="email"
+            validation="required|email|"
+            validation-visibility="live"
+            placeholder="Email"
+          />
+          <div class="input-label-box d-none">
+            <input
+              type="password"
+              class="passwordInput"
+              placeholder="Password"
             />
           </div>
         </div>
-        <FormKit
-          type="email"
-          name="email"
-          validation="required|email|"
-          validation-visibility="live"
-          placeholder="Email"
-        />
-        <div class="input-label-box d-none">
-          <input type="password" class="passwordInput" placeholder="Password" />
-        </div>
-      </div>
 
-      <div
-        v-show="!toggleStates.isSocialEditMode.value"
-        class="social-show data-block-show"
-      >
-        <h3 class="small-title-bold">
-          Contact
-          <img
-            @click="() => startEdit('isSocialEditMode')"
-            class="editgetMemberInfo"
-            data-edit="social-edit"
-            src="~assets/images/svg/edit-icon-black.svg"
-            alt="Edit icon"
-          />
-        </h3>
-
-        <div class="social-show__icons">
-          <div class="icon-text">
+        <div
+          v-show="!toggleStates.isSocialEditMode.value"
+          class="social-show data-block-show"
+        >
+          <h3 class="small-title-bold">
+            Contact
             <img
-              src="~assets/images/svg/social/facebook.svg"
-              alt="Phone icon"
+              @click="() => startEdit('isSocialEditMode')"
+              class="editgetMemberInfo"
+              data-edit="social-edit"
+              src="~assets/images/svg/edit-icon-black.svg"
+              alt="Edit icon"
             />
-            Facebook
-          </div>
+          </h3>
 
-          <div class="icon-text">
-            <img
-              src="~assets/images/svg/social/instagram.svg"
-              alt="Instagram icon"
-            />
-            Instagram
-          </div>
+          <div class="social-show__icons">
+            <div class="icon-text">
+              <img
+                src="~assets/images/svg/social/facebook.svg"
+                alt="Phone icon"
+              />
+              Facebook
+            </div>
 
-          <div class="icon-text">
-            <img
-              src="~assets/images/svg/social/linkedin.svg"
-              alt="Linkedin icon"
-            />
-            Linkedin
+            <div class="icon-text">
+              <img
+                src="~assets/images/svg/social/instagram.svg"
+                alt="Instagram icon"
+              />
+              Instagram
+            </div>
+
+            <div class="icon-text">
+              <img
+                src="~assets/images/svg/social/linkedin.svg"
+                alt="Linkedin icon"
+              />
+              Linkedin
+            </div>
           </div>
         </div>
-      </div>
 
-      <div
-        v-show="toggleStates.isSocialEditMode.value"
-        class="social-edit data-block-edit"
-      >
-        <h3 class="small-title-bold">
-          Social
-          <div
-            class="goBackShowMode"
-            data-show="social-show"
-            @click="() => cancelEdit('isSocialEditMode')"
-          >
-            Cancel
-          </div>
-        </h3>
-        <FormKit type="text" placeholder="Facebook" name="facebook" />
-        <FormKit type="text" placeholder="instagram" name="instagram" />
-        <FormKit type="text" placeholder="Linkedin" name="linkedin" />
-      </div>
+        <div
+          v-show="toggleStates.isSocialEditMode.value"
+          class="social-edit data-block-edit"
+        >
+          <h3 class="small-title-bold">
+            Social
+            <div
+              class="goBackShowMode"
+              data-show="social-show"
+              @click="() => cancelEdit('isSocialEditMode')"
+            >
+              Cancel
+            </div>
+          </h3>
+          <FormKit type="text" placeholder="Facebook" name="facebook" />
+          <FormKit type="text" placeholder="instagram" name="instagram" />
+          <FormKit type="text" placeholder="Linkedin" name="linkedin" />
+        </div>
 
-      <div
-        v-show="!toggleStates.isAboutEditMode.value"
-        class="about-show data-block-show"
-      >
-        <h3 class="small-title-bold">
-          About
-          <img
-            @click="() => startEdit('isAboutEditMode')"
-            class="editgetMemberInfo"
-            data-edit="about-edit"
-            src="~assets/images/svg/edit-icon-black.svg"
-            alt="Edit icon"
+        <div
+          v-show="!toggleStates.isAboutEditMode.value"
+          class="about-show data-block-show"
+        >
+          <h3 class="small-title-bold">
+            About
+            <img
+              @click="() => startEdit('isAboutEditMode')"
+              class="editgetMemberInfo"
+              data-edit="about-edit"
+              src="~assets/images/svg/edit-icon-black.svg"
+              alt="Edit icon"
+            />
+          </h3>
+          {{ getMemberInfo.about }}
+          <div class="icon-text showMemberAbout"></div>
+        </div>
+
+        <div
+          v-show="toggleStates.isAboutEditMode.value"
+          class="about-edit member-edit-box data-block-edit"
+        >
+          <h3 class="small-title-bold">
+            About
+            <div
+              class="goBackShowMode"
+              data-show="about-show"
+              @click="() => cancelEdit('isAboutEditMode')"
+            >
+              Cancel
+            </div>
+          </h3>
+
+          <FormKit type="text" placeholder="About" name="about" />
+        </div>
+
+        <div
+          v-show="!toggleStates.isEmergencyEditMode.value"
+          class="emergency-show data-block-show"
+        >
+          <h3 class="small-title-bold">
+            Emergency
+            <img
+              @click="() => startEdit('isEmergencyEditMode')"
+              class="editgetMemberInfo"
+              data-edit="emergency-edit"
+              src="~assets/images/svg/edit-icon-black.svg"
+              alt="Edit icon"
+            />
+          </h3>
+          {{ getMemberInfo.emergency_contact_name }} <br />
+          {{ getMemberInfo.emergency_country_code }} ({{
+            getMemberInfo.emergency_contact_no
+          }})
+          <div class="icon-text showMemberemergeny"></div>
+        </div>
+
+        <div
+          v-show="toggleStates.isEmergencyEditMode.value"
+          class="emergency-edit member-edit-box data-block-edit"
+        >
+          <h3 class="small-title-bold">
+            Emergency
+            <div
+              class="goBackShowMode"
+              data-show="emergency-show"
+              @click="() => cancelEdit('isEmergencyEditMode')"
+            >
+              Cancel
+            </div>
+          </h3>
+          <FormKit
+            type="text"
+            placeholder="Emergency contact name"
+            name="emergency_contact_name"
           />
-        </h3>
-        {{ getMemberInfo.about }}
-        <div class="icon-text showMemberAbout"></div>
-      </div>
-
-      <div
-        v-show="toggleStates.isAboutEditMode.value"
-        class="about-edit member-edit-box data-block-edit"
-      >
-        <h3 class="small-title-bold">
-          About
-          <div
-            class="goBackShowMode"
-            data-show="about-show"
-            @click="() => cancelEdit('isAboutEditMode')"
-          >
-            Cancel
+          <div class="row g-2">
+            <div class="col-6">
+              <FormKit
+                type="select"
+                name="emergency_country_code"
+                :options="countryCodes"
+              />
+            </div>
+            <div class="col-6">
+              <FormKit
+                type="tel"
+                placeholder="Contact Number"
+                name="emergency_contact_no"
+                :validation-messages="{
+                  required: 'Phone number is required',
+                }"
+                validation-visibility="dirty"
+              />
+            </div>
           </div>
-        </h3>
+        </div>
 
-        <FormKit type="text" placeholder="About" name="about" />
-      </div>
+        <div
+          v-show="!toggleStates.isTagsEditMode.value"
+          class="tags-show data-block-show"
+        >
+          <h3 class="small-title-bold">
+            Tags
+            <img
+              @click="() => startEdit('isTagsEditMode')"
+              class="editgetMemberInfo"
+              data-edit="tags-edit"
+              src="~assets/images/svg/edit-icon-black.svg"
+              alt="Edit icon"
+            />
+          </h3>
+          {{ tagname(getMemberInfo.tags) }}
+          <div class="showTagsWithComma"></div>
+        </div>
 
-      <div
-        v-show="!toggleStates.isEmergencyEditMode.value"
-        class="emergency-show data-block-show"
-      >
-        <h3 class="small-title-bold">
-          Emergency
-          <img
-            @click="() => startEdit('isEmergencyEditMode')"
-            class="editgetMemberInfo"
-            data-edit="emergency-edit"
-            src="~assets/images/svg/edit-icon-black.svg"
-            alt="Edit icon"
+        <div
+          v-show="toggleStates.isTagsEditMode.value"
+          class="tags-edit data-block-edit"
+        >
+          <h3 class="small-title-bold">
+            Tags
+            <div
+              class="goBackShowMode"
+              data-show="tags-show"
+              @click="() => cancelEdit('isTagsEditMode')"
+            >
+              Cancel
+            </div>
+          </h3>
+          <FormKit
+            type="multiselect"
+            name="tags"
+            mode="tags"
+            openDirection="top"
+            :options="computedTags"
           />
-        </h3>
-        {{ getMemberInfo.emergency_contact_no }}<br />
-        {{ getMemberInfo.emergency_contact_name }}
-        <div class="icon-text showMemberemergeny"></div>
-      </div>
-
-      <div
-        v-show="toggleStates.isEmergencyEditMode.value"
-        class="emergency-edit member-edit-box data-block-edit"
-      >
-        <h3 class="small-title-bold">
-          Emergency
-          <div
-            class="goBackShowMode"
-            data-show="emergency-show"
-            @click="() => cancelEdit('isEmergencyEditMode')"
-          >
-            Cancel
-          </div>
-        </h3>
-        <FormKit
-          type="text"
-          placeholder="Emergency contact name"
-          name="emergency_contact_name"
-        />
-        <FormKit
-          type="text"
-          placeholder="Emergency contact phone"
-          name="emergency_contact_no"
-        />
-      </div>
-
-      <div
-        v-show="!toggleStates.isTagsEditMode.value"
-        class="tags-show data-block-show"
-      >
-        <h3 class="small-title-bold">
-          Tags
-          <img
-            @click="() => startEdit('isTagsEditMode')"
-            class="editgetMemberInfo"
-            data-edit="tags-edit"
-            src="~assets/images/svg/edit-icon-black.svg"
-            alt="Edit icon"
-          />
-        </h3>
-        {{ tagname(getMemberInfo.tags) }}
-        <div class="showTagsWithComma"></div>
-      </div>
-
-      <div
-        v-show="toggleStates.isTagsEditMode.value"
-        class="tags-edit data-block-edit"
-      >
-        <h3 class="small-title-bold">
-          Tags
-          <div
-            class="goBackShowMode"
-            data-show="tags-show"
-            @click="() => cancelEdit('isTagsEditMode')"
-          >
-            Cancel
-          </div>
-        </h3>
-        <FormKit
-          type="multiselect"
-          name="tags"
-          mode="tags"
-          openDirection="top"
-          :options="computedTags"
-        />
-      </div>
-      <FormKit type="submit" label="Save" class="EditSave" />
-      <pre wrap>{{ value }}</pre>
-    </FormKit>
+        </div>
+        <FormKit type="submit" label="Save" class="EditSave" />
+      </FormKit>
+    </div>
   </div>
 </template>
 
@@ -329,23 +395,18 @@ import { ref } from "vue";
 import { useAuthStore } from "@/store/auth";
 import { useTagStore } from "@/store/tag";
 import { storeToRefs } from "pinia";
+const { $toast } = useNuxtApp();
 const emit = defineEmits(["reload", "update:categoryData"]);
 import type { ITag } from "@/types/api/member/info";
-import { getImage } from "~/utils/providers/boImage";
 const props = defineProps({
   memberId: {
     type: String,
     default: "",
   },
 });
+const route = useRoute();
 
 const { setBreadcrumb, setBreadcrumbTab } = useBreadcrumb();
-setBreadcrumb({
-  items: [
-    { label: "Manage", link: "/" },
-    { label: "Members", link: "/" },
-  ],
-});
 
 const { memberId } = toRefs(props);
 const memberInfoData = ref(null);
@@ -355,29 +416,51 @@ const { currentUserType } = useAuthStore();
 const { getUrl: getImageUrl } = useBoImage();
 const countryCodes = ref([]);
 
-setBreadcrumbTab({
-  items: [
-    {
-      label: "Membership",
-      link: `/members/${memberId.value}/membership-overview`,
-    },
-    { label: "Payment", link: `/members/${memberId.value}/payment` },
-    { label: "Attendance", link: `/members/${memberId.value}/attendance` },
-    { label: "Wellness", link: `/members/${memberId.value}/wellness` },
-    { label: "Assessments", link: `/members/${memberId.value}/assessments` },
-    { label: "Nutrition", link: `/members/${memberId.value}/nutrition` },
-    {
-      label: "Transformation",
-      link: `/members/${memberId.value}/transformations`,
-    },
-    { label: "Friends", link: `/members/${memberId.value}/friends` },
-    { label: "Badges", link: `/members/${memberId.value}/badges` },
-    { label: "Notes", link: `/members/${memberId.value}/notes` },
-    { label: "Activity", link: `/members/${memberId.value}/activity` },
-  ],
-});
+watch(
+  route,
+  (val) => {
+    if (val.path === "/members") {
+      setBreadcrumb({
+        items: [
+          { label: "Manage", link: "/" },
+          { label: "Members", link: "/" },
+        ],
+      });
+    } else {
+      setBreadcrumbTab({
+        items: [
+          {
+            label: "Membership",
+            link: `/members/${memberId.value}/membership-overview`,
+          },
+          { label: "Payment", link: `/members/${memberId.value}/payment` },
+          {
+            label: "Attendance",
+            link: `/members/${memberId.value}/attendance`,
+          },
+          { label: "Wellness", link: `/members/${memberId.value}/wellness` },
+          {
+            label: "Assessments",
+            link: `/members/${memberId.value}/assessments`,
+          },
+          { label: "Nutrition", link: `/members/${memberId.value}/nutrition` },
+          {
+            label: "Transformation",
+            link: `/members/${memberId.value}/transformations`,
+          },
+          { label: "Friends", link: `/members/${memberId.value}/friends` },
+          { label: "Badges", link: `/members/${memberId.value}/badges` },
+          { label: "Notes", link: `/members/${memberId.value}/notes` },
+          { label: "Activity", link: `/members/${memberId.value}/activity` },
+        ],
+      });
+    }
+  },
+  { immediate: true }
+);
 
 type ToggleStates = {
+  isImageEditMode: Ref<boolean>;
   isPersonalEditMode: Ref<boolean>;
   isSocialEditMode: Ref<boolean>;
   isAboutEditMode: Ref<boolean>;
@@ -386,6 +469,7 @@ type ToggleStates = {
 };
 
 const toggleStates: ToggleStates = {
+  isImageEditMode: ref(false),
   isPersonalEditMode: ref(false),
   isSocialEditMode: ref(false),
   isAboutEditMode: ref(false),
@@ -401,15 +485,14 @@ const cancelEdit = (toggleKey: keyof ToggleStates) => {
   toggleStates[toggleKey].value = false;
 };
 
-const editMember = async (getMemberInfo: any) => {
+const editMemberImage = async (getMemberImage: any) => {
   try {
-    
-    const { id, ...memberInfoWithoutId } = getMemberInfo;
+    const { id, ...memberInfoWithoutId } = getMemberImage;
 
     const { data } = await useFetch("/api/member/update-member", {
       method: "POST",
       body: {
-        member_id: getMemberInfo.id, 
+        member_id: getMemberImage.id,
         facility_id: currentUserType?.id,
         ...memberInfoWithoutId,
       },
@@ -417,15 +500,38 @@ const editMember = async (getMemberInfo: any) => {
 
     if (data.value.return) {
       emit("reload");
-      alert("Member edited successfully!");
+      $toast.success("Member Image edited successfully!");
     } else {
-      alert(data.value.message);
+      $toast.error(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/Member/update", err);
   }
 };
 
+const editMember = async (getMemberInfo: any) => {
+  try {
+    const { id, ...memberInfoWithoutId } = getMemberInfo;
+
+    const { data } = await useFetch("/api/member/update-member", {
+      method: "POST",
+      body: {
+        member_id: getMemberInfo.id,
+        facility_id: currentUserType?.id,
+        ...memberInfoWithoutId,
+      },
+    });
+
+    if (data.value.return) {
+      emit("reload");
+      $toast.success("Member  edited successfully!");
+    } else {
+      $toast.error(data.value.message);
+    }
+  } catch (err) {
+    console.log("Error:/api/Member/update", err);
+  }
+};
 
 const computedTags = computed(() => {
   return tags.value
@@ -444,6 +550,23 @@ const tagname = (tagIds: number) => {
   return labels?.join(", ");
 };
 
+const getMemberImage = computed(() => {
+  if (
+    memberInfoData.value &&
+    memberInfoData.value.member &&
+    memberInfoData.value.member.data &&
+    memberInfoData.value.member.data.length > 0
+  ) {
+    const memberData = memberInfoData.value.member.data[0];
+
+    return {
+      id: memberData.id,
+      image: memberData.img_src,
+    };
+  }
+
+  return {};
+});
 const getMemberInfo = computed(() => {
   if (
     memberInfoData.value &&
@@ -455,9 +578,9 @@ const getMemberInfo = computed(() => {
     const socialData = memberInfoData.value.member.social || {};
     const aboutData = memberInfoData.value.member.about || {};
     const emergencyContactData =
-      memberInfoData.value.member.emergency_contact || {};
+     memberInfoData.value.member.emergency_contact || {};
     const tags = memberInfoData.value.member?.tags || [];
-    // const tagNames = tags ? tags.map((tag: ITag) => tag && tag.name) : [];
+
 
     return {
       id: memberData.id,
@@ -468,7 +591,7 @@ const getMemberInfo = computed(() => {
       country_code: memberData.country_code,
       contactno: memberData.contactno,
       email: memberData.email,
-      image: memberData.img_src,
+      image: "",
       // membership_status: memberData.membership_status,
       facebook: socialData.facebook,
       instagram: socialData.instagram,
@@ -476,6 +599,7 @@ const getMemberInfo = computed(() => {
       about: aboutData.about,
       emergency_contact_name: emergencyContactData.name,
       emergency_contact_no: emergencyContactData.contactno,
+      emergency_country_code: emergencyContactData.country_code,
       tags: tags?.map((tag: ITag) => tag?.id),
     };
   }

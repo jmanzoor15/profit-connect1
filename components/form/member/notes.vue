@@ -19,7 +19,7 @@
 <script setup>
 import { useAuthStore } from "@/store/auth";
 import { useVModel } from "@vueuse/core";
-
+const { $toast } = useNuxtApp();
 const emit = defineEmits(["reload", "update:packageData"]);
 
 const props = defineProps({
@@ -53,35 +53,17 @@ const createNote = async (packageData) => {
     });
     if (data.value.return) {
       emit("reload");
-      alert(data.value.message);
+      $toast(data.value.message);
       emit("update:modelValue", false);
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/package/add", err);
   }
 };
 
-const editNote = async (packageData) => {
-  try {
-    const { data } = await useFetch("/api/package/update", {
-      method: "POST",
-      body: {
-        ...packageData,
-        facility_id: currentUserType?.id,
-      },
-    });
-    if (data.value.return) {
-      emit("reload");
-      alert("Package edited successfully!");
-    } else {
-      alert(data.value.message);
-    }
-  } catch (err) {
-    console.log("Error:/api/package/update", err);
-  }
-};
+
 
 const submitHandler = async (packageData) => {
   packageData.package_id ? editNote(packageData) : createNote(packageData);

@@ -9,14 +9,6 @@ export const periodType = [
   { label: "Week(s)", value: "Week" },
   { label: "Month(s)", value: "Month" },
   { label: "Year(s)", value: "Year" },
-  { label: "Hours(s)", value: "Hours" },
-];
-export const bookingPeriodType = [
-  { label: "Hours(s)", value: "Hours" },
-  { label: "Day(s)", value: "Day" },
-  { label: "Week(s)", value: "Week" },
-  { label: "Month(s)", value: "Month" },
-  { label: "Year(s)", value: "Year" },
 ];
 
 export const paymentCategory = [

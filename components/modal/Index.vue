@@ -17,6 +17,7 @@
       <div class="offcanvas-body">
         <slot />
       </div>
+      <button class="btn my-3" @click="show = false">Cancel</button>
     </div>
   </Teleport>
 </template>

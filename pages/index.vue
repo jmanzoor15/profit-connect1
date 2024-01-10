@@ -1,29 +1,36 @@
 <template>
   <div>
-    <apexchart
-      width="500"
-      type="bar"
-      :options="data.chartOptions"
-      :series="data.series"
-    ></apexchart>
+    <Qalendar :events="events" :config="config" />
   </div>
 </template>
 
 <script lang="ts" setup>
-const data = {
-  chartOptions: {
-    chart: {
-      id: "vuechart-example",
-    },
-    xaxis: {
-      categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
-    },
+import { Qalendar } from "qalendar";
+const events = [
+  {
+    title: "Advanced algebra",
+    with: "Chandler Bing",
+    time: { start: "2022-05-16 12:05", end: "2022-05-16 13:35" },
+    color: "yellow",
+    isEditable: true,
+    id: "753944708f0f",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores assumenda corporis doloremque et expedita molestias necessitatibus quam quas temporibus veritatis. Deserunt excepturi illum nobis perferendis praesentium repudiandae saepe sapiente voluptatem!",
   },
-  series: [
-    {
-      name: "series-1",
-      data: [30, 40, 35, 50, 49, 60, 70, 91],
-    },
-  ],
+  {
+    title: "Ralph on holiday",
+    with: "Rachel Greene",
+    time: { start: "2024-01-10", end: "2024-01-22" },
+    color: "green",
+    isEditable: true,
+    id: "5602b6f589fc",
+  },
+  // ...
+];
+const config = {
+  // see configuration section
 };
 </script>
+<style>
+@import "qalendar/dist/style.css";
+</style>

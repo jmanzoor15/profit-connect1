@@ -165,7 +165,7 @@ import { useTagStore } from "@/store/tag";
 import { useAuthStore } from "@/store/auth";
 import { storeToRefs } from "pinia";
 import { removeObjectKeys } from "@/utils/dataCleaner";
-
+const { $toast } = useNuxtApp();
 const props = defineProps({
   categories: {
     type: Array,
@@ -244,10 +244,10 @@ const addStore = async (storeData) => {
       },
     });
     if (data.value.return) {
-      alert("Store added successfully!");
+      $toast("Store added successfully!");
       emit("reload");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/store/add", err);
@@ -265,10 +265,10 @@ const updateStore = async (storeData) => {
       },
     });
     if (data.value.return) {
-      alert("Store edited successfully!");
+      $toast("Store edited successfully!");
       emit("reload");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/store/edit", err);

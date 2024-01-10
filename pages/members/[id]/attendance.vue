@@ -84,6 +84,46 @@ const props = defineProps({
     default: () => {},
   },
 });
+
+// const { memberId } = toRefs(props);
+// const route = useRoute();
+// const { setBreadcrumb, setBreadcrumbTab } = useBreadcrumb();
+
+  
+//       setBreadcrumb({
+//         items: [
+//           { label: "Manage", link: "/" },
+//           { label: "Members", link: "/" },
+//         ],
+//       });
+ 
+//       setBreadcrumbTab({
+//         items: [
+//           {
+//             label: "Membership",
+//             link: `/members/${memberId.value}/membership-overview`,
+//           },
+//           { label: "Payment", link: `/members/${memberId.value}/payment` },
+//           {
+//             label: "Attendance",
+//             link: `/members/${memberId.value}/attendance`,
+//           },
+//           { label: "Wellness", link: `/members/${memberId.value}/wellness` },
+//           {
+//             label: "Assessments",
+//             link: `/members/${memberId.value}/assessments`,
+//           },
+//           { label: "Nutrition", link: `/members/${memberId.value}/nutrition` },
+//           {
+//             label: "Transformation",
+//             link: `/members/${memberId.value}/transformations`,
+//           },
+//           { label: "Friends", link: `/members/${memberId.value}/friends` },
+//           { label: "Badges", link: `/members/${memberId.value}/badges` },
+//           { label: "Notes", link: `/members/${memberId.value}/notes` },
+//           { label: "Activity", link: `/members/${memberId.value}/activity` },
+//         ],
+//       });
 definePageMeta({
   layout: "member",
 });

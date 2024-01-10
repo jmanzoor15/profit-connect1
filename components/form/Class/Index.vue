@@ -103,6 +103,7 @@
             name="location"
             placeholder="Location"
             :disabled="['On-site', 'Online'].includes(classType)"
+            :validation="!['On-site', 'Online'].includes(classType) ? 'required' : ''"
           />
         </div>
         <div class="col-6">
@@ -112,7 +113,8 @@
             name="googlemaps"
             placeholder="Google Map Url"
             :disabled="['On-site', 'Online'].includes(classType)"
-          />
+            :validation="!['On-site', 'Online'].includes(classType) ? 'required' : ''"
+            />
         </div>
       </div>
       <div class="row">
@@ -123,6 +125,7 @@
             name="url"
             placeholder="Url"
             :disabled="['On-site', 'Off-site'].includes(classType)"
+            :validation="!['On-site', 'Off-site'].includes(classType) ? 'required' : ''"
           />
         </div>
       </div>
@@ -165,7 +168,7 @@ import { useTagStore } from "@/store/tag";
 import { useAuthStore } from "@/store/auth";
 import { storeToRefs } from "pinia";
 import { removeObjectKeys } from "@/utils/dataCleaner";
-
+const  { $toast } = useNuxtApp();
 const props = defineProps({
   categories: {
     type: Array,
@@ -239,10 +242,10 @@ const addClass = async (classData) => {
       },
     });
     if (data.value.return) {
-      alert("Class added successfully!");
+      $toast("Class added successfully!");
       emit("reload");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/class/add", err);
@@ -260,10 +263,10 @@ const updateClass = async (classData) => {
       },
     });
     if (data.value.return) {
-      alert("Class edited successfully!");
+      $toast("Class edited successfully!");
       emit("reload");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/class/edit", err);

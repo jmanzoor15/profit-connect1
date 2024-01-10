@@ -1,7 +1,7 @@
 <template>
   <div>
     <NavigationHeader />
-    <NavigationBreadcrumb />
+    <NavigationBreadcrumb/>
     <main>
       <NuxtPage />
     </main>

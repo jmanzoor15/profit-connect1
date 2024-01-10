@@ -1,10 +1,10 @@
 <template>
   <div class="content-packages">
     <div
-      v-for="data in packages"
+      v-for="data in filteredPackages"
       :key="data.id"
       :class="data.status === 'Active' ? 'Active' : ''"
-      class="package-row"
+      class="package-row pb-4"
       :data-status="data.status === 'Active' ? 'Active' : 'Inactive'"
     >
       <div class="package-row__status">
@@ -23,16 +23,18 @@
       </div>
 
       <div class="row g-3 w-100">
-        <div class="col-6" v-for="plan in data?.plans" :key="plan?.id">
+        <div class="col-4" v-for="plan in data?.plans" :key="plan?.id">
           <CardPackage
             v-bind="plan"
             @onPlanstatusChange="$emit('on-planstatus-change', $event)"
             @onFeaturedChange="$emit('on-featured-change', $event)"
             @onPlanSelect="$emit('on-plan-select', plan)"
+            :status="data.status"
           />
         </div>
-        <div class="col-6">
-          <div
+        <div  class="col-3 d-flex justify-content-center">
+            <div 
+            class="d-flex gap-3 add-button"
             @click="
               $emit('on-add-plan', {
                 package_id: data.id,
@@ -46,6 +48,8 @@
             />
             <div>Add Plan</div>
           </div>
+     
+        
         </div>
       </div>
     </div>
@@ -60,21 +64,35 @@ const emit = defineEmits([
   "on-featured-change",
   "on-plan-select",
 ]);
-defineProps({
+const props = defineProps({
   packages: {
     type: Array<any>,
     default: () => [],
   },
 });
-const onPackageSelect = (data: any) => {
-  emit("on-package-select", data);
-};
+const filteredPackages = computed(() => {
+  return props.packages.map(packageItem => ({
+    ...packageItem,
+    plans: packageItem.plans.filter(plan => plan !== null)
+  }));
+});
+
 </script>
 
 <style lang="scss" scoped>
 .content-packages {
   display: flex;
   flex-flow: column;
+  .add-button{
+    height: 134px;
+    align-items: center;
+    font-weight: 800;
+    font-size: 18px;
+    img{
+      height: 28px;
+      width: 28px;
+    }
+  }
 }
 
 .content-packages.is-reverse {

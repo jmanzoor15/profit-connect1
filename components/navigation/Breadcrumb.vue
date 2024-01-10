@@ -10,7 +10,7 @@
           </li>
         </ul>
       </div>
-      <div class="tab col-8">
+      <div class="tab col-8" v-if="breadcrumbTab">
         <ul class="d-flex py-0 flex-nowrap text-nowrap">
           <li
             v-for="(item, key) in breadcrumbTab.items"

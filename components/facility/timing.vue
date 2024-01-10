@@ -1,6 +1,6 @@
 <template>
   <h3 class="mt-2">Facility Timing</h3>
-  <div class="facility">
+  <div class="facility"> 
     <FormKit
       type="form"
       :modelValue="selectedPlan"
@@ -17,30 +17,40 @@
         />
       </div>
       <div class="schedule-container" v-if="!form.always_open">
-        <div v-for="(day, index) in form.generalTiming" :key="index">
-          <div class="day-schedule">
-            <FormKit
-              type="text"
-              :placeholder="'From'"
-              v-model="day.start_time"
-              class="time-input"
-            />
-            <span>to</span>
-            <FormKit
-              type="text"
-              :placeholder="'To'"
-              v-model="day.end_time"
-              class="time-input"
-            />
-          </div>
-          <p
+        <div
+          v-for="(day, index) in form.generalTiming"
+          :key="index"
+          class="day-schedule"
+        > 
+        <div style="width: 80px;">
+          <p>{{ day.day }}</p>
+        </div>
+       
+          <FormKit
+            type="time"
+            :placeholder="'From'"
+            v-model="day.start_time"
+            class="time-input"
+          />
+          <span>to</span>
+          <FormKit
+            type="time"
+            :placeholder="'To'"
+            v-model="day.end_time"
+            class="time-input"
+          />
+          <div>
+            <p
             ref="error"
             v-if="day.start_time > day.end_time"
             class="custom-formkit-message"
           >
             End time should be more than start time
           </p>
+          </div>
+          
         </div>
+       
       </div>
       <div class="mt-4 d-flex justify-content-center">
         <FormKit type="submit">Submit</FormKit>
@@ -51,7 +61,7 @@
 
 <script setup lang="ts">
 import { useAuthStore } from "@/store/auth";
-
+const { $toast } = useNuxtApp();
 const { generalInfo, generalTiming } = defineProps({
   generalInfo: {
     type: Object,
@@ -63,7 +73,6 @@ const { generalInfo, generalTiming } = defineProps({
   },
 });
 const { currentUserType } = useAuthStore();
-const error = ref(null);
 
 const convertYesNoToBoolean = (key: string) => key === "Yes";
 function convertBooleanToYesNo(obj) {
@@ -88,19 +97,16 @@ const submitHandler = async () => {
   };
   convertBooleanToYesNo(payload);
 
-  if (error.value && error.value.length) return;
-
   try {
     const { data } = await useFetch("/api/franchise/update-facility", {
       method: "POST",
       body: payload,
     });
-    // facilityData.value = data.value.facility;
-    alert(data.value.message);
+    $toast(data.value.message);
   } catch (err) {
     console.error("Error fetching facility data:", err);
   } finally {
-    // memberInfoPending.value = false; // End loading
+
   }
 };
 
@@ -122,9 +128,6 @@ const submitHandler = async () => {
   display: flex;
   align-items: center;
   gap: 10px;
-  span {
-    align-self: center;
-  }
 }
 
 .day-checked label {
@@ -137,7 +140,6 @@ const submitHandler = async () => {
   border-radius: 0.25rem;
   padding: 0.375rem 0.75rem;
 }
-
 .custom-formkit-message {
   color: red;
   font-size: 14px;

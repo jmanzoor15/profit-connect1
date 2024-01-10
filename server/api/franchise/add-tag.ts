@@ -6,7 +6,7 @@ export default defineEventHandler(async ($event) => {
   const api = useApiFetch($event);
   const body = await readBody($event);
 
-  const resp = await api("/tags/update/tags", {
+  const resp = await api("/tags/add/tag", {
     method: "POST",
     body: cleanObjectL1(body),
   });

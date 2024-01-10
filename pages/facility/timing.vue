@@ -1,23 +1,44 @@
 <template>
-  <TemplatesFacility>
+   <section class="content-section">
+    <FacilityUpdate />
+    <div class="content-box">
     <FacilityTiming
       v-if="generalInfo"
       :general-info="generalInfo"
       :general-timing="generalTiming"
     />
-  </TemplatesFacility>
+  </div>
+  </section>
 </template>
 
 <script lang="ts" setup>
 import { defaultTiming } from "~/constants/common";
 import { useAuthStore } from "~/store/auth";
-const { setBreadcrumb } = useBreadcrumb();
-setBreadcrumb({
-  items: [
-    { label: "Control Panel", link: "/" },
-    { label: "Facilities", link: "/" },
-  ],
-});
+const { setBreadcrumb, setBreadcrumbTab } = useBreadcrumb();
+  setBreadcrumbTab({
+    items: [
+      {
+        label: "General",
+        link: `/facility`,
+      },
+      { label: "Timing", link: `/facility/timing` },
+      { label: "Staff", link: `/facility/staff` },
+      { label: "Forms", link: `/facility/forms` },
+      { label: "Tags", link: `/facility/tags` },
+      { label: "Payments", link: `/facility/payments` },
+      { label: "Discount Codes", link: `/facility/discount` },
+      { label: "Tax", link: `/facility/tax` },
+      { label: "Activity", link: `/facility/activity` },
+    ],
+  });
+
+  setBreadcrumb({
+    items: [
+      { label: "Facility", link: "/" },
+      { label: "Timing", link: "/" },
+    ],
+  });
+
 
 const facilityData = ref(null);
 const memberInfoPending = ref(false);

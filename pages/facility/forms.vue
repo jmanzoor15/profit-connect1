@@ -28,17 +28,31 @@
     </section>
    
   </template>
-  <script lang="ts" setup>
-
-  
-  const { setBreadcrumb } = useBreadcrumb();
-  setBreadcrumb({
+  <script lang="ts" setup> 
+const { setBreadcrumb, setBreadcrumbTab } = useBreadcrumb();
+  setBreadcrumbTab({
     items: [
-      { label: "Control Panel", link: "/" },
-      { label: "Classes", link: "/" },
+      {
+        label: "General",
+        link: `/forms`,
+      },
+      { label: "Timing", link: `/facility/timing` },
+      { label: "Staff", link: `/facility/staff` },
+      { label: "Forms", link: `/facility/forms` },
+      { label: "Tags", link: `/facility/tags` },
+      { label: "Payments", link: `/facility/payments` },
+      { label: "Discount Codes", link: `/facility/discount` },
+      { label: "Tax", link: `/facility/tax` },
+      { label: "Activity", link: `/facility/activity` },
     ],
   });
 
+  setBreadcrumb({
+    items: [
+      { label: "Facility", link: "/" },
+      { label: "Forms", link: "/" },
+    ],
+  });
   const showFacilityForm = ref(false);
  
   

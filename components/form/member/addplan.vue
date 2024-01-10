@@ -104,7 +104,8 @@
 
 <script lang="ts" setup>
   import { useAuthStore } from "@/store/auth";
-
+  const { $toast } = useNuxtApp();
+  
   const emit = defineEmits();
   const { getUrl: getImageUrl } = useBoImage();
   const props = defineProps({
@@ -133,9 +134,9 @@
     });
     if (data.value.return) {
       emit("reload");
-      alert("Plan added successfully!");
+      $toast("Plan added successfully!");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/member/add-plan", err);

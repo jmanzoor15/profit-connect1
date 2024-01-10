@@ -90,14 +90,16 @@
               />
             </div> -->
           <!-- <div class="col-6"> -->
-          <FormKit
+            <FormKit
             type="tel"
             name="contactno"
             placeholder="Phone number"
+            validation="required|number|"
             :validation-messages="{
-              required: 'Phone number is required',
+              required: 'Phone number is required.',
+              number: 'Phone number must be numeric.',
+            
             }"
-            validation-visibility="dirty"
           />
           <!-- </div> -->
         </div>
@@ -224,6 +226,7 @@ import { storeToRefs } from "pinia";
 const emit = defineEmits(["reload", "update:categoryData"]);
 import type { ITag } from "@/types/api/member/info";
 import { getImage } from "~/utils/providers/boImage";
+const { $toast } = useNuxtApp();
 const props = defineProps({
   memberId: {
     type: String,
@@ -271,9 +274,9 @@ const editFacility = async (getMemberInfo: any) => {
     });
     if (data.value.return) {
       emit("reload");
-      alert("Member edited successfully!");
+      $toast("Facility Updated successfully!");
     } else {
-      alert(data.value.message);
+      $toast(data.value.message);
     }
   } catch (err) {
     console.log("Error:/api/Member/update", err);

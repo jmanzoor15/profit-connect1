@@ -41,6 +41,7 @@
         :category="getCurrentCategory"
         :space-data="selectedSpace"
         v-if="showSpaceForm"
+
       />
     </Modal>
     <Modal v-model="showCatrgoryForm" id="category-modal">
