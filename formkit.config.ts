@@ -17,17 +17,10 @@ export default {
       ],
     }),
     multiselect: createInput(Multiselect, {
-      props: [
-        "openDirection",
-        "options",
-        "mode",
-        "placeholder",
-        "searchable",
-        "hideSelected",
-      ],
+      props: ["openDirection", "options", "mode", "placeholder", "searchable","hideSelected"],
     }),
     switch: createInput(Switch, {
-      props: ["value"],
+      props: [],
     }),
   },
 };
